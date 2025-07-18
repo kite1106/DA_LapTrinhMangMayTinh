@@ -1,0 +1,75 @@
+@{
+    ViewData["Title"] = "Dashboard quản trị";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">🛡️ Quản trị hệ thống</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">👥 Tổng số người dùng</div>
+                <div class="card-body">
+                    <h3 class="card-title">128</h3>
+                    <p class="card-text">Bao gồm Admin, Analyst, User</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">🔐 Lượt đăng nhập hôm nay</div>
+                <div class="card-body">
+                    <h3 class="card-title">42</h3>
+                    <p class="card-text">Tăng 15% so với hôm qua</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">🚨 Cảnh báo hệ thống</div>
+                <div class="card-body">
+                    <h3 class="card-title">7</h3>
+                    <p class="card-text">Có 2 cảnh báo mức độ cao</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-dark mt-4">
+        <div class="card-header bg-dark text-white">📋 Nhật ký hoạt động gần đây</div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Hành động</th>
+                        <th>Người thực hiện</th>
+                        <th>IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2025-07-18 11:02</td>
+                        <td>Thêm người dùng mới</td>
+                        <td>admin01</td>
+                        <td>192.168.1.10</td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-18 10:45</td>
+                        <td>Xóa cảnh báo</td>
+                        <td>admin01</td>
+                        <td>192.168.1.10</td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-18 09:30</td>
+                        <td>Phân quyền Analyst</td>
+                        <td>admin02</td>
+                        <td>192.168.1.15</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

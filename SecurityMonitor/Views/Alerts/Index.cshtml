@@ -1,0 +1,19 @@
+@model List<SecurityMonitor.DTOs.AlertDto>
+<h2>📊 Danh sách cảnh báo</h2>
+<table>
+    <thead>
+        <tr><th>Thời gian</th><th>Tiêu đề</th><th>Mức độ</th><th>IP</th><th>Trạng thái</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var alert in Model)
+        {
+            <tr>
+                <td>@alert.Timestamp.ToShortTimeString()</td>
+                <td>@alert.Title</td>
+                <td style="color:@(alert.SeverityLevel == "Critical" ? "red" : "orange")">@alert.SeverityLevel</td>
+                <td>@alert.SourceIp → @alert.TargetIp</td>
+                <td>@alert.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
