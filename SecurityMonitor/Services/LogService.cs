@@ -39,17 +39,20 @@ public class LogService : ILogService
 
     public async Task<IEnumerable<Log>> GetRecentLogsAsync(TimeSpan duration)
     {
-        var cutoffTime = DateTime.Now.Subtract(duration);
-        return await _context.Logs
+        var cutoffTime = DateTime.UtcNow.Subtract(duration);
+        var logs = await _context.Logs
             .Include(l => l.LogSource)
             .Where(l => l.Timestamp >= cutoffTime)
             .OrderByDescending(l => l.Timestamp)
             .ToListAsync();
+        
+        _logger.LogInformation($"Retrieved {logs.Count()} logs from {cutoffTime} to {DateTime.UtcNow}");
+        return logs;
     }
 
     public async Task<Log> CreateLogAsync(Log log)
     {
-        log.Timestamp = DateTime.Now;
+        log.Timestamp = DateTime.UtcNow;
         _context.Logs.Add(log);
         await _context.SaveChangesAsync();
 
