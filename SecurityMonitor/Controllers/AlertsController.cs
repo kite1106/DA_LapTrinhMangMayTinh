@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SecurityMonitor.DTOs;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services;
+using SecurityMonitor.Services.Interfaces;
 
 namespace SecurityMonitor.Controllers;
 

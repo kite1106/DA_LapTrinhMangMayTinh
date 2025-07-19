@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecurityMonitor.DTOs;
 using SecurityMonitor.Services;
+using SecurityMonitor.Services.Interfaces;
 
 namespace SecurityMonitor.Controllers;
 

@@ -4,23 +4,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SecurityMonitor.Data;
 using SecurityMonitor.Models;
-using SecurityMonitor.Services;
 using SecurityMonitor.Hubs;
+using SecurityMonitor.Services;
+using SecurityMonitor.Services.Interfaces;
+using SecurityMonitor.Services.Implementation;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 📦 Kết nối DbContext
+// Kết nối DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// 🔐 Cấu hình Identity + Role + Token provider
+// Cấu hình Identity + Role + Token provider
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false; // ✅ Không yêu cầu xác nhận email
+    options.SignIn.RequireConfirmedAccount = false;
     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultProvider;
 
     options.Password.RequireDigit = true;
@@ -32,28 +34,47 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// 📧 Email giả lập
+// Email giả lập
 builder.Services.AddTransient<IEmailSender, FakeEmailSender>();
 
-// 🛡️ Cookie login / access denied
+// Cookie login / access denied
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-// 📦 Dịch vụ hệ thống
-builder.Services.AddScoped<IAlertService, AlertService>();
-builder.Services.AddScoped<ILogService, LogService>();
-builder.Services.AddScoped<IAuditService, AuditService>();
+// Add HttpClient support
+builder.Services.AddHttpClient();
 
-// 🖼️ Razor Pages + MVC
+// Register IpCheckCache as singleton
+builder.Services.AddSingleton<IIpCheckCache, IpCheckCache>();
+
+// Đăng ký cấu hình
+builder.Services.Configure<AbuseIPDBConfig>(
+    builder.Configuration.GetSection("AbuseIPDB"));
+
+// Đăng ký services cốt lõi
+builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<ILogService, LogService>();
+
+// Đăng ký IP threat intelligence services
+builder.Services.AddScoped<IAbuseIPDBService, AbuseIPDBService>();
+
+// Background service cho việc kiểm tra IP định kỳ
+builder.Services.AddHostedService<IpCheckerBackgroundService>();
+
+// HTTP Context Accessor cho audit logging
+builder.Services.AddHttpContextAccessor();
+
+// Razor Pages + MVC
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddSignalR();
 
-// 🔐 JWT cho SignalR
+// JWT cho SignalR
 builder.Services.AddAuthentication()
     .AddJwtBearer("SignalRJwt", options =>
     {
@@ -66,7 +87,7 @@ builder.Services.AddAuthentication()
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "default_key"))
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key is missing.")))
         };
 
         options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
@@ -86,37 +107,55 @@ builder.Services.AddAuthentication()
 
 var app = builder.Build();
 
-// ✅ Tạo role & user mặc định
-await SeedRolesAndDefaultUsersAsync(app.Services.CreateScope().ServiceProvider);
+// Tạo role & user mặc định
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedRolesAndDefaultUsersAsync(services);
+}
 
-// 🧱 Middleware
+// Khởi tạo dữ liệu
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    SeedData.Initialize(services);
+}
+
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ✅ Route MVC
+// Route MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Alerts}/{action=Index}/{id?}");
 
-// ✅ Razor Pages cho Identity
+// Razor Pages cho Identity
 app.MapRazorPages();
 
-// ✅ SignalR hub
+// SignalR hub
 app.MapHub<AlertHub>("/alertHub");
 
 app.Run();
 
 
-// 🧩 Hàm seed role & user mặc định
-async Task SeedRolesAndDefaultUsersAsync(IServiceProvider services)
+// Hàm seed role & user mặc định
+static async Task SeedRolesAndDefaultUsersAsync(IServiceProvider services)
 {
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
@@ -131,29 +170,33 @@ async Task SeedRolesAndDefaultUsersAsync(IServiceProvider services)
         }
     }
 
-    // ✅ Tạo tài khoản mặc định
+    // Tạo tài khoản mặc định
     await CreateDefaultUserAsync(userManager, "admin@gmail.com", "Admin@123", "Admin");
     await CreateDefaultUserAsync(userManager, "analyst@gmail.com", "Analyst@123", "Analyst");
     await CreateDefaultUserAsync(userManager, "user@gmail.com", "User@123", "User");
 }
 
-// 🧩 Hàm tạo user mặc định dùng chung
-async Task CreateDefaultUserAsync(UserManager<ApplicationUser> userManager, string email, string password, string role)
+// Hàm tạo user mặc định dùng chung
+static async Task CreateDefaultUserAsync(UserManager<ApplicationUser> userManager, string email, string password, string role)
 {
     var user = await userManager.FindByEmailAsync(email);
     if (user == null)
     {
         user = new ApplicationUser
         {
-            UserName = email, // ✅ Đặt UserName là email
+            UserName = email,
             Email = email,
-            EmailConfirmed = false
+            EmailConfirmed = true // Có thể set true nếu muốn bỏ xác nhận email
         };
 
         var result = await userManager.CreateAsync(user, password);
         if (result.Succeeded)
         {
             await userManager.AddToRoleAsync(user, role);
+        }
+        else
+        {
+            throw new Exception($"Failed to create user {email}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
         }
     }
     else
@@ -169,7 +212,12 @@ async Task CreateDefaultUserAsync(UserManager<ApplicationUser> userManager, stri
             user.UserName = email;
         }
 
-        user.EmailConfirmed = false;
+        // Có thể set EmailConfirmed tùy ý:
+        if (!user.EmailConfirmed)
+        {
+            user.EmailConfirmed = true;
+        }
+
         await userManager.UpdateAsync(user);
     }
 }

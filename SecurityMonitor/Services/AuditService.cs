@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SecurityMonitor.Data;
 using SecurityMonitor.Models;
+using SecurityMonitor.Services.Interfaces;
 
 namespace SecurityMonitor.Services;
 
-public class AuditService : IAuditService
+public class AuditService : SecurityMonitor.Services.Interfaces.IAuditService
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<AuditService> _logger;
@@ -26,9 +27,12 @@ public class AuditService : IAuditService
         string? details = null,
         string? ipAddress = null)
     {
+        // Chỉ lưu UserId khi có user thực sự
+        var user = !string.IsNullOrEmpty(userId) ? await _context.Users.FindAsync(userId) : null;
+
         var auditLog = new AuditLog
         {
-            UserId = userId,
+            UserId = user?.Id,
             Action = action,
             EntityType = entityType,
             EntityId = entityId,

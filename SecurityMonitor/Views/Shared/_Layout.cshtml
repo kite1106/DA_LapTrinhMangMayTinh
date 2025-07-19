@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <title>@ViewData["Title"] - Security Monitor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -15,8 +19,10 @@
         else if (User.IsInRole("Analyst")) returnUrl = "/Dashboard/Analyst";
     }
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-        <a class="navbar-brand" asp-controller="Alerts" asp-action="Index">🔐 Security Monitor</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm">
+        <a class="navbar-brand" asp-controller="Alerts" asp-action="Index">
+            <i class="bi bi-shield-check"></i> Security Monitor
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -24,30 +30,79 @@
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Alerts" asp-action="Index">📊 Cảnh báo</a>
+                    <a class="nav-link" asp-controller="Alerts" asp-action="Index">
+                        <i class="bi bi-exclamation-triangle"></i> Cảnh báo
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Logs" asp-action="Index">📄 Logs</a>
+                    <a class="nav-link" asp-controller="Logs" asp-action="Index">
+                        <i class="bi bi-journal-text"></i> Logs
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Audit" asp-action="UserActivity" asp-route-userId="@User.Identity.Name">📋 Audit</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-page="/Account/Register" asp-area="Identity">📝 Đăng ký</a>
-                </li>
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Audit" asp-action="UserActivity" asp-route-userId="@User.Identity.Name">
+                            <i class="bi bi-journal-text"></i> Audit
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Account/Register" asp-area="Identity">
+                            <i class="bi bi-person-plus"></i> Đăng ký
+                        </a>
+                    </li>
+                }
             </ul>
 
             <div class="d-flex align-items-center">
                 @if (User.Identity?.IsAuthenticated ?? false)
                 {
-                    <span class="text-white me-3">👤 @User.Identity.Name</span>
-                    <form method="post" asp-page="/Account/Logout" asp-area="Identity" asp-route-returnUrl="@returnUrl">
-                        <button type="submit" class="btn btn-outline-danger">🚪 Đăng xuất</button>
-                    </form>
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> @User.Identity.Name
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <small class="d-block text-muted">Vai trò</small>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <span class="badge bg-danger">Admin</span>
+                                    }
+                                    else if (User.IsInRole("Analyst"))
+                                    {
+                                        <span class="badge bg-info">Analyst</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">User</span>
+                                    }
+                                </span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" asp-page="/Account/Manage/Index" asp-area="Identity">
+                                    <i class="bi bi-gear"></i> Cài đặt tài khoản
+                                </a>
+                            </li>
+                            <li>
+                                <form method="post" asp-page="/Account/Logout" asp-area="Identity" asp-route-returnUrl="@returnUrl">
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 }
                 else
                 {
-                    <a class="btn btn-outline-light" asp-page="/Account/Login" asp-area="Identity">🔐 Đăng nhập</a>
+                    <a class="btn btn-outline-light" asp-page="/Account/Login" asp-area="Identity">
+                        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                    </a>
                 }
             </div>
         </div>
@@ -57,8 +112,26 @@
         @RenderBody()
     </div>
 
-    @RenderSection("Scripts", required: false)
-
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <!-- Configure Toastr -->
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "timeOut": "5000"
+        };
+    </script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -1,18 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SecurityMonitor.Data;
 using SecurityMonitor.Models;
+using SecurityMonitor.Services.Interfaces;
 
 namespace SecurityMonitor.Services;
 
 public class LogService : ILogService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IAuditService _auditService;
+    private readonly SecurityMonitor.Services.Interfaces.IAuditService _auditService;
     private readonly ILogger<LogService> _logger;
 
     public LogService(
         ApplicationDbContext context,
-        IAuditService auditService,
+        SecurityMonitor.Services.Interfaces.IAuditService auditService,
         ILogger<LogService> logger)
     {
         _context = context;
@@ -33,6 +35,16 @@ public class LogService : ILogService
         return await _context.Logs
             .Include(l => l.LogSource)
             .FirstOrDefaultAsync(l => l.Id == id);
+    }
+
+    public async Task<IEnumerable<Log>> GetRecentLogsAsync(TimeSpan duration)
+    {
+        var cutoffTime = DateTime.Now.Subtract(duration);
+        return await _context.Logs
+            .Include(l => l.LogSource)
+            .Where(l => l.Timestamp >= cutoffTime)
+            .OrderByDescending(l => l.Timestamp)
+            .ToListAsync();
     }
 
     public async Task<Log> CreateLogAsync(Log log)

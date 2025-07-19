@@ -3,8 +3,11 @@ namespace SecurityMonitor.Models;
 /// <summary>
 /// Loại cảnh báo
 /// </summary>
+using System.ComponentModel.DataAnnotations.Schema;
+
 public class AlertType
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public string? Description { get; set; }

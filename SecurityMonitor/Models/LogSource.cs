@@ -1,10 +1,12 @@
 namespace SecurityMonitor.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 /// <summary>
-/// Nguồn log trong hệ thống
+/// Nguồn log trong hệ thống 
 /// </summary>
 public class LogSource
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public string? IpAddress { get; set; }

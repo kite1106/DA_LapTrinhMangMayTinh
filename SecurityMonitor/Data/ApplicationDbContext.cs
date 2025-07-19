@@ -15,7 +15,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     // Identity
-    public DbSet<ApplicationUser> Users { get; set; } = null!;
+    public override DbSet<ApplicationUser> Users { get; set; } = null!;
     
     // Entities hệ thống giám sát
     public DbSet<AlertType> AlertTypes { get; set; } = null!;

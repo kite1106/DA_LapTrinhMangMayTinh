@@ -1,19 +1,361 @@
 @model List<SecurityMonitor.DTOs.AlertDto>
-<h2>📊 Danh sách cảnh báo</h2>
-<table>
-    <thead>
-        <tr><th>Thời gian</th><th>Tiêu đề</th><th>Mức độ</th><th>IP</th><th>Trạng thái</th></tr>
-    </thead>
-    <tbody>
-        @foreach (var alert in Model)
-        {
-            <tr>
-                <td>@alert.Timestamp.ToShortTimeString()</td>
-                <td>@alert.Title</td>
-                <td style="color:@(alert.SeverityLevel == "Critical" ? "red" : "orange")">@alert.SeverityLevel</td>
-                <td>@alert.SourceIp → @alert.TargetIp</td>
-                <td>@alert.Status</td>
-            </tr>
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-shield-exclamation"></i> Quản lý cảnh báo</h2>
+        <div class="btn-group">
+            <button class="btn btn-outline-primary" id="refreshAlerts">
+                <i class="bi bi-arrow-clockwise"></i> Làm mới
+            </button>
+            <div class="btn-group">
+                <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-funnel"></i> Lọc
+                </button>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <h6 class="dropdown-header">Mức độ nghiêm trọng</h6>
+                    <div class="dropdown-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterCritical" checked>
+                            <label class="form-check-label text-danger" for="filterCritical">
+                                Critical
+                            </label>
+                        </div>
+                    </div>
+                    <div class="dropdown-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterHigh" checked>
+                            <label class="form-check-label text-warning" for="filterHigh">
+                                High
+                            </label>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">Trạng thái</h6>
+                    <div class="dropdown-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterNew" checked>
+                            <label class="form-check-label" for="filterNew">
+                                Mới
+                            </label>
+                        </div>
+                    </div>
+                    <div class="dropdown-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterInProgress" checked>
+                            <label class="form-check-label" for="filterInProgress">
+                                Đang xử lý
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle">Cảnh báo nghiêm trọng</h6>
+                            <h2 class="card-title mb-0">@Model.Count(a => a.SeverityLevel == "Critical")</h2>
+                        </div>
+                        <i class="bi bi-exclamation-diamond fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle">Cảnh báo cao</h6>
+                            <h2 class="card-title mb-0">@Model.Count(a => a.SeverityLevel == "High")</h2>
+                        </div>
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle">Đang xử lý</h6>
+                            <h2 class="card-title mb-0">@Model.Count(a => a.Status == "In Progress")</h2>
+                        </div>
+                        <i class="bi bi-hourglass-split fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle">Đã xử lý</h6>
+                            <h2 class="card-title mb-0">@Model.Count(a => a.Status == "Resolved")</h2>
+                        </div>
+                        <i class="bi bi-check-circle fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="alertsTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>Tiêu đề</th>
+                            <th>Mức độ</th>
+                            <th>IP nguồn</th>
+                            <th>IP đích</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var alert in Model)
+                        {
+                            <tr class="@(alert.SeverityLevel == "Critical" ? "table-danger" : alert.SeverityLevel == "High" ? "table-warning" : "")">
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span>@alert.Timestamp.ToString("HH:mm:ss")</span>
+                                        <small class="text-muted">@alert.Timestamp.ToString("dd/MM/yyyy")</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @if (alert.SeverityLevel == "Critical")
+                                        {
+                                            <i class="bi bi-exclamation-diamond-fill text-danger me-2"></i>
+                                        }
+                                        else if (alert.SeverityLevel == "High")
+                                        {
+                                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                                        }
+                                        <span>@alert.Title</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge @(alert.SeverityLevel == "Critical" ? "bg-danger" : "bg-warning text-dark")">
+                                        @alert.SeverityLevel
+                                    </span>
+                                </td>
+                                <td><code>@alert.SourceIp</code></td>
+                                <td><code>@alert.TargetIp</code></td>
+                                <td>
+                                    <span class="badge @(alert.Status == "New" ? "bg-info" : 
+                                                       alert.Status == "In Progress" ? "bg-primary" :
+                                                       alert.Status == "Resolved" ? "bg-success" : "bg-secondary")">
+                                        @alert.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="@alert.Id">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="updateStatus('@alert.Id', 'In Progress')">
+                                            <i class="bi bi-play"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success" onclick="updateStatus('@alert.Id', 'Resolved')">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Details Modal -->
+<div class="modal fade" id="alertDetails" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi tiết cảnh báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <h4 class="alert-heading" id="modalAlertTitle"></h4>
+                    <p id="modalAlertDescription"></p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Thông tin chung</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>ID:</th>
+                                <td id="modalAlertId"></td>
+                            </tr>
+                            <tr>
+                                <th>Thời gian:</th>
+                                <td id="modalAlertTimestamp"></td>
+                            </tr>
+                            <tr>
+                                <th>Mức độ:</th>
+                                <td id="modalAlertSeverity"></td>
+                            </tr>
+                            <tr>
+                                <th>Trạng thái:</th>
+                                <td id="modalAlertStatus"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Thông tin mạng</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>IP nguồn:</th>
+                                <td id="modalAlertSourceIp"></td>
+                            </tr>
+                            <tr>
+                                <th>IP đích:</th>
+                                <td id="modalAlertTargetIp"></td>
+                            </tr>
+                            <tr>
+                                <th>Port:</th>
+                                <td id="modalAlertPorts"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h6>Dữ liệu thô</h6>
+                    <pre class="bg-light p-3 rounded" id="modalAlertRawData"></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="modalUpdateStatus">Cập nhật trạng thái</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            const alertsTable = $('#alertsTable').DataTable({
+                order: [[0, 'desc']],
+                pageLength: 25,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json'
+                }
+            });
+
+            // Initialize SignalR
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/alertHub")
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            // Handle new alerts
+            connection.on("ReceiveAlert", (alert) => {
+                // Add new row to DataTable
+                const row = alertsTable.row.add([
+                    `<div class="d-flex flex-column">
+                        <span>${new Date(alert.timestamp).toLocaleTimeString()}</span>
+                        <small class="text-muted">${new Date(alert.timestamp).toLocaleDateString()}</small>
+                     </div>`,
+                    alert.title,
+                    `<span class="badge ${alert.severityLevel === 'Critical' ? 'bg-danger' : 'bg-warning text-dark'}">
+                        ${alert.severityLevel}
+                     </span>`,
+                    alert.sourceIp,
+                    alert.targetIp,
+                    `<span class="badge bg-info">New</span>`,
+                    `<div class="btn-group">
+                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="${alert.id}">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="updateStatus('${alert.id}', 'In Progress')">
+                            <i class="bi bi-play"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="updateStatus('${alert.id}', 'Resolved')">
+                            <i class="bi bi-check"></i>
+                        </button>
+                     </div>`
+                ]).draw(false).node();
+
+                $(row).addClass('alert-new');
+                setTimeout(() => $(row).removeClass('alert-new'), 5000);
+
+                // Show notification
+                if (alert.severityLevel === 'Critical') {
+                    toastr.error(`Cảnh báo mới: ${alert.title}`, 'Cảnh báo nghiêm trọng');
+                }
+            });
+
+            // Start SignalR connection
+            connection.start().catch(err => console.error(err));
+
+            // Handle alert details modal
+            $('#alertDetails').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const alertId = button.data('alert-id');
+                const modal = $(this);
+
+                // TODO: Get alert details from server
+                $.get(`/api/alerts/${alertId}`, function(alert) {
+                    modal.find('#modalAlertTitle').text(alert.title);
+                    modal.find('#modalAlertDescription').text(alert.description);
+                    modal.find('#modalAlertId').text(alert.id);
+                    modal.find('#modalAlertTimestamp').text(new Date(alert.timestamp).toLocaleString());
+                    modal.find('#modalAlertSeverity').html(`
+                        <span class="badge ${alert.severityLevel === 'Critical' ? 'bg-danger' : 'bg-warning text-dark'}">
+                            ${alert.severityLevel}
+                        </span>
+                    `);
+                    modal.find('#modalAlertStatus').html(`
+                        <span class="badge ${alert.status === 'New' ? 'bg-info' : 
+                                           alert.status === 'In Progress' ? 'bg-primary' :
+                                           alert.status === 'Resolved' ? 'bg-success' : 'bg-secondary'}">
+                            ${alert.status}
+                        </span>
+                    `);
+                    modal.find('#modalAlertSourceIp').text(alert.sourceIp);
+                    modal.find('#modalAlertTargetIp').text(alert.targetIp);
+                    modal.find('#modalAlertPorts').text(alert.ports?.join(', ') || 'N/A');
+                    modal.find('#modalAlertRawData').text(alert.rawData);
+                });
+            });
+
+            // Refresh alerts
+            $('#refreshAlerts').click(function() {
+                location.reload();
+            });
+        });
+
+        // Update alert status
+        function updateStatus(alertId, status) {
+            $.ajax({
+                url: `/api/alerts/${alertId}/status`,
+                method: 'PUT',
+                data: JSON.stringify({ status: status }),
+                contentType: 'application/json',
+                success: function() {
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Không thể cập nhật trạng thái cảnh báo', 'Lỗi');
+                }
+            });
         }
-    </tbody>
-</table>
+    </script>
+}
