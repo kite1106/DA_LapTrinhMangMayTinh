@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "Trang của người dùng";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">👤 Chào mừng bạn đến với trang cá nhân</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-primary mb-4">
+                <div class="card-header bg-primary text-white">Thông tin tài khoản</div>
+                <div class="card-body">
+                    <p><strong>Tên đăng nhập:</strong> @User.Identity?.Name</p>
+                    <p><strong>Vai trò:</strong> User</p>
+                    <p><strong>Trạng thái:</strong> Đã xác nhận email</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success mb-4">
+                <div class="card-header bg-success text-white">Lịch sử đăng nhập</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">🕒 2025-07-18 11:05 từ IP 192.168.1.20</li>
+                        <li class="list-group-item">🕒 2025-07-17 21:47 từ IP 192.168.1.20</li>
+                        <li class="list-group-item">🕒 2025-07-16 08:22 từ IP 192.168.1.20</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-warning">
+        <div class="card-header bg-warning text-dark">🔔 Cảnh báo liên quan đến bạn</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Loại cảnh báo</th>
+                        <th>Mức độ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2025-07-18 10:32</td>
+                        <td>Đăng nhập từ thiết bị lạ</td>
+                        <td><span class="badge bg-danger">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-17 22:47</td>
+                        <td>Thử truy cập trái phép</td>
+                        <td><span class="badge bg-warning text-dark">Medium</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-07-16 08:22</td>
+                        <td>Đăng nhập thất bại nhiều lần</td>
+                        <td><span class="badge bg-success">Low</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
