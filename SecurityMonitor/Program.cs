@@ -8,9 +8,19 @@ using SecurityMonitor.Hubs;
 using SecurityMonitor.Services;
 using SecurityMonitor.Services.Interfaces;
 using SecurityMonitor.Services.Implementation;
+using SecurityMonitor.Middleware;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Cấu hình để lắng nghe trên tất cả các địa chỉ IP
+builder.WebHost.UseUrls("http://*:5100");
+
+// Cấu hình Kestrel
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5100);
+});
 
 // Kết nối DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -22,14 +32,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Cấu hình Identity + Role + Token provider
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
+    // Tắt xác thực email khi đăng ký
     options.SignIn.RequireConfirmedAccount = false;
-    options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultProvider;
-
+    options.SignIn.RequireConfirmedEmail = false;
+    
+    // Cấu hình mật khẩu
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
+
+    // Cấu hình khóa tài khoản
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
@@ -47,7 +64,15 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Add HttpClient support
 builder.Services.AddHttpClient();
 
-// Register IpCheckCache as singleton
+// Register services
+builder.Services.AddScoped<IIPCheckerService, IPCheckerService>();
+builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddScoped<ILogService, LogService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
+
+// Register background services
+builder.Services.AddSingleton<LoginMonitorService>();
+builder.Services.AddHostedService<LoginMonitorService>();
 builder.Services.AddSingleton<IIpCheckCache, IpCheckCache>();
 
 // Đăng ký cấu hình
@@ -60,7 +85,8 @@ builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<ILogService, LogService>();
 
 // Đăng ký IP threat intelligence services
-builder.Services.AddScoped<IAbuseIPDBService, AbuseIPDBService>();
+builder.Services.AddScoped<IAbuseIPDBService, SecurityMonitor.Services.Implementation.AbuseIPDBService>();
+builder.Services.AddHostedService<FakeLogGeneratorService>();
 
 // Background service cho việc kiểm tra IP định kỳ
 builder.Services.AddHostedService<IpCheckerBackgroundService>();
@@ -139,6 +165,9 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Add login monitoring middleware
+app.UseMiddleware<LoginMonitorMiddleware>();
 
 // Route MVC
 app.MapControllerRoute(

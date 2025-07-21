@@ -6,6 +6,8 @@ using SecurityMonitor.Services.Interfaces;
 
 namespace SecurityMonitor.Services;
 
+using Log = SecurityMonitor.Models.Log;
+
 public class LogService : ILogService
 {
     private readonly ApplicationDbContext _context;

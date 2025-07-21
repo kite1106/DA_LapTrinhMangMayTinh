@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SecurityMonitor.Models;
+using SecurityMonitor.Services;
 
 namespace SecurityMonitor.Areas.Identity.Pages.Account
 {
@@ -20,15 +21,18 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly LoginMonitorService _loginMonitor;
 
         public LoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            ILogger<LoginModel> logger)
+            ILogger<LoginModel> logger,
+            LoginMonitorService loginMonitor)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _loginMonitor = loginMonitor;
         }
 
         [BindProperty]
@@ -79,7 +83,11 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+
+                // Ghi nhận kết quả đăng nhập
+                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                await _loginMonitor.RecordLoginAttemptAsync(ipAddress, result.Succeeded, Input.Email);
 
                 if (result.Succeeded)
                 {
