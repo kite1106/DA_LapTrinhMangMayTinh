@@ -9,6 +9,9 @@ namespace SecurityMonitor.Services.Interfaces
         Task<Alert> CreateAlertAsync(Alert alert);
         Task<Alert?> UpdateAlertAsync(int id, Alert alert);
         Task<bool> DeleteAlertAsync(int id);
+        Task<bool> GetRecentAlertByIpAsync(string ip, TimeSpan timeWindow);
+Task<bool> AlertExistsAsync(string ip, AlertTypeId alertTypeId);
+
         Task<List<Alert>> GetRecentAlertsBySourceIp(string sourceIp, TimeSpan timeWindow);
         Task<int> GetAlertCountInTimeRange(string sourceIp, TimeSpan timeWindow);
         Task<Dictionary<string, int>> GetAlertTypeFrequency(string sourceIp, TimeSpan timeWindow);

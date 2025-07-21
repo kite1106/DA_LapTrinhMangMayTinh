@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using SecurityMonitor.Hubs;
+using Microsoft.AspNetCore.Http;
 
 namespace SecurityMonitor.Services
 {
@@ -15,16 +18,23 @@ namespace SecurityMonitor.Services
         private readonly ApplicationDbContext _context;
         private readonly SecurityMonitor.Services.Interfaces.IAuditService _auditService;
         private readonly ILogger<AlertService> _logger;
+        private readonly IHubContext<AlertHub> _hubContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AlertService(
             ApplicationDbContext context,
             SecurityMonitor.Services.Interfaces.IAuditService auditService,
-            ILogger<AlertService> logger)
+            ILogger<AlertService> logger,
+            IHttpContextAccessor httpContextAccessor,
+            IHubContext<AlertHub> hubContext)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
+
 
         public async Task<IEnumerable<Alert>> GetAllAlertsAsync()
         {
@@ -44,6 +54,18 @@ namespace SecurityMonitor.Services
                 throw;
             }
         }
+public async Task<bool> GetRecentAlertByIpAsync(string ip, TimeSpan timeWindow)
+{
+    var cutoff = DateTime.UtcNow - timeWindow;
+    return await _context.Alerts.AnyAsync(a => a.SourceIp == ip && a.Timestamp >= cutoff);
+}
+
+public async Task<bool> AlertExistsAsync(string ip, AlertTypeId alertTypeId)
+{
+    return await _context.Alerts.AnyAsync(a =>
+        a.SourceIp == ip &&
+        a.AlertTypeId == (int)alertTypeId);
+}
 
         public async Task<Alert?> GetAlertByIdAsync(int id)
         {
@@ -71,8 +93,26 @@ namespace SecurityMonitor.Services
                     throw new ArgumentNullException(nameof(alert));
 
                 alert.Timestamp = DateTime.UtcNow;
+                
+                // Convert ::1 to 127.0.0.1 if needed
+                if (alert.SourceIp == "::1")
+                {
+                    alert.SourceIp = "127.0.0.1";
+                }
+
                 _context.Alerts.Add(alert);
                 await _context.SaveChangesAsync();
+
+                // Send real-time notification to all connected clients
+                await _hubContext.Clients.All.SendAsync("ReceiveAlert", new {
+                    id = alert.Id,
+                    title = alert.Title,
+                    description = alert.Description,
+                    sourceIp = alert.SourceIp,
+                    timestamp = alert.Timestamp,
+                    severityLevelId = alert.SeverityLevelId,
+                    alertTypeId = alert.AlertTypeId
+                });
 
                 await _auditService.LogActivityAsync(
                     alert.AssignedToId ?? "System",

@@ -66,6 +66,19 @@ public record AuditLogDto(
     string? Details,
     string? IpAddress
 );
+ public class ConfidenceScoreResult
+    {
+        public string IpAddress { get; set; }
+        public int ConfidenceScore { get; set; }
+    }
+
+    public class ReportStatistics
+    {
+        public int TotalReports { get; set; }
+        public int NumDistinctIPs { get; set; }
+        public int ReportedToday { get; set; }
+        public bool IsWhitelisted { get; set; }
+    }
 public class LoginDto
 {
     public string Username { get; set; } = null!;

@@ -8282,24 +8282,31 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {}
+    "C:\\Users\\KIET\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Downloads\\DA\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\SecurityMonitor.csproj",
+      "projectUniqueName": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\SecurityMonitor.csproj",
       "projectName": "SecurityMonitor",
-      "projectPath": "D:\\Downloads\\DA\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\SecurityMonitor.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "D:\\Downloads\\DA\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\",
+      "projectPath": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\SecurityMonitor.csproj",
+      "packagesPath": "C:\\Users\\KIET\\.nuget\\packages\\",
+      "outputPath": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\KIET\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8318,7 +8325,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net9.0": {
@@ -8392,7 +8399,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
