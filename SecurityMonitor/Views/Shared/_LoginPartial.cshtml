@@ -4,25 +4,46 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-        </form>
-    </li>
+    <div class="text-center mb-3">
+        <div class="mb-2">
+            <i class="fas fa-user-circle fa-2x"></i>
+            <div class="mt-1">@UserManager.GetUserName(User)</div>
+            @if (User.IsInRole("Admin"))
+            {
+                <span class="badge bg-danger">Admin</span>
+            }
+            else if (User.IsInRole("Analyst"))
+            {
+                <span class="badge bg-info">Analyst</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">User</span>
+            }
+        </div>
+        <div class="d-grid gap-2">
+            <a class="btn btn-outline-secondary btn-sm" asp-area="Identity" asp-page="/Account/Manage/Index">
+                <i class="fas fa-cog"></i> Cài đặt
+            </a>
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="btn btn-danger btn-sm w-100">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </form>
+        </div>
+    </div>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+    <div class="d-grid gap-2">
+        <a class="btn btn-outline-primary btn-sm" asp-area="Identity" asp-page="/Account/Login">
+            <i class="fas fa-sign-in-alt"></i> Đăng nhập
+        </a>
+        <a class="btn btn-outline-success btn-sm" asp-area="Identity" asp-page="/Account/Register">
+            <i class="fas fa-user-plus"></i> Đăng ký
+        </a>
+    </div>
 }
 </ul>

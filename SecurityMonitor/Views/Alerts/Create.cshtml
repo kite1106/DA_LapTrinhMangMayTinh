@@ -1,0 +1,76 @@
+@model SecurityMonitor.DTOs.Alerts.CreateAlertDto
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-plus-circle"></i>
+                        Tạo cảnh báo mới
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Tiêu đề</label>
+                            <input asp-for="Title" class="form-control" required />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Mô tả</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="AlertTypeId" class="form-label">Loại cảnh báo</label>
+                                <select asp-for="AlertTypeId" class="form-select" required 
+                                        asp-items="@(new SelectList(ViewBag.AlertTypes, "Id", "Name"))">
+                                    <option value="">-- Chọn loại --</option>
+                                </select>
+                                <span asp-validation-for="AlertTypeId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SeverityLevelId" class="form-label">Mức độ nghiêm trọng</label>
+                                <select asp-for="SeverityLevelId" class="form-select" required
+                                        asp-items="@(new SelectList(ViewBag.SeverityLevels, "Id", "Name"))">
+                                    <option value="">-- Chọn mức độ --</option>
+                                </select>
+                                <span asp-validation-for="SeverityLevelId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="SourceIp" class="form-label">IP nguồn</label>
+                                <input asp-for="SourceIp" class="form-control" />
+                                <span asp-validation-for="SourceIp" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="TargetIp" class="form-label">IP đích</label>
+                                <input asp-for="TargetIp" class="form-control" />
+                                <span asp-validation-for="TargetIp" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Tạo cảnh báo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

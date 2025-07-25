@@ -1,31 +1,38 @@
-@model List<SecurityMonitor.DTOs.AlertDto>
+@model IEnumerable<SecurityMonitor.DTOs.Alerts.AlertListDto>
+@{
+    ViewData["Title"] = "Quản lý cảnh báo";
+    Layout = User.IsInRole("Admin") ? "_AdminLayout" : "_UserLayout";
+}
 
 <div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-shield-exclamation"></i> Quản lý cảnh báo</h2>
-        <div class="btn-group">
-            <button class="btn btn-outline-primary" id="refreshAlerts">
-                <i class="bi bi-arrow-clockwise"></i> Làm mới
-            </button>
+    <div class="card">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0"><i class="fas fa-shield-alt"></i> @ViewData["Title"]</h4>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-outline-light" id="refreshAlerts">
+                    <i class="fas fa-sync"></i> Làm mới
+                </button>
             <div class="btn-group">
                 <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="bi bi-funnel"></i> Lọc
+                    <i class="fas fa-filter"></i> Lọc
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
                     <h6 class="dropdown-header">Mức độ nghiêm trọng</h6>
                     <div class="dropdown-item">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterCritical" checked>
+                            <input class="form-check-input severity-filter" type="checkbox" id="filterCritical" checked data-severity="Critical">
                             <label class="form-check-label text-danger" for="filterCritical">
-                                Critical
+                                <i class="fas fa-exclamation-circle"></i> Critical
                             </label>
                         </div>
                     </div>
                     <div class="dropdown-item">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterHigh" checked>
+                            <input class="form-check-input severity-filter" type="checkbox" id="filterHigh" checked data-severity="High">
                             <label class="form-check-label text-warning" for="filterHigh">
-                                High
+                                <i class="fas fa-exclamation-triangle"></i> High
                             </label>
                         </div>
                     </div>
@@ -117,7 +124,6 @@
                             <th>Tiêu đề</th>
                             <th>Mức độ</th>
                             <th>IP nguồn</th>
-                            <th>IP đích</th>
                             <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
@@ -151,7 +157,6 @@
                                     </span>
                                 </td>
                                 <td><code>@alert.SourceIp</code></td>
-                                <td><code>@alert.TargetIp</code></td>
                                 <td>
                                     <span class="badge @(alert.Status == "New" ? "bg-info" : 
                                                        alert.Status == "In Progress" ? "bg-primary" :

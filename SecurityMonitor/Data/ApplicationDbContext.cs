@@ -25,6 +25,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Log> Logs { get; set; } = null!;
     public DbSet<Alert> Alerts { get; set; } = null!;
     public DbSet<AuditLog> AuditLogs { get; set; } = null!;
+    public DbSet<BlockedIP> BlockedIPs { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

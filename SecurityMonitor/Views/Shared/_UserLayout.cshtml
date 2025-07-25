@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Security Monitor</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            color: #666;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+        .nav-link.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .nav-link i {
+            width: 25px;
+        }
+        .main-content {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="bg-white sidebar">
+            <div class="p-4">
+                <div class="text-center mb-4">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-2"></i>
+                    <h4 class="font-weight-bold">Security Monitor</h4>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
+                           asp-controller="User" asp-action="Index">
+                            <i class="fas fa-home"></i> 
+                            <span>Trang chủ</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Alerts" ? "active" : "")" 
+                           asp-controller="Alerts" asp-action="Index">
+                            <i class="fas fa-bell"></i> 
+                            <span>Cảnh báo</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "MyLogs" ? "active" : "")" 
+                           asp-controller="User" asp-action="MyLogs">
+                            <i class="fas fa-history"></i> 
+                            <span>Nhật ký hoạt động</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">
+                            <i class="fas fa-user-cog"></i> 
+                            <span>Cài đặt tài khoản</span>
+                        </a>
+                    </li>
+                </ul>
+                <hr class="my-4" />
+                <div>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-grow-1 main-content">
+            <!-- Top navigation -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom py-3">
+                <div class="container-fluid px-4">
+                    <h4 class="mb-0">@ViewData["Title"]</h4>
+                    <div class="ms-auto d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-bell text-muted"></i>
+                        </div>
+                        <div>
+                            <img src="https://ui-avatars.com/api/?name=@User.Identity?.Name" 
+                                 class="rounded-circle" 
+                                 style="width: 35px; height: 35px;" 
+                                 alt="User avatar" />
+                        </div>
+                    </div>
+                    <h4 class="mb-0">@ViewData["Title"]</h4>
+                </div>
+            </nav>
+
+            <div class="container-fluid p-4">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

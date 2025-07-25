@@ -46,7 +46,7 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; } = "~/";
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
@@ -63,19 +63,20 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
             [Display(Name = "Mật khẩu")]
             public string Password { get; set; }
 
+            [Required(ErrorMessage = "Xác nhận mật khẩu là bắt buộc")]
             [DataType(DataType.Password)]
             [Display(Name = "Xác nhận mật khẩu")]
             [Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp.")]
-            public string ConfirmPassword { get; set; }
+            public string ConfirmPassword { get; set; } = string.Empty;
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string? returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -102,7 +103,7 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
                         "/Account/ConfirmEmail",
                         pageHandler: null,
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                        protocol: Request.Scheme) ?? throw new InvalidOperationException("Failed to generate callback URL");
 
                     await _emailSender.SendEmailAsync(Input.Email, "Xác nhận tài khoản",
                         $"Vui lòng xác nhận tài khoản bằng cách <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>nhấn vào đây</a>.");

@@ -50,17 +50,46 @@ namespace SecurityMonitor.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi lấy tất cả cảnh báo");
+                _logger.LogError(ex, "Error getting all alerts");
                 throw;
             }
         }
-public async Task<bool> GetRecentAlertByIpAsync(string ip, TimeSpan timeWindow)
-{
-    var cutoff = DateTime.UtcNow - timeWindow;
-    return await _context.Alerts.AnyAsync(a => a.SourceIp == ip && a.Timestamp >= cutoff);
-}
 
-public async Task<bool> AlertExistsAsync(string ip, AlertTypeId alertTypeId)
+        public async Task<IEnumerable<Alert>> GetUserAlertsAsync(string userId)
+        {
+            try
+            {
+                return await _context.Alerts
+                    .Include(a => a.AlertType)
+                    .Include(a => a.SeverityLevel)
+                    .Include(a => a.Status)
+                    .Include(a => a.AssignedTo)
+                    .Where(a => a.AssignedToId == userId)
+                    .OrderByDescending(a => a.Timestamp)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting alerts for user {UserId}", userId);
+                throw;
+            }
+        }
+
+        public async Task<bool> GetRecentAlertByIpAsync(string ip, TimeSpan timeWindow)
+        {
+            try 
+            {
+                var cutoff = DateTime.UtcNow - timeWindow;
+                return await _context.Alerts.AnyAsync(a => a.SourceIp == ip && a.Timestamp >= cutoff);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi kiểm tra cảnh báo gần đây cho IP {IP}", ip);
+                throw;
+            }
+        }
+
+        public async Task<bool> AlertExistsAsync(string ip, AlertTypeId alertTypeId)
 {
     return await _context.Alerts.AnyAsync(a =>
         a.SourceIp == ip &&
@@ -609,6 +638,36 @@ public async Task<bool> AlertExistsAsync(string ip, AlertTypeId alertTypeId)
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Lỗi khi lấy trạng thái cảnh báo theo tên {StatusName}", statusName);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<AlertType>> GetAllAlertTypesAsync()
+        {
+            try
+            {
+                return await _context.AlertTypes
+                    .OrderBy(t => t.Name)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách loại cảnh báo");
+                throw;
+            }
+        }
+        
+        public async Task<IEnumerable<SeverityLevel>> GetAllSeverityLevelsAsync()
+        {
+            try
+            {
+                return await _context.SeverityLevels
+                    .OrderBy(s => s.Id)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách mức độ nghiêm trọng");
                 throw;
             }
         }

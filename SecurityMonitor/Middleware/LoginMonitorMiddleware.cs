@@ -4,24 +4,83 @@ using System.Security.Claims;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services;
 using SecurityMonitor.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace SecurityMonitor.Middleware;
 
-public class LoginMonitorMiddleware
+public static class HttpContextExtensions
 {
+    public static string GetRealIPAddress(this HttpContext context)
+    {
+            // Log tất cả các headers để debug
+            foreach (var header in context.Request.Headers)
+            {
+                Console.WriteLine($"Header: {header.Key} = {header.Value}");
+            }
+
+            // Try to get IP from headers in order of preference
+            string? ip = null;
+            
+            // 1. Try X-Forwarded-For
+            if (context.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
+            {
+                ip = forwardedFor.ToString().Split(',')[0].Trim();
+                Console.WriteLine($"Found X-Forwarded-For IP: {ip}");
+            }
+            
+            // 2. Try X-Real-IP
+            if (string.IsNullOrEmpty(ip) && context.Request.Headers.TryGetValue("X-Real-IP", out var realIp))
+            {
+                ip = realIp.ToString().Trim();
+                Console.WriteLine($"Found X-Real-IP: {ip}");
+            }
+
+            // 3. Try RemoteIpAddress as last resort
+            if (string.IsNullOrEmpty(ip))
+            {
+                ip = context.Connection.RemoteIpAddress?.ToString();
+                Console.WriteLine($"Using RemoteIpAddress: {ip}");
+            }
+
+            // Validate and normalize IP
+            if (!string.IsNullOrEmpty(ip) && IPAddress.TryParse(ip, out var parsedIP))
+            {
+                // Convert IPv4-mapped IPv6 addresses to IPv4
+                if (parsedIP.IsIPv4MappedToIPv6)
+                {
+                    var ipv4 = parsedIP.MapToIPv4().ToString();
+                    Console.WriteLine($"Converted IPv6-mapped IPv4: {ipv4}");
+                    return ipv4;
+                }
+
+                Console.WriteLine($"Using valid IP: {ip}");
+                return ip;
+            }
+
+            Console.WriteLine("No valid IP found, returning unknown");
+            return "unknown";
+
+
+        }
+    }
+
+    public class LoginMonitorMiddleware
+    {
+
     private readonly RequestDelegate _next;
     private readonly ILogger<LoginMonitorMiddleware> _logger;
 
-    private string NormalizeIP(string ipAddress)
+    private string GetRealPublicIP(string ipAddress)
     {
-        if (ipAddress == "::1" || ipAddress == "localhost")
-            return "127.0.0.1";
+        // Nếu là localhost hoặc IP private, trả về rỗng
+        if (IsPrivateIP(ipAddress))
+            return string.Empty;
         return ipAddress;
     }
 
     private bool IsPrivateIP(string ipAddress)
     {
-        if (ipAddress == "unknown" || ipAddress == "localhost" || ipAddress == "::1" || ipAddress == "127.0.0.1")
+        if (string.IsNullOrEmpty(ipAddress) || ipAddress == "unknown" || ipAddress == "localhost" || ipAddress == "::1" || ipAddress == "127.0.0.1")
             return true;
 
         if (IPAddress.TryParse(ipAddress, out var parsedIP))
@@ -50,55 +109,15 @@ public class LoginMonitorMiddleware
 
     private string GetClientIpAddress(HttpContext context)
     {
-        // Thử lấy IP từ các header của ngrok và các header phổ biến khác
-        string? ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault() ??
-                   context.Request.Headers["X-Real-IP"].FirstOrDefault() ??
-                   context.Request.Headers["CF-Connecting-IP"].FirstOrDefault() ??
-                   context.Request.Headers["X-Original-For"].FirstOrDefault() ??
-                   context.Request.Headers["ngrok-trace-id"].FirstOrDefault();
-
-        // Nếu không có trong header, lấy từ connection
-        if (string.IsNullOrEmpty(ip))
-        {
-            var remoteIp = context.Connection.RemoteIpAddress;
-            if (remoteIp != null)
-            {
-                // Nếu là IPv6, thử chuyển về IPv4 nếu có thể
-                if (remoteIp.IsIPv4MappedToIPv6)
-                {
-                    remoteIp = remoteIp.MapToIPv4();
-                }
-                ip = remoteIp.ToString();
-            }
-        }
-
-        // Nếu là localhost thì lấy IP local thực
-        if (ip == "::1" || ip == "localhost" || string.IsNullOrEmpty(ip))
-        {
-            try
-            {
-                // Lấy tất cả các IP của máy local
-                var hostName = System.Net.Dns.GetHostName();
-                var addresses = System.Net.Dns.GetHostAddresses(hostName);
-                
-                // Tìm IPv4 không phải loopback
-                var localIp = addresses.FirstOrDefault(a => 
-                    a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
-                    !IPAddress.IsLoopback(a));
-
-                if (localIp != null)
-                {
-                    return localIp.ToString();
-                }
-            }
-            catch
-            {
-                // Nếu không lấy được IP local thì trả về 127.0.0.1
-                return "127.0.0.1";
-            }
-        }
-
-        return ip ?? "unknown";
+        _logger.LogInformation("Getting client IP address...");
+        
+        var ip = context.GetRealIPAddress();
+        _logger.LogInformation("Raw IP from GetRealIPAddress: {IP}", ip);
+        
+        var publicIP = GetRealPublicIP(ip);
+        _logger.LogInformation("Public IP after filtering: {IP}", publicIP);
+        
+        return publicIP;
     }
 
     public async Task InvokeAsync(

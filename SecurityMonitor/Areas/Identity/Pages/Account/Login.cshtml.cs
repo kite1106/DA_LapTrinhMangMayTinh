@@ -36,30 +36,30 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public required InputModel Input { get; set; }
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public required IList<AuthenticationScheme> ExternalLogins { get; set; } = new List<AuthenticationScheme>();
 
-        public string ReturnUrl { get; set; }
+        public required string ReturnUrl { get; set; } = "/";
 
         [TempData]
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public class InputModel
         {
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public required string Email { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
-            public string Password { get; set; }
+            public required string Password { get; set; }
 
             [Display(Name = "Ghi nhớ đăng nhập")]
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string? returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -75,9 +75,9 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl = "/Account/RedirectAfterLogin";
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -92,6 +92,12 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(Input.Email);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
+
                     var roles = await _userManager.GetRolesAsync(user);
 
                     // ✅ Gán role "User" nếu chưa có
@@ -109,11 +115,11 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
 
                     // ✅ Điều hướng theo role
                     if (roles.Contains("Admin"))
-                        return LocalRedirect("/Dashboard/Admin");
+                        return LocalRedirect("/Admin/Index");
                     if (roles.Contains("Analyst"))
-                        return LocalRedirect("/Dashboard/Analyst");
+                        return LocalRedirect("/Analyst/Index");
 
-                    return LocalRedirect("/Dashboard/UserDashboard");
+                    return LocalRedirect("/User/Index");
                 }
 
                 if (result.RequiresTwoFactor)

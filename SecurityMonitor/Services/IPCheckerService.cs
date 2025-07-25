@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Data;
 using SecurityMonitor.Hubs;
 using SecurityMonitor.Models;
 using System.Text.Json;
@@ -8,6 +10,9 @@ namespace SecurityMonitor.Services;
 public interface IIPCheckerService
 {
     Task<IEnumerable<Alert>> CheckIPAsync(string ipAddress);
+    Task<IEnumerable<string>> GetBlockedIPsAsync();
+    Task BlockIPAsync(string ipAddress);
+    Task UnblockIPAsync(string ipAddress);
 }
 
 public class IPCheckerService : IIPCheckerService
@@ -16,17 +21,62 @@ public class IPCheckerService : IIPCheckerService
     private readonly IHubContext<AlertHub> _hubContext;
     private readonly IHttpClientFactory _clientFactory;
     private readonly IConfiguration _configuration;
+    private readonly ApplicationDbContext _context;
+
+    public async Task<IEnumerable<string>> GetBlockedIPsAsync()
+    {
+        return await _context.BlockedIPs
+            .OrderByDescending(b => b.BlockedAt)
+            .Select(b => b.IpAddress)
+            .ToListAsync();
+    }
+
+    public async Task BlockIPAsync(string ipAddress)
+    {
+        var exists = await _context.BlockedIPs.AnyAsync(b => b.IpAddress == ipAddress);
+        if (!exists)
+        {
+            var blockedIP = new BlockedIP
+            {
+                IpAddress = ipAddress,
+                BlockedAt = DateTime.UtcNow,
+                Reason = "Manual block by admin",
+                BlockedBy = "System"
+            };
+            
+            _context.BlockedIPs.Add(blockedIP);
+            await _context.SaveChangesAsync();
+            
+            _logger.LogInformation($"IP address {ipAddress} has been blocked");
+            await _hubContext.Clients.All.SendAsync("ReceiveAlert", $"IP address {ipAddress} has been blocked");
+        }
+    }
+
+    public async Task UnblockIPAsync(string ipAddress)
+    {
+        var blockedIP = await _context.BlockedIPs.FirstOrDefaultAsync(b => b.IpAddress == ipAddress);
+        if (blockedIP != null)
+        {
+            _context.BlockedIPs.Remove(blockedIP);
+            await _context.SaveChangesAsync();
+            
+            _logger.LogInformation($"IP address {ipAddress} has been unblocked");
+            await _hubContext.Clients.All.SendAsync("ReceiveAlert", $"IP address {ipAddress} has been unblocked");
+        }
+    }
 
     public IPCheckerService(
         ILogger<IPCheckerService> logger,
         IHubContext<AlertHub> hubContext,
         IHttpClientFactory clientFactory,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ApplicationDbContext context)
     {
         _logger = logger;
         _hubContext = hubContext;
         _clientFactory = clientFactory;
         _configuration = configuration;
+        _context = context;
     }
 
     public async Task<IEnumerable<Alert>> CheckIPAsync(string ipAddress)
