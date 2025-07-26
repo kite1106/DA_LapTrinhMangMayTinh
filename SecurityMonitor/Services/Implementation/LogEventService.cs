@@ -55,6 +55,9 @@ public class LogEventService : ILogEventService
         var logService = scope.ServiceProvider.GetRequiredService<ILogService>();
         var alertService = scope.ServiceProvider.GetRequiredService<IAlertService>();
 
+        // Lấy hoặc tạo LogSource cho Web Server
+        var logSource = await EnsureLogSourceExistsAsync(logService, "Web Server", "Web Application", ipAddress);
+        
         // Ghi nhận event vào log
         await logService.CreateLogAsync(new Log
         {
@@ -62,7 +65,8 @@ public class LogEventService : ILogEventService
             EventType = "API",
             Message = $"{method} {endpoint}",
             RawData = $"Status: {statusCode}, User: {userId}",
-            IpAddress = ipAddress
+            IpAddress = ipAddress,
+            LogSourceId = logSource.Id
         });
 
         // Kiểm tra endpoint nhạy cảm
@@ -107,13 +111,16 @@ public class LogEventService : ILogEventService
         var alertService = scope.ServiceProvider.GetRequiredService<IAlertService>();
 
         // Ghi log mọi sự kiện xác thực
+        var logSource = await EnsureLogSourceExistsAsync(logService, "Authentication Server", "Authentication Service", ipAddress);
+        
         await logService.CreateLogAsync(new Log
         {
             Timestamp = DateTime.UtcNow,
             EventType = "Authentication",
             Message = $"{action} - {(isSuccessful ? "Success" : "Failed")}",
             RawData = $"User: {userId}",
-            IpAddress = ipAddress
+            IpAddress = ipAddress,
+            LogSourceId = logSource.Id
         });
 
         var tracker = _userTrackers.GetOrAdd(userId, _ => new UserActivityTracker(userId));
@@ -154,13 +161,16 @@ public class LogEventService : ILogEventService
         var alertService = scope.ServiceProvider.GetRequiredService<IAlertService>();
 
         // Ghi log sự kiện hệ thống
+        var logSource = await EnsureLogSourceExistsAsync(logService, source, "System Service", ipAddress ?? "system");
+        
         await logService.CreateLogAsync(new Log
         {
             Timestamp = DateTime.UtcNow,
             EventType = eventType,
             Message = message,
             RawData = $"Source: {source}",
-            IpAddress = ipAddress
+            IpAddress = ipAddress,
+            LogSourceId = logSource.Id
         });
 
         // Phát hiện từ khóa đáng ngờ trong log
@@ -227,6 +237,28 @@ public class LogEventService : ILogEventService
     {
         return SUSPICIOUS_KEYWORDS.Any(keyword => 
             text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task<LogSource> EnsureLogSourceExistsAsync(ILogService logService, string name, string deviceType, string ipAddress)
+    {
+        var logSource = await logService.GetLogSourceByNameAsync(name);
+        if (logSource == null)
+        {
+            logSource = new LogSource
+            {
+                Name = name,
+                DeviceType = deviceType,
+                IpAddress = ipAddress,
+                Location = "System",
+                IsActive = true,
+                LastSeenAt = DateTime.UtcNow
+            };
+            await logService.CreateLogSourceAsync(logSource);
+        }
+        
+        logSource.LastSeenAt = DateTime.UtcNow;
+        await logService.UpdateLogSourceAsync(logSource);
+        return logSource;
     }
 
     private async Task CreateAlertAsync(

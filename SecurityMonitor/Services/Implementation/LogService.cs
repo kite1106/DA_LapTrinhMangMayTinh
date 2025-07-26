@@ -71,5 +71,26 @@ namespace SecurityMonitor.Services.Implementation
                 _logger.LogInformation("Processed log with ID: {Id}", logId);
             }
         }
+
+        public async Task<LogSource?> GetLogSourceByNameAsync(string name)
+        {
+            return await _context.LogSources
+                .FirstOrDefaultAsync(ls => ls.Name == name);
+        }
+
+        public async Task<LogSource> CreateLogSourceAsync(LogSource source)
+        {
+            _context.LogSources.Add(source);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Created new log source: {Name}", source.Name);
+            return source;
+        }
+
+        public async Task UpdateLogSourceAsync(LogSource source)
+        {
+            _context.LogSources.Update(source);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Updated log source: {Name}", source.Name);
+        }
     }
 }

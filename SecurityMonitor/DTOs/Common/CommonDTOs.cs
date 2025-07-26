@@ -12,13 +12,3 @@ public record AlertSummaryDto(
     string SeverityLevel,
     string Status
 );
-
-/// <summary>
-/// DTO cho lịch sử đăng nhập của người dùng
-/// </summary>
-public record UserLoginHistoryDto(
-    DateTime Timestamp,
-    string IpAddress,
-    string Details,
-    bool Success
-);

@@ -30,10 +30,16 @@
       ]
     },
     {
-      "library": "datatables@1.13.6",
+      "library": "datatables.net@2.1.1",
       "destination": "wwwroot/lib/datatables",
       "files": [
-        "js/jquery.dataTables.min.js",
+        "js/jquery.dataTables.min.js"
+      ]
+    },
+    {
+      "library": "datatables.net-bs5@1.13.6",
+      "destination": "wwwroot/lib/datatables",
+      "files": [
         "js/dataTables.bootstrap5.min.js",
         "css/dataTables.bootstrap5.min.css"
       ]
@@ -47,10 +53,10 @@
       ]
     },
     {
-      "library": "chart.js@latest",
+      "library": "Chart.js@4.3.3",
       "destination": "wwwroot/lib/chartjs",
       "files": [
-        "chart.min.js"
+        "chart.umd.min.js"
       ]
     },
     {

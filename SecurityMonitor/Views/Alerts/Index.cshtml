@@ -117,7 +117,7 @@
     <div class="card shadow-sm mt-4 border-0">
         <div class="card-body px-0">
             <div class="table-responsive">
-                <table id="alertsTable" class="table table-hover align-middle">
+                <table id="alertsTable" class="table table-hover align-middle" style="width:100%">
                     <thead>
                         <tr>
                             <th>Thời gian</th>
@@ -166,21 +166,109 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="@alert.Id">
+                                        <button class="btn btn-sm btn-light" title="Xem chi tiết" 
+                                                data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="@alert.Id">
                                             <i class="bi bi-eye text-secondary"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-primary" onclick="updateStatus(@alert.Id, 2)">
-                                            <i class="bi bi-play-fill"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-success" onclick="updateStatus(@alert.Id, 3)">
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
+                                        @if (alert.Status == "New")
+                                        {
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Bắt đầu xử lý"
+                                                    onclick="updateStatus(@alert.Id, 'InProgress')">
+                                                <i class="bi bi-play-fill"></i>
+                                            </button>
+                                        }
+                                        @if (alert.Status != "Resolved")
+                                        {
+                                            <button class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Đánh dấu đã xử lý"
+                                                    onclick="resolveAlert(@alert.Id)">
+                                                <i class="bi bi-check-lg"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Chặn IP nguồn" 
+                                                    onclick="blockIP('@alert.SourceIp', '@alert.Title')">
+                                                <i class="bi bi-shield-fill-x"></i>
+                                            </button>
+                                        }
+                                        <a href="https://www.abuseipdb.com/check/@alert.SourceIp" target="_blank"
+                                           class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="Kiểm tra IP trên AbuseIPDB">
+                                            <i class="bi bi-search"></i>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resolution Modal -->
+<div class="modal fade" id="resolveAlertModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Đánh dấu đã xử lý cảnh báo
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="resolveForm">
+                    <input type="hidden" id="resolveAlertId" />
+                    <div class="mb-3">
+                        <label for="resolutionMethod" class="form-label">Phương pháp xử lý</label>
+                        <select class="form-select mb-3" id="resolutionMethod">
+                            <option value="">-- Chọn phương pháp --</option>
+                            <option value="block_ip">Chặn IP</option>
+                            <option value="update_firewall">Cập nhật tường lửa</option>
+                            <option value="patch_system">Vá lỗi hệ thống</option>
+                            <option value="false_positive">Cảnh báo sai</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="resolutionDetails" class="form-label">Chi tiết cách xử lý</label>
+                        <textarea class="form-control" id="resolutionDetails" rows="3" 
+                                  placeholder="Mô tả chi tiết cách thức đã xử lý cảnh báo này..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label d-block">Các bước đã thực hiện</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkSource">
+                            <label class="form-check-label" for="checkSource">
+                                Đã kiểm tra nguồn gốc
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkImpact">
+                            <label class="form-check-label" for="checkImpact">
+                                Đã đánh giá tác động
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="implementFix">
+                            <label class="form-check-label" for="implementFix">
+                                Đã thực hiện biện pháp khắc phục
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="verifyFix">
+                            <label class="form-check-label" for="verifyFix">
+                                Đã xác nhận hiệu quả
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-2"></i>Hủy
+                </button>
+                <button type="button" class="btn btn-success" id="submitResolution">
+                    <i class="bi bi-check-lg me-2"></i>Xác nhận đã xử lý
+                </button>
             </div>
         </div>
     </div>
@@ -269,7 +357,24 @@
     </div>
 </div>
 
+@section Styles {
+    <link href="~/lib/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr/toastr.min.css" rel="stylesheet" />
+    <style>
+        .table th { white-space: nowrap; }
+        .alert-new { animation: highlight 2s; }
+        @@keyframes highlight {
+            0% { background-color: #fff3cd; }
+            100% { background-color: transparent; }
+        }
+    </style>
+}
+
 @section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/lib/toastr/toastr.min.js"></script>
     <script>
         let currentAlertId = null;
         let currentAlertData = null;
@@ -360,6 +465,56 @@
                 }
             });
 
+            // Handle resolution form submission
+            $('#submitResolution').click(function() {
+                const alertId = $('#resolveAlertId').val();
+                const method = $('#resolutionMethod').val();
+                const details = $('#resolutionDetails').val();
+                const checks = {
+                    sourceChecked: $('#checkSource').is(':checked'),
+                    impactAssessed: $('#checkImpact').is(':checked'),
+                    fixImplemented: $('#implementFix').is(':checked'),
+                    fixVerified: $('#verifyFix').is(':checked')
+                };
+
+                if (!method) {
+                    toastr.warning('Vui lòng chọn phương pháp xử lý');
+                    return;
+                }
+
+                if (!details) {
+                    toastr.warning('Vui lòng nhập chi tiết cách xử lý');
+                    return;
+                }
+
+                const resolution = `[${method.toUpperCase()}] ${details}\n\nKiểm tra: ${
+                    Object.entries(checks)
+                        .filter(([_, checked]) => checked)
+                        .map(([key, _]) => key)
+                        .join(', ')
+                }`;
+
+                $.ajax({
+                    url: `/api/alerts/${alertId}/resolve`,
+                    method: 'POST',
+                    data: JSON.stringify({ resolution: resolution }),
+                    contentType: 'application/json',
+                    success: function() {
+                        toastr.success('Đã đánh dấu cảnh báo là đã xử lý');
+                        $('#resolveAlertModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error('Không thể xử lý cảnh báo', 'Lỗi');
+                    }
+                });
+            });
+
+            // Reset resolution form when modal is hidden
+            $('#resolveAlertModal').on('hidden.bs.modal', function() {
+                $('#resolveForm')[0].reset();
+            });
+
             // Start SignalR connection
             connection.start().catch(err => console.error(err));
 
@@ -402,23 +557,51 @@
             });
         });
 
-        // Update alert status
+        // Cập nhật trạng thái cảnh báo
         function updateStatus(alertId, status) {
             $.ajax({
                 url: `/api/alerts/${alertId}/status`,
                 method: 'PUT',
-                data: JSON.stringify({ 
-                    status: status,
-                    assignTo: null
-                }),
+                data: JSON.stringify({ status: status }),
                 contentType: 'application/json',
                 success: function() {
+                    toastr.success('Đã cập nhật trạng thái cảnh báo');
                     location.reload();
                 },
                 error: function(xhr, status, error) {
                     toastr.error('Không thể cập nhật trạng thái cảnh báo', 'Lỗi');
                 }
             });
+        }
+
+        // Xử lý cảnh báo
+        function resolveAlert(alertId) {
+            // Show resolve modal
+            const modal = $('#resolveAlertModal');
+            modal.find('#resolveAlertId').val(alertId);
+            modal.modal('show');
+        }
+
+        // Chặn IP
+        function blockIP(ip, reason) {
+            if (confirm(`Bạn có chắc muốn chặn IP ${ip}?`)) {
+                $.ajax({
+                    url: '/IPBlocking/Block',
+                    method: 'POST',
+                    data: {
+                        ip: ip,
+                        reason: `Chặn từ cảnh báo: ${reason}`,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function() {
+                        toastr.success(`Đã chặn IP ${ip}`, 'Thành công');
+                        location.reload();
+                    },
+                    error: function() {
+                        toastr.error('Không thể chặn IP', 'Lỗi');
+                    }
+                });
+            }
         }
     </script>
 }

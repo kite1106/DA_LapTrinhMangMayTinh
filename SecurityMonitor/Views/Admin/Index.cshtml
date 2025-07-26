@@ -10,74 +10,82 @@
     <div class="row">
         <!-- Card Tổng số người dùng -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Tổng số người dùng</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalUsersCount</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
+            <a href="@Url.Action("Index", "User")" class="text-decoration-none">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Tổng số người dùng</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalUsersCount</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Card Tổng số cảnh báo -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Cảnh báo</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalAlertsCount</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-bell fa-2x text-gray-300"></i>
+            <a href="@Url.Action("Index", "Alerts")" class="text-decoration-none">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Cảnh báo</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalAlertsCount</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-bell fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Card IP bị chặn -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                IP bị chặn</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BlockedIPsCount</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-ban fa-2x text-gray-300"></i>
+            <a href="@Url.Action("Index", "IPBlocking")" class="text-decoration-none">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    IP bị chặn</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BlockedIPsCount</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-ban fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Card Nhật ký hệ thống -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Nhật ký hệ thống</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalLogsCount</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+            <a href="@Url.Action("Index", "Logs")" class="text-decoration-none">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Nhật ký hệ thống</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalLogsCount</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -248,6 +256,14 @@
             position: relative;
             height: 300px;
             width: 100%;
+        }
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            cursor: pointer;
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
         }
     </style>
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Data;
+using SecurityMonitor.DTOs;
 using SecurityMonitor.DTOs.Dashboard;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services;
@@ -171,6 +172,24 @@ namespace SecurityMonitor.Controllers
             }
 
             return RedirectToAction(nameof(BlockedIPs));
+        }
+
+        // GET: Admin/Users
+        public async Task<IActionResult> Users()
+        {
+            var users = await _userManager.Users
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    FullName = u.FullName ?? u.UserName, // Use FullName if available, otherwise UserName
+                    IsEmailConfirmed = u.EmailConfirmed,
+                    LastLoginTime = u.LastLoginTime,
+                    LoginCount = 0 // Since we don't track login count, defaulting to 0
+                })
+                .ToListAsync();
+
+            return View(users);
         }
     }
 }

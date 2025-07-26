@@ -12,15 +12,18 @@ public class AlertsController : Controller
 {
     private readonly IAlertService _alertService;
     private readonly IIPBlockingService _ipBlockingService;
+    private readonly ILogEventService _logEventService;
     private readonly ILogger<AlertsController> _logger;
 
     public AlertsController(
         IAlertService alertService,
         IIPBlockingService ipBlockingService,
+        ILogEventService logEventService,
         ILogger<AlertsController> logger)
     {
         _alertService = alertService;
         _ipBlockingService = ipBlockingService;
+        _logEventService = logEventService;
         _logger = logger;
     }
 
@@ -171,6 +174,28 @@ public class AlertsController : Controller
     {
         var userId = User.Identity?.Name;
         if (userId == null) return Unauthorized();
+
+        var alert = await _alertService.GetAlertByIdAsync(id);
+        if (alert == null) return NotFound();
+
+        // Log việc xử lý alert
+        await _logEventService.RecordSystemEventAsync(
+            "AlertResolution",
+            $"Alert {id} resolved by {userId}",
+            "AlertSystem",
+            alert.SourceIp
+        );
+
+        // Nếu là alert từ IP đáng ngờ, ghi nhận hành động
+        if (alert.SourceIp != null)
+        {
+            await _logEventService.RecordSuspiciousEventAsync(
+                "AlertResolution",
+                $"Alert về IP {alert.SourceIp} đã được xử lý: {resolution}",
+                alert.SourceIp,
+                userId
+            );
+        }
 
         var resolved = await _alertService.ResolveAlertAsync(id, userId, resolution);
         if (resolved == null) return NotFound();

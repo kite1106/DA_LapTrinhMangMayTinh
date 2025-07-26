@@ -116,13 +116,24 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 // Cấu hình Identity Options
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    // Cấu hình Password
-    options.Password.RequiredLength = 8;
+    // Cấu hình Password đơn giản hơn cho môi trường test
+    options.Password.RequiredLength = 6;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
     
     // Cấu hình Lockout
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30); // Khóa 30 phút sau khi vượt quá số lần
+    options.Lockout.MaxFailedAccessAttempts = 8; // Cho phép thất bại 8 lần
     options.Lockout.AllowedForNewUsers = true;
+    
+    // Tắt yêu cầu xác nhận email vì chưa có hệ thống email
+    options.SignIn.RequireConfirmedEmail = false;
+    
+    // Cấu hình User
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 });
 
 // Cấu hình Cookie Authentication
@@ -254,8 +265,9 @@ app.UseRouting(); // Routing
 app.UseAuthentication(); // Authentication phải đặt trước Authorization
 app.UseAuthorization(); // Authorization
 app.UseMiddleware<LoginMonitorMiddleware>(); // Login monitoring
+app.UseMiddleware<SensitiveEndpointMiddleware>(); // Endpoint monitoring
 
-// Endpoints
+// Map routes directly
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Alerts}/{action=Index}/{id?}");
@@ -289,6 +301,7 @@ static async Task SeedRolesAndDefaultUsersAsync(IServiceProvider services)
 
     // Tạo tài khoản mặc định
     await CreateDefaultUserAsync(userManager, "admin@gmail.com", "Admin@123", "Admin");
+    await CreateDefaultUserAsync(userManager, "kietpro@gmail.com", "Kietpro@123", "Admin");
     await CreateDefaultUserAsync(userManager, "analyst@gmail.com", "Analyst@123", "Analyst");
     await CreateDefaultUserAsync(userManager, "user@gmail.com", "User@123", "User");
 }
