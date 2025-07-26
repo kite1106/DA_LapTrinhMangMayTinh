@@ -3,7 +3,7 @@ using SecurityMonitor.Data;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services.Interfaces;
 
-namespace SecurityMonitor.Services
+namespace SecurityMonitor.Services.IPBlocking
 {
     public class IPBlockingService : IIPBlockingService
     {
@@ -25,52 +25,58 @@ namespace SecurityMonitor.Services
 
         public async Task<BlockedIP> BlockIPAsync(string ip, string reason, string blockedBy)
         {
-            var existingBlock = await _context.BlockedIPs.FirstOrDefaultAsync(b => b.IpAddress == ip);
+            // Kiểm tra IP đã bị block chưa
+            var existingBlock = await _context.BlockedIPs
+                .FirstOrDefaultAsync(b => b.IpAddress == ip);
+
             if (existingBlock != null)
             {
-                _logger.LogWarning("IP {IP} is already blocked", ip);
+                // Cập nhật thông tin block nếu IP đã tồn tại
+                existingBlock.Reason = reason;
+                existingBlock.BlockedBy = blockedBy;
+                existingBlock.BlockedAt = DateTime.UtcNow;
+                _context.BlockedIPs.Update(existingBlock);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Cập nhật thông tin block cho IP {IP}", ip);
                 return existingBlock;
             }
 
-            var blockedIP = new BlockedIP
-            {
-                IpAddress = ip,
-                Reason = reason,
-                BlockedBy = blockedBy,
-                BlockedAt = DateTime.UtcNow
-            };
+            // Tạo block mới
+            var blockedIP = new BlockedIP(ip, reason, blockedBy);
 
             _context.BlockedIPs.Add(blockedIP);
             await _context.SaveChangesAsync();
-
-            _logger.LogInformation("IP {IP} has been blocked by {BlockedBy}", ip, blockedBy);
+            _logger.LogInformation("Đã block IP {IP}", ip);
             return blockedIP;
         }
 
         public async Task<bool> UnblockIPAsync(string ip)
         {
-            var blockedIP = await _context.BlockedIPs.FirstOrDefaultAsync(b => b.IpAddress == ip);
+            var blockedIP = await _context.BlockedIPs
+                .FirstOrDefaultAsync(b => b.IpAddress == ip);
+
             if (blockedIP == null)
             {
-                _logger.LogWarning("Attempted to unblock non-blocked IP {IP}", ip);
+                _logger.LogWarning("IP {IP} không tồn tại trong danh sách block", ip);
                 return false;
             }
 
             _context.BlockedIPs.Remove(blockedIP);
             await _context.SaveChangesAsync();
-
-            _logger.LogInformation("IP {IP} has been unblocked", ip);
+            _logger.LogInformation("Đã unblock IP {IP}", ip);
             return true;
         }
 
         public async Task<bool> IsIPBlockedAsync(string ip)
         {
-            return await _context.BlockedIPs.AnyAsync(b => b.IpAddress == ip);
+            return await _context.BlockedIPs
+                .AnyAsync(b => b.IpAddress == ip);
         }
 
         public async Task<BlockedIP?> GetBlockedIPDetailsAsync(string ip)
         {
-            return await _context.BlockedIPs.FirstOrDefaultAsync(b => b.IpAddress == ip);
+            return await _context.BlockedIPs
+                .FirstOrDefaultAsync(b => b.IpAddress == ip);
         }
     }
 }

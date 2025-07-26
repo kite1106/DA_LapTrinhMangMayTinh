@@ -6,13 +6,13 @@
 
 <div class="container-fluid mt-4">
     <div class="card">
-        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(45deg, #1a237e, #283593); color: white;">
             <div>
-                <h4 class="mb-0"><i class="fas fa-shield-alt"></i> @ViewData["Title"]</h4>
+                <h4 class="mb-0"><i class="fas fa-shield-alt me-2"></i> @ViewData["Title"]</h4>
             </div>
             <div class="btn-group">
-                <button class="btn btn-outline-light" id="refreshAlerts">
-                    <i class="fas fa-sync"></i> Làm mới
+                <button class="btn btn-outline-light btn-sm px-3" id="refreshAlerts">
+                    <i class="fas fa-sync-alt me-1"></i> Làm mới
                 </button>
             <div class="btn-group">
                 <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
@@ -61,63 +61,63 @@
 
     <div class="row g-4">
         <div class="col-md-3">
-            <div class="card bg-danger text-white">
-                <div class="card-body">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(45deg, #dc3545, #ff6b6b)">
+                <div class="card-body text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle">Cảnh báo nghiêm trọng</h6>
-                            <h2 class="card-title mb-0">@Model.Count(a => a.SeverityLevel == "Critical")</h2>
+                            <h6 class="card-subtitle opacity-75">Cảnh báo nghiêm trọng</h6>
+                            <h2 class="card-title mb-0 fw-bold">@Model.Count(a => a.SeverityLevel == "Critical")</h2>
                         </div>
-                        <i class="bi bi-exclamation-diamond fs-1"></i>
+                        <i class="bi bi-exclamation-diamond-fill fs-1 opacity-75"></i>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(45deg, #ffc107, #ffdb4d)">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle">Cảnh báo cao</h6>
-                            <h2 class="card-title mb-0">@Model.Count(a => a.SeverityLevel == "High")</h2>
+                            <h6 class="card-subtitle text-dark opacity-75">Cảnh báo cao</h6>
+                            <h2 class="card-title mb-0 text-dark fw-bold">@Model.Count(a => a.SeverityLevel == "High")</h2>
                         </div>
-                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                        <i class="bi bi-exclamation-triangle-fill fs-1 text-dark opacity-75"></i>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(45deg, #0dcaf0, #5cdcff)">
+                <div class="card-body text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle">Đang xử lý</h6>
-                            <h2 class="card-title mb-0">@Model.Count(a => a.Status == "In Progress")</h2>
+                            <h6 class="card-subtitle opacity-75">Đang xử lý</h6>
+                            <h2 class="card-title mb-0 fw-bold">@Model.Count(a => a.Status == "In Progress")</h2>
                         </div>
-                        <i class="bi bi-hourglass-split fs-1"></i>
+                        <i class="bi bi-hourglass-split fs-1 opacity-75"></i>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(45deg, #198754, #2bd583)">
+                <div class="card-body text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle">Đã xử lý</h6>
-                            <h2 class="card-title mb-0">@Model.Count(a => a.Status == "Resolved")</h2>
+                            <h6 class="card-subtitle opacity-75">Đã xử lý</h6>
+                            <h2 class="card-title mb-0 fw-bold">@Model.Count(a => a.Status == "Resolved")</h2>
                         </div>
-                        <i class="bi bi-check-circle fs-1"></i>
+                        <i class="bi bi-check-circle-fill fs-1 opacity-75"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card shadow-sm mt-4">
-        <div class="card-body">
+    <div class="card shadow-sm mt-4 border-0">
+        <div class="card-body px-0">
             <div class="table-responsive">
-                <table id="alertsTable" class="table table-hover">
+                <table id="alertsTable" class="table table-hover align-middle">
                     <thead>
                         <tr>
                             <th>Thời gian</th>
@@ -166,14 +166,14 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="@alert.Id">
-                                            <i class="bi bi-eye"></i>
+                                        <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="@alert.Id">
+                                            <i class="bi bi-eye text-secondary"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-primary" onclick="updateStatus('@alert.Id', 'In Progress')">
-                                            <i class="bi bi-play"></i>
+                                        <button class="btn btn-sm btn-primary" onclick="updateStatus(@alert.Id, 2)">
+                                            <i class="bi bi-play-fill"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-success" onclick="updateStatus('@alert.Id', 'Resolved')">
-                                            <i class="bi bi-check"></i>
+                                        <button class="btn btn-sm btn-success" onclick="updateStatus(@alert.Id, 3)">
+                                            <i class="bi bi-check-lg"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -245,8 +245,25 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" id="modalUpdateStatus">Cập nhật trạng thái</button>
+                <div class="btn-group me-2">
+                    <button type="button" class="btn btn-danger btn-lg px-4" id="blockIPBtn">
+                        <i class="bi bi-shield-x-fill me-2"></i> Chặn IP này
+                    </button>
+                    <button type="button" class="btn btn-warning btn-lg" id="checkIPBtn">
+                        <i class="bi bi-search me-1"></i> Kiểm tra IP
+                    </button>
+                </div>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i> Đóng
+                </button>
+                <div class="btn-group ms-2">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="updateStatus(currentAlertId, 2)">
+                        <i class="bi bi-play-fill me-1"></i> Xử lý
+                    </button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="updateStatus(currentAlertId, 3)">
+                        <i class="bi bi-check-lg me-1"></i> Đã xử lý
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -254,7 +271,43 @@
 
 @section Scripts {
     <script>
+        let currentAlertId = null;
+        let currentAlertData = null;
+
         $(document).ready(function() {
+            // Handle IP blocking
+            $('#blockIPBtn').click(function() {
+                if (currentAlertData && currentAlertData.sourceIp) {
+                    if (confirm(`Bạn có chắc muốn chặn IP ${currentAlertData.sourceIp}?`)) {
+                        // Block the IP via AJAX
+                        $.ajax({
+                            url: '/IPBlocking/Block',
+                            method: 'POST',
+                            data: {
+                                ip: currentAlertData.sourceIp,
+                                reason: `Tự động chặn từ cảnh báo: ${currentAlertData.title}`,
+                                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function() {
+                                toastr.success(`Đã chặn IP ${currentAlertData.sourceIp}`, 'Thành công');
+                                $('#alertDetails').modal('hide');
+                                updateStatus(currentAlertId, 3); // Mark as resolved after blocking
+                            },
+                            error: function() {
+                                toastr.error('Không thể chặn IP', 'Lỗi');
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Handle IP checking
+            $('#checkIPBtn').click(function() {
+                if (currentAlertData && currentAlertData.sourceIp) {
+                    window.location.href = `/IPBlocking/Details?ip=${currentAlertData.sourceIp}`;
+                }
+            });
+
             // Initialize DataTable
             const alertsTable = $('#alertsTable').DataTable({
                 order: [[0, 'desc']],
@@ -289,10 +342,10 @@
                         <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="${alert.id}">
                             <i class="bi bi-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-primary" onclick="updateStatus('${alert.id}', 'In Progress')">
+                        <button class="btn btn-sm btn-outline-primary" onclick="updateStatus(${alert.id}, 2)">
                             <i class="bi bi-play"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-success" onclick="updateStatus('${alert.id}', 'Resolved')">
+                        <button class="btn btn-sm btn-outline-success" onclick="updateStatus(${alert.id}, 3)">
                             <i class="bi bi-check"></i>
                         </button>
                      </div>`
@@ -315,9 +368,11 @@
                 const button = $(event.relatedTarget);
                 const alertId = button.data('alert-id');
                 const modal = $(this);
+                currentAlertId = alertId;
 
-                // TODO: Get alert details from server
+                // Get alert details from server
                 $.get(`/api/alerts/${alertId}`, function(alert) {
+                    currentAlertData = alert;
                     modal.find('#modalAlertTitle').text(alert.title);
                     modal.find('#modalAlertDescription').text(alert.description);
                     modal.find('#modalAlertId').text(alert.id);
@@ -352,7 +407,10 @@
             $.ajax({
                 url: `/api/alerts/${alertId}/status`,
                 method: 'PUT',
-                data: JSON.stringify({ status: status }),
+                data: JSON.stringify({ 
+                    status: status,
+                    assignTo: null
+                }),
                 contentType: 'application/json',
                 success: function() {
                     location.reload();

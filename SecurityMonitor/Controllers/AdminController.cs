@@ -6,6 +6,7 @@ using SecurityMonitor.Data;
 using SecurityMonitor.DTOs.Dashboard;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services;
+using SecurityMonitor.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,13 +131,10 @@ namespace SecurityMonitor.Controllers
                 return RedirectToAction(nameof(BlockedIPs));
             }
 
-            var blockedIP = new BlockedIP
-            {
-                IpAddress = ip,
-                BlockedAt = DateTime.UtcNow,
-                Reason = reason,
-                BlockedBy = User.Identity?.Name ?? "Admin"
-            };
+            var blockedIP = new BlockedIP(
+                ip,
+                reason,
+                User.Identity?.Name ?? "Admin");
 
             _context.BlockedIPs.Add(blockedIP);
             await _context.SaveChangesAsync();

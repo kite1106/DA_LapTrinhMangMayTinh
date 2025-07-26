@@ -11,13 +11,16 @@ namespace SecurityMonitor.Controllers;
 public class AlertsController : Controller
 {
     private readonly IAlertService _alertService;
+    private readonly IIPBlockingService _ipBlockingService;
     private readonly ILogger<AlertsController> _logger;
 
     public AlertsController(
         IAlertService alertService,
+        IIPBlockingService ipBlockingService,
         ILogger<AlertsController> logger)
     {
         _alertService = alertService;
+        _ipBlockingService = ipBlockingService;
         _logger = logger;
     }
 
@@ -122,6 +125,25 @@ public class AlertsController : Controller
             };
 
             var createdAlert = await _alertService.CreateAlertAsync(alert);
+
+            // Nếu là cảnh báo nghiêm trọng và có IP nguồn, tự động chặn IP
+            if (dto.SeverityLevelId == SeverityLevelId.Critical && !string.IsNullOrEmpty(dto.SourceIp))
+            {
+                try
+                {
+                    await _ipBlockingService.BlockIPAsync(
+                        dto.SourceIp,
+                        $"Tự động chặn từ cảnh báo nghiêm trọng: {dto.Title}",
+                        "System"
+                    );
+                    _logger.LogInformation("Đã tự động chặn IP {IP} từ cảnh báo nghiêm trọng", dto.SourceIp);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Lỗi khi tự động chặn IP {IP}", dto.SourceIp);
+                }
+            }
+
             return RedirectToAction(nameof(Details), new { id = createdAlert.Id });
         }
         catch (Exception ex)

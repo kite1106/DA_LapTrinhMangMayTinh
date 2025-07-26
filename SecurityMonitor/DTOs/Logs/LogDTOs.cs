@@ -1,6 +1,17 @@
 namespace SecurityMonitor.DTOs.Logs;
 
 /// <summary>
+/// DTO để tạo log mới
+/// </summary>
+public record CreateLogDto(
+    int LogSourceId,
+    string? EventType,
+    string? Message,
+    string? RawData,
+    string? IpAddress
+);
+
+/// <summary>
 /// DTO cho nhật ký hệ thống
 /// </summary>
 public record LogDto(

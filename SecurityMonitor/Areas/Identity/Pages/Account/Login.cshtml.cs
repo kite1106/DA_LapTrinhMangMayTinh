@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services;
+using SecurityMonitor.Extensions;
 
 namespace SecurityMonitor.Areas.Identity.Pages.Account
 {
@@ -45,6 +46,13 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
         [TempData]
         public string? ErrorMessage { get; set; }
 
+        public string ClientIP { get; private set; } = "unknown";
+
+        private string GetClientIP()
+        {
+            return HttpContext.GetClientIP();
+        }
+
         public class InputModel
         {
             [Required]
@@ -70,6 +78,9 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
 
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
+            // Lấy IP của client
+            ClientIP = GetClientIP();
+
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
@@ -79,6 +90,9 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
         {
             returnUrl = "/Account/RedirectAfterLogin";
 
+            // Cập nhật IP của client
+            ClientIP = GetClientIP();
+
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -86,7 +100,7 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
 
                 // Ghi nhận kết quả đăng nhập
-                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                var ipAddress = GetClientIP();
                 await _loginMonitor.RecordLoginAttemptAsync(ipAddress, result.Succeeded, Input.Email);
 
                 if (result.Succeeded)
