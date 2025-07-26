@@ -9,9 +9,10 @@ namespace SecurityMonitor.DTOs.Dashboard
         public int TotalAlertsCount { get; set; }
         public int BlockedIPsCount { get; set; }
         public int TotalLogsCount { get; set; }
-        public IList<RecentActivityDto> RecentActivities { get; set; } = new List<RecentActivityDto>();
+        public List<RecentActivityDto> RecentActivities { get; set; } = new();
         public ChartDataDto AlertsChartData { get; set; } = new();
         public ChartDataDto AlertTypesChartData { get; set; } = new();
+        public SecurityMetricsDto SecurityMetrics { get; set; } = new();
     }
 
     public class RecentActivityDto

@@ -935,3 +935,4 @@ C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\refint
 C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\SecurityMonitor.pdb
 C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\SecurityMonitor.genruntimeconfig.cache
 C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\ref\SecurityMonitor.dll
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\bin\Debug\net9.0\Data\AlertTypes.json

@@ -53,7 +53,20 @@
                                 <td>
                                     @if (user.LastLoginTime.HasValue)
                                     {
-                                        @user.LastLoginTime.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
+                                        var localTime = user.LastLoginTime.Value.ToLocalTime();
+                                        var timeAgo = DateTime.Now - localTime;
+                                        if (timeAgo.TotalMinutes < 60)
+                                        {
+                                            <span title="@localTime.ToString("dd/MM/yyyy HH:mm:ss")">@Math.Round(timeAgo.TotalMinutes) phút trước</span>
+                                        }
+                                        else if (timeAgo.TotalHours < 24)
+                                        {
+                                            <span title="@localTime.ToString("dd/MM/yyyy HH:mm:ss")">@Math.Round(timeAgo.TotalHours) giờ trước</span>
+                                        }
+                                        else
+                                        {
+                                            <span title="@localTime.ToString("dd/MM/yyyy HH:mm:ss")">@localTime.ToString("dd/MM HH:mm")</span>
+                                        }
                                     }
                                     else
                                     {

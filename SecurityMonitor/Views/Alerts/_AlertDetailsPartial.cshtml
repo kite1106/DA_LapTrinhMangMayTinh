@@ -1,0 +1,136 @@
+@model SecurityMonitor.DTOs.Alerts.AlertDetailDto
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <i class="fas fa-shield-alt me-2"></i>
+            Chi tiết cảnh báo #@Model.Id
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">Thông tin chung</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <small class="text-muted">Thời gian:</small>
+                            <div>@Model.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Loại cảnh báo:</small>
+                            <div>@Model.AlertType</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Mức độ:</small>
+                            <div>
+                                <span class="badge bg-@Model.SeverityClass">@Model.SeverityLevel</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Trạng thái:</small>
+                            <div>
+                                <span class="badge bg-@Model.StatusClass">@Model.Status</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">Thông tin mạng</h6>
+                    </div>
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(Model.SourceIp))
+                        {
+                            <div class="mb-3">
+                                <small class="text-muted">IP nguồn:</small>
+                                <div class="d-flex align-items-center">
+                                    <code class="me-2">@Model.SourceIp</code>
+                                    <a href="#" class="btn btn-sm btn-outline-info" onclick="checkIP('@Model.SourceIp')">
+                                        <i class="fas fa-search"></i> Kiểm tra
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.TargetIp))
+                        {
+                            <div class="mb-3">
+                                <small class="text-muted">IP đích:</small>
+                                <div><code>@Model.TargetIp</code></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Thông tin chi tiết</h6>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="mb-3">
+                        <small class="text-muted">Mô tả:</small>
+                        <div>@Model.Description</div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.AssignedTo))
+                {
+                    <div class="mb-3">
+                        <small class="text-muted">Được giao cho:</small>
+                        <div>@Model.AssignedTo</div>
+                    </div>
+                }
+
+                @if (Model.ResolvedAt.HasValue)
+                {
+                    <div class="mb-3">
+                        <small class="text-muted">Thời gian xử lý:</small>
+                        <div>
+                            @Model.ResolvedAt?.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
+                            @if (!string.IsNullOrEmpty(Model.ResolvedBy))
+                            {
+                                <span class="text-muted">bởi @Model.ResolvedBy</span>
+                            }
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Resolution))
+                    {
+                        <div class="mb-3">
+                            <small class="text-muted">Cách xử lý:</small>
+                            <div>@Model.Resolution</div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        @if (Model.Status != "Resolved")
+        {
+            <div class="btn-group me-2">
+                @if (string.IsNullOrEmpty(Model.AssignedTo))
+                {
+                    <button type="button" class="btn btn-primary" onclick="assignAlert(@Model.Id)">
+                        <i class="fas fa-user-check me-1"></i> Nhận xử lý
+                    </button>
+                }
+                <button type="button" class="btn btn-success" onclick="resolveAlert(@Model.Id)">
+                    <i class="fas fa-check me-1"></i> Đánh dấu đã xử lý
+                </button>
+            </div>
+        }
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i> Đóng
+        </button>
+    </div>
+</div>

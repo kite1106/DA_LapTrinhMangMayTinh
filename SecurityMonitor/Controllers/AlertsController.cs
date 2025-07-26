@@ -76,6 +76,12 @@ public class AlertsController : Controller
             {
                 return NotFound();
             }
+            
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_AlertDetails", MapToDto(alert));
+            }
+            
             return View(MapToDto(alert));
         }
         catch (Exception ex)

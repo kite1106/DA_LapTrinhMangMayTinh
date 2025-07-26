@@ -13,6 +13,11 @@ public class AuditLog
     public string EntityId { get; set; } = null!;
     public string? Details { get; set; }
     public string? IpAddress { get; set; }
+    public string? Path { get; set; }
+    public string? Level { get; set; }
+    public string? Message { get; set; }
+    public string? Endpoint { get; set; }
+    public int StatusCode { get; set; }
 
     // Quan hệ
     public virtual ApplicationUser? User { get; set; }

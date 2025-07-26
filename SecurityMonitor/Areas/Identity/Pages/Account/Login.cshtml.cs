@@ -122,7 +122,7 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
                     }
 
                     // ✅ Cập nhật thời gian đăng nhập
-                    user.LastLoginTime = DateTime.Now;
+                    user.LastLoginTime = DateTime.UtcNow;
                     await _userManager.UpdateAsync(user);
 
                     _logger.LogInformation("User logged in.");
