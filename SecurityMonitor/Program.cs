@@ -143,6 +143,8 @@ builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<IIPBlockingService, SecurityMonitor.Services.IPBlocking.IPBlockingService>();
+builder.Services.AddScoped<ILogSourceService, LogSourceService>();
+builder.Services.AddScoped<ILogEventService, LogEventService>();
 
 // Register background services
 builder.Services.AddSingleton<LoginMonitorService>();
