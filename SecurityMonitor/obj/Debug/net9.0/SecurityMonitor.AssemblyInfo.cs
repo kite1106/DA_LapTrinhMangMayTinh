@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SecurityMonitor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b378f2dff5136759df286fb1917cf28a6c6ee1f0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+db62ad201b9005bb6e082412a15c164d4dc2c3f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("SecurityMonitor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SecurityMonitor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

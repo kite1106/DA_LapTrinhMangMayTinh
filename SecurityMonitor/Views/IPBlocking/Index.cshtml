@@ -1,0 +1,116 @@
+@model IEnumerable<SecurityMonitor.Models.BlockedIP>
+
+@{
+    ViewData["Title"] = "Quản lý IP bị chặn";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="fas fa-ban"></i> @ViewData["Title"]</h4>
+            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#blockIPModal">
+                <i class="fas fa-plus"></i> Chặn IP mới
+            </button>
+        </div>
+        <div class="card-body">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Lý do chặn</th>
+                            <th>Thời điểm chặn</th>
+                            <th>Người chặn</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ip in Model)
+                        {
+                            <tr>
+                                <td>@ip.IpAddress</td>
+                                <td>@ip.Reason</td>
+                                <td>@ip.BlockedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>@ip.BlockedBy</td>
+                                <td>
+                                    <form asp-action="Unblock" method="post" style="display: inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="ip" value="@ip.IpAddress" />
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn bỏ chặn IP này?')">
+                                            <i class="fas fa-unlock"></i> Bỏ chặn
+                                        </button>
+                                    </form>
+                                    <a href="@Url.Action("Details", new { ip = ip.IpAddress })" class="btn btn-sm btn-info">
+                                        <i class="fas fa-info-circle"></i> Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chặn IP -->
+<div class="modal fade" id="blockIPModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Block" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Chặn IP mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ IP</label>
+                        <input type="text" name="ip" class="form-control" required
+                               pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+                               placeholder="Ví dụ: 192.168.1.1" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Lý do chặn</label>
+                        <textarea name="reason" class="form-control" required rows="3"
+                                  placeholder="Nhập lý do chặn IP này"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Chặn IP</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Khởi tạo DataTable
+            $('table').DataTable({
+                order: [[2, 'desc']], // Sắp xếp theo thời gian chặn, mới nhất lên đầu
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+                }
+            });
+        });
+    </script>
+}

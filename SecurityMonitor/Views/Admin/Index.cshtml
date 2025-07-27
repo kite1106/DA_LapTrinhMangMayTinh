@@ -1,0 +1,286 @@
+@model SecurityMonitor.DTOs.Dashboard.DashboardDataDto
+
+@{
+    ViewData["Title"] = "Trang quản trị";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Thống kê tổng quan -->
+    <div class="row">
+        <!-- Card Tổng số người dùng -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="@Url.Action("Index", "User")" class="text-decoration-none">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Tổng số người dùng</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalUsersCount</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card Tổng số cảnh báo -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="@Url.Action("Index", "Alerts")" class="text-decoration-none">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Cảnh báo</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalAlertsCount</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-bell fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card IP bị chặn -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="@Url.Action("Index", "IPBlocking")" class="text-decoration-none">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    IP bị chặn</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BlockedIPsCount</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-ban fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card Nhật ký hệ thống -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="@Url.Action("Index", "Logs")" class="text-decoration-none">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Nhật ký hệ thống</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalLogsCount</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Nội dung chính -->
+    <div class="row">
+        <!-- Biểu đồ cảnh báo -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Thống kê cảnh báo theo thời gian</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="alertsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biểu đồ tròn phân bố cảnh báo -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Phân bố loại cảnh báo</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="alertTypesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Metrics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Chỉ số an ninh chi tiết
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @await Html.PartialAsync("_SecurityMetricsPartial", Model.SecurityMetrics)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hoạt động gần đây -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Hoạt động gần đây</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="recentActivitiesTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>IP</th>
+                                    <th>Người dùng</th>
+                                    <th>Hoạt động</th>
+                                    <th>Chi tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var activity in Model.RecentActivities)
+                                {
+                                    <tr>
+                                        <td>@activity.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                        <td>@activity.IpAddress</td>
+                                        <td>@activity.UserId</td>
+                                        <td>@activity.Action</td>
+                                        <td>@activity.Details</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Dữ liệu cho biểu đồ cảnh báo theo thời gian
+        const alertsData = {
+            labels: @Html.Raw(Json.Serialize(Model.AlertsChartData.Labels)),
+            datasets: [{
+                label: 'Số cảnh báo',
+                data: @Html.Raw(Json.Serialize(Model.AlertsChartData.Data)),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        // Dữ liệu cho biểu đồ phân bố loại cảnh báo
+        const alertTypesData = {
+            labels: @Html.Raw(Json.Serialize(Model.AlertTypesChartData.Labels)),
+            datasets: [{
+                data: @Html.Raw(Json.Serialize(Model.AlertTypesChartData.Data)),
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)'
+                ]
+            }]
+        };
+
+        // Cấu hình và vẽ biểu đồ cảnh báo
+        const alertsChart = new Chart(
+            document.getElementById('alertsChart'),
+            {
+                type: 'line',
+                data: alertsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            }
+        );
+
+        // Cấu hình và vẽ biểu đồ phân bố
+        const alertTypesChart = new Chart(
+            document.getElementById('alertTypesChart'),
+            {
+                type: 'pie',
+                data: alertTypesData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            }
+        );
+
+        // Cấu hình DataTable cho bảng hoạt động
+        $(document).ready(function() {
+            $('#recentActivitiesTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
+                },
+                order: [[0, 'desc']]
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .border-left-primary {
+            border-left: .25rem solid #4e73df!important;
+        }
+        .border-left-success {
+            border-left: .25rem solid #1cc88a!important;
+        }
+        .border-left-info {
+            border-left: .25rem solid #36b9cc!important;
+        }
+        .border-left-warning {
+            border-left: .25rem solid #f6c23e!important;
+        }
+        .border-left-danger {
+            border-left: .25rem solid #e74a3b!important;
+        }
+        .chart-area {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .chart-pie {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            cursor: pointer;
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        }
+    </style>
+}

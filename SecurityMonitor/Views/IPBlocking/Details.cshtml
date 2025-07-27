@@ -1,0 +1,100 @@
+@model SecurityMonitor.Models.BlockedIP
+
+@{
+    ViewData["Title"] = "Chi tiết IP bị chặn";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-info-circle"></i> Chi tiết IP: @Model.IpAddress</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="fw-bold">Địa chỉ IP:</label>
+                        <p>@Model.IpAddress</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold">Thời điểm chặn:</label>
+                        <p>@Model.BlockedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="fw-bold">Người chặn:</label>
+                        <p>@Model.BlockedBy</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold">Lý do chặn:</label>
+                        <p>@Model.Reason</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h5>Thông tin từ AbuseIPDB</h5>
+                <div id="ipInfo">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Đang tải...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+            <form asp-action="Unblock" method="post" style="display: inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ip" value="@Model.IpAddress" />
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn bỏ chặn IP này?')">
+                    <i class="fas fa-unlock"></i> Bỏ chặn IP này
+                </button>
+            </form>
+            <a href="https://www.abuseipdb.com/check/@Model.IpAddress" target="_blank" class="btn btn-info">
+                <i class="fas fa-external-link-alt"></i> Xem trên AbuseIPDB
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Load thông tin IP từ AbuseIPDB
+            $.get(`/api/ip/check/@Model.IpAddress`, function(data) {
+                let html = `
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Điểm đe dọa</th>
+                                <td>${data.abuseConfidenceScore}%</td>
+                            </tr>
+                            <tr>
+                                <th>Tổng số báo cáo</th>
+                                <td>${data.totalReports}</td>
+                            </tr>
+                            <tr>
+                                <th>Quốc gia</th>
+                                <td>${data.countryCode} - ${data.countryName}</td>
+                            </tr>
+                            <tr>
+                                <th>ISP</th>
+                                <td>${data.isp}</td>
+                            </tr>
+                            <tr>
+                                <th>Domain</th>
+                                <td>${data.domain || 'N/A'}</td>
+                            </tr>
+                        </table>
+                    </div>`;
+                $('#ipInfo').html(html);
+            }).fail(function() {
+                $('#ipInfo').html('<div class="alert alert-warning">Không thể tải thông tin từ AbuseIPDB</div>');
+            });
+        });
+    </script>
+}

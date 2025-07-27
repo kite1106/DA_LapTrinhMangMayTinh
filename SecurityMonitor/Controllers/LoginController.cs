@@ -1,93 +1,130 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SecurityMonitor.Models;
-using SecurityMonitor.Services;
+using SecurityMonitor.DTOs.Auth;
+using System.Threading.Tasks;
+using SecurityMonitor.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace SecurityMonitor.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class LoginController : ControllerBase
+namespace SecurityMonitor.Controllers
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly LoginMonitorService _loginMonitor;
-    private readonly ILogger<LoginController> _logger;
-
-    public LoginController(
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
-        LoginMonitorService loginMonitor,
-        ILogger<LoginController> logger)
+    public class LoginController : Controller
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _loginMonitor = loginMonitor;
-        _logger = logger;
-    }
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-    [HttpPost]
-    public async Task<IActionResult> Login([FromBody] LoginRequest model)
-    {
-        // Lấy IP của client
-        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-
-        // Kiểm tra user có tồn tại không
-        var user = await _userManager.FindByNameAsync(model.Username);
-        if (user == null)
+        public LoginController(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context,
+            IConfiguration configuration)
         {
-            // Ghi nhận thất bại và theo dõi IP
-            await _loginMonitor.RecordLoginAttemptAsync(ipAddress, false, model.Username);
-            return BadRequest("Tên đăng nhập hoặc mật khẩu không đúng");
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _context = context;
+            _configuration = configuration;
         }
 
-        // Kiểm tra mật khẩu
-        var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, true);
-        
-        if (result.IsLockedOut)
+        [HttpGet]
+        public IActionResult Index()
         {
-            _logger.LogWarning("🔒 Tài khoản {Username} bị khóa", model.Username);
-            return BadRequest("Tài khoản đã bị khóa do đăng nhập sai nhiều lần");
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
         }
 
-        if (!result.Succeeded)
+        [HttpPost]
+        public async Task<IActionResult> Index(LoginDto model)
         {
-            // Ghi nhận thất bại và theo dõi IP
-            await _loginMonitor.RecordLoginAttemptAsync(ipAddress, false, model.Username);
-            return BadRequest("Tên đăng nhập hoặc mật khẩu không đúng");
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Email hoặc mật khẩu không đúng");
+                return View(model);
+            }
+
+            // Kiểm tra nếu tài khoản đang bị khóa
+            if (await _userManager.IsLockedOutAsync(user))
+            {
+                ModelState.AddModelError("", $"Tài khoản đã bị khóa đến {user.LockoutEnd?.LocalDateTime:dd/MM/yyyy HH:mm}");
+                return View(model);
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: true);
+            
+            if (result.Succeeded)
+            {
+                // Cập nhật thông tin đăng nhập thành công
+                user.LastLoginTime = DateTime.UtcNow;
+                user.LastLoginIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                await _userManager.UpdateAsync(user);
+
+                // Ghi log
+                await _context.AuditLogs.AddAsync(new AuditLog
+                {
+                    UserId = user.Id,
+                    Action = "Login",
+                    Details = $"Đăng nhập thành công từ IP {user.LastLoginIP}",
+                    Timestamp = DateTime.UtcNow
+                });
+                await _context.SaveChangesAsync();
+
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+                return RedirectToAction("Index", "Alerts");
+            }
+
+            if (result.IsLockedOut)
+            {
+                // Ghi log khi tài khoản bị khóa
+                await _context.AuditLogs.AddAsync(new AuditLog
+                {
+                    UserId = user.Id,
+                    Action = "AccountLocked",
+                    Details = $"Tài khoản bị khóa do đăng nhập thất bại nhiều lần từ IP {HttpContext.Connection.RemoteIpAddress}",
+                    Timestamp = DateTime.UtcNow
+                });
+                await _context.SaveChangesAsync();
+
+                ModelState.AddModelError("", "Tài khoản đã bị khóa do đăng nhập thất bại nhiều lần. Vui lòng thử lại sau.");
+                return View(model);
+            }
+
+            ModelState.AddModelError("", "Email hoặc mật khẩu không đúng");
+            return View(model);
         }
 
-        // Đăng nhập thành công
-        await _signInManager.SignInAsync(user, model.RememberMe);
-        
-        // Ghi nhận đăng nhập thành công
-        await _loginMonitor.RecordLoginAttemptAsync(ipAddress, true, model.Username);
-
-        // Cập nhật thông tin đăng nhập
-        user.LastLoginAt = DateTime.UtcNow;
-        await _userManager.UpdateAsync(user);
-
-        _logger.LogInformation("✅ User {Username} đăng nhập thành công từ IP {IP}", model.Username, ipAddress);
-
-        return Ok(new
+        [HttpPost]
+        public async Task<IActionResult> Logout()
         {
-            Username = user.UserName,
-            Email = user.Email,
-            FullName = user.FullName
-        });
-    }
+            var userId = User.Identity.Name;
+            await _signInManager.SignOutAsync();
 
-    [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        await _signInManager.SignOutAsync();
-        return Ok();
-    }
-}
+            // Ghi log đăng xuất
+            if (!string.IsNullOrEmpty(userId))
+            {
+                await _context.AuditLogs.AddAsync(new AuditLog
+                {
+                    UserId = userId,
+                    Action = "Logout",
+                    Details = "Đăng xuất thành công",
+                    Timestamp = DateTime.UtcNow
+                });
+                await _context.SaveChangesAsync();
+            }
 
-public class LoginRequest
-{
-    public string Username { get; set; } = null!;
-    public string Password { get; set; } = null!;
-    public bool RememberMe { get; set; }
+            return RedirectToAction("Index");
+        }
+    }
 }

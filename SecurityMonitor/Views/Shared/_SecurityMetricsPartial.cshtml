@@ -1,0 +1,267 @@
+@model SecurityMonitor.DTOs.Dashboard.SecurityMetricsDto
+
+<div class="row">
+    <!-- Sensitive Endpoints -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-shield-alt me-2"></i>
+                    Endpoint nhạy cảm
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <h6 class="text-muted">Tổng truy cập</h6>
+                        <h4>@Model.SensitiveEndpoints.TotalAccessAttempts</h4>
+                    </div>
+                    <div>
+                        <h6 class="text-muted">Bị chặn</h6>
+                        <h4 class="text-danger">@Model.SensitiveEndpoints.BlockedAttempts</h4>
+                    </div>
+                </div>
+                <div class="table-responsive" style="max-height: 200px;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Endpoint</th>
+                                <th>IP</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var access in Model.SensitiveEndpoints.RecentAccesses.Take(5))
+                            {
+                                <tr>
+                                    <td>@access.Endpoint</td>
+                                    <td><code>@access.IpAddress</code></td>
+                                    <td>
+                                        @if (access.StatusCode >= 400)
+                                        {
+                                            <span class="badge bg-danger">@access.StatusCode</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">@access.StatusCode</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Anomaly Detection -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Hành vi bất thường
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="small text-muted">Request cao</div>
+                        <h4>@Model.Anomalies.HighRequestRateIPs</h4>
+                    </div>
+                    <div class="col">
+                        <div class="small text-muted">Dò quét</div>
+                        <h4>@Model.Anomalies.ScanningAttempts</h4>
+                    </div>
+                    <div class="col">
+                        <div class="small text-muted">DDoS</div>
+                        <h4>@Model.Anomalies.PotentialDDoSAlerts</h4>
+                    </div>
+                </div>
+                <div class="table-responsive" style="max-height: 200px;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>IP</th>
+                                <th>Request/phút</th>
+                                <th>Loại</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ip in Model.Anomalies.SuspiciousIPs.Take(5))
+                            {
+                                <tr>
+                                    <td><code>@ip.IpAddress</code></td>
+                                    <td>@ip.RequestsPerMinute</td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">
+                                            @ip.ActivityType
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Errors -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header" style="background: linear-gradient(45deg, #6c757d, #495057); color: white;">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bug me-2"></i>
+                    Lỗi hệ thống
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="small text-muted">Tổng lỗi</div>
+                        <h4>@Model.SystemErrors.TotalErrors</h4>
+                    </div>
+                    <div class="col">
+                        <div class="small text-muted">Liên tiếp</div>
+                        <h4>@Model.SystemErrors.ConsecutiveErrors</h4>
+                    </div>
+                    <div class="col">
+                        <div class="small text-muted">Loại lỗi</div>
+                        <h4>@Model.SystemErrors.UniqueErrorTypes</h4>
+                    </div>
+                </div>
+                <div class="table-responsive" style="max-height: 200px;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Loại lỗi</th>
+                                <th>Nguồn</th>
+                                <th>Số lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var error in Model.SystemErrors.RecentErrors.Take(5))
+                            {
+                                <tr>
+                                    <td>@error.ErrorType</td>
+                                    <td>@error.Source</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @error.Count
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- User Behavior -->
+    <div class="col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-shield me-2"></i>
+                    Hành vi người dùng
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="small text-muted">Reset MK</div>
+                        <h4>@Model.Behaviors.PasswordResetAttempts</h4>
+                    </div>
+                    <div class="col">
+                        <div class="small text-muted">Đổi email</div>
+                        <h4>@Model.Behaviors.EmailChangeAttempts</h4>
+                    </div>
+                    <div class="col">
+                        <div class="small text-muted">Đáng ngờ</div>
+                        <h4>@Model.Behaviors.SuspiciousActivities</h4>
+                    </div>
+                </div>
+                <div class="table-responsive" style="max-height: 200px;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Người dùng</th>
+                                <th>Hoạt động</th>
+                                <th>Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var activity in Model.Behaviors.RecentActivities.Take(5))
+                            {
+                                <tr>
+                                    <td>@activity.UserId</td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            @activity.ActivityType
+                                        </span>
+                                    </td>
+                                    <td>@activity.Timestamp.ToString("HH:mm:ss")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Keywords -->
+    <div class="col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header" style="background: linear-gradient(45deg, #d63384, #dc3545); color: white;">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-search me-2"></i>
+                    Từ khóa đáng ngờ
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="small text-muted">Tổng phát hiện</div>
+                        <h4>@Model.Keywords.TotalDetections</h4>
+                    </div>
+                    <div class="col">
+                        <div class="small text-muted">Rủi ro cao</div>
+                        <h4 class="text-danger">@Model.Keywords.HighRiskDetections</h4>
+                    </div>
+                </div>
+                <div class="table-responsive" style="max-height: 200px;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Từ khóa</th>
+                                <th>Nguồn</th>
+                                <th>Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detection in Model.Keywords.RecentDetections.Take(5))
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-danger">
+                                            @detection.Keyword
+                                        </span>
+                                    </td>
+                                    <td>@detection.Source</td>
+                                    <td>@detection.Timestamp.ToString("HH:mm:ss")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

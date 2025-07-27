@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SecurityMonitor.Hubs;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services.Interfaces;
+using SecurityMonitor.Services.Implementation;
 using System.Collections.Concurrent;
 
 namespace SecurityMonitor.Services;
@@ -18,7 +19,7 @@ public class LoginMonitorService : BackgroundService
 
     // Cấu hình ngưỡng cảnh báo
     private const int MAX_FAILED_ATTEMPTS = 5; // Số lần thất bại tối đa
-    private const int MONITORING_WINDOW_MINUTES = 15; // Thời gian theo dõi
+    private const int MONITORING_WINDOW_MINUTES = 3; // Thời gian theo dõi (3 phút)
     
     public LoginMonitorService(
         IServiceScopeFactory scopeFactory,
@@ -40,45 +41,78 @@ public class LoginMonitorService : BackgroundService
         // Cập nhật thông tin login attempt
         attempt.RecordAttempt(isSuccessful);
 
-        // Kiểm tra nếu vượt ngưỡng cảnh báo
-        if (ShouldCreateAlert(attempt))
+        // Lưu log cho mỗi lần đăng nhập thất bại
+        if (!isSuccessful)
         {
             using var scope = _scopeFactory.CreateScope();
-            var alertService = scope.ServiceProvider.GetRequiredService<IAlertService>();
+            var logService = scope.ServiceProvider.GetRequiredService<ILogService>();
+            var sourceService = scope.ServiceProvider.GetRequiredService<ILogSourceService>();
 
-            var alert = new Alert
+            // Lấy LogSource cho authentication server
+            var authServer = await sourceService.GetLogSourceByNameAsync("Windows Server 2022");
+            if (authServer == null)
             {
-                Title = "Phát hiện nhiều lần đăng nhập thất bại",
-                Description = $"IP {ipAddress} đã có {attempt.FailedAttempts} lần đăng nhập thất bại trong {MONITORING_WINDOW_MINUTES} phút qua.",
-                SourceIp = ipAddress,
-                AlertTypeId = (int)AlertTypeId.BruteForce,
-                SeverityLevelId = (int)SeverityLevelId.High,
-                StatusId = (int)AlertStatusId.New,
-                Timestamp = now
-            };
+                // Nếu chưa có, tạo mới LogSource cho auth server
+                authServer = await sourceService.CreateLogSourceAsync(new LogSource
+                {
+                    Name = "Windows Server 2022",
+                    DeviceType = "Authentication Server",
+                    IpAddress = "127.0.0.1",
+                    Location = "Local",
+                    IsActive = true
+                });
+            }
 
-            // Lưu cảnh báo vào database
-            await alertService.CreateAlertAsync(alert);
-
-            // Gửi cảnh báo realtime qua SignalR
-            await _hubContext.Clients.All.SendAsync("ReceiveAlert", new
+            // Tạo log cho lần đăng nhập thất bại
+            await logService.CreateLogAsync(new Log
             {
-                alert.Id,
-                alert.Title,
-                alert.Description,
-                alert.SourceIp,
-                alert.Timestamp,
-                SeverityLevel = "High",
-                Type = "Brute Force Attempt"
+                Timestamp = now,
+                LogSourceId = authServer.Id,
+                EventType = "Security",
+                Message = $"Failed login attempt for user '{username ?? "unknown"}'",
+                RawData = $"Failed login attempt from IP {ipAddress}",
+                IpAddress = ipAddress,
+                ProcessedAt = now
             });
 
-            _logger.LogWarning("🚨 Phát hiện nhiều lần đăng nhập thất bại từ IP: {IP}", ipAddress);
+            // Kiểm tra nếu vượt ngưỡng cảnh báo
+            if (ShouldCreateAlert(attempt))
+            {
+                var alertService = scope.ServiceProvider.GetRequiredService<IAlertService>();
+
+                var alert = new Alert
+                {
+                    Title = "Phát hiện nhiều lần đăng nhập thất bại",
+                    Description = $"IP {ipAddress} đã có {attempt.FailedAttempts} lần đăng nhập thất bại trong {MONITORING_WINDOW_MINUTES} phút qua.",
+                    SourceIp = ipAddress,
+                    AlertTypeId = (int)AlertTypeId.BruteForce,
+                    SeverityLevelId = (int)SeverityLevelId.High,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = now
+                };
+
+                // Lưu cảnh báo vào database
+                await alertService.CreateAlertAsync(alert);
+
+                // Gửi cảnh báo realtime qua SignalR
+                await _hubContext.Clients.All.SendAsync("ReceiveAlert", new
+                {
+                    alert.Id,
+                    alert.Title,
+                    alert.Description,
+                    alert.SourceIp,
+                    alert.Timestamp,
+                    SeverityLevel = "High",
+                    Type = "Brute Force Attempt"
+                });
+
+                _logger.LogWarning("🚨 Phát hiện nhiều lần đăng nhập thất bại từ IP: {IP}", ipAddress);
+            }
+
+            // Xóa các bản ghi cũ
+            CleanupOldAttempts();
         }
-
-        // Xóa các bản ghi cũ
-        CleanupOldAttempts();
     }
-
     private bool ShouldCreateAlert(LoginAttempt attempt)
     {
         return attempt.FailedAttempts >= MAX_FAILED_ATTEMPTS &&

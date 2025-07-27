@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SecurityMonitor.DTOs;
+using SecurityMonitor.DTOs.Alerts;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services.Interfaces;
 
@@ -22,12 +22,22 @@ public class AlertsController : ControllerBase
 
     // GET: api/alerts
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AlertDto>>> GetAlerts()
+    public async Task<ActionResult<IEnumerable<AlertListDto>>> GetAlerts()
     {
         try
         {
             var alerts = await _alertService.GetAllAlertsAsync();
-            return Ok(alerts.Select(MapToDto));
+            return Ok(alerts.Select(alert => new AlertListDto
+            {
+                Id = alert.Id,
+                Timestamp = alert.Timestamp,
+                Title = alert.Title,
+                Description = alert.Description,
+                SourceIp = alert.SourceIp ?? string.Empty,
+                SeverityLevel = alert.SeverityLevel?.Name ?? "Unknown",
+                Status = alert.Status?.Name ?? "Unknown",
+                AssignedTo = alert.AssignedTo?.UserName
+            }));
         }
         catch (Exception ex)
         {
@@ -38,7 +48,7 @@ public class AlertsController : ControllerBase
 
     // GET: api/alerts/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<AlertDto>> GetAlert(int id)
+    public async Task<ActionResult<AlertDetailDto>> GetAlert(int id)
     {
         try
         {
@@ -47,7 +57,22 @@ public class AlertsController : ControllerBase
             {
                 return NotFound();
             }
-            return Ok(MapToDto(alert));
+            return Ok(new AlertDetailDto
+            {
+                Id = alert.Id,
+                Timestamp = alert.Timestamp,
+                Title = alert.Title,
+                Description = alert.Description,
+                AlertType = alert.AlertType?.Name ?? "Unknown",
+                SeverityLevel = alert.SeverityLevel?.Name ?? "Unknown",
+                Status = alert.Status?.Name ?? "Unknown",
+                SourceIp = alert.SourceIp,
+                TargetIp = alert.TargetIp,
+                AssignedTo = alert.AssignedTo?.UserName,
+                ResolvedBy = alert.ResolvedBy?.UserName,
+                ResolvedAt = alert.ResolvedAt,
+                Resolution = alert.Resolution
+            });
         }
         catch (Exception ex)
         {
@@ -58,7 +83,7 @@ public class AlertsController : ControllerBase
 
     // POST: api/alerts
     [HttpPost]
-    public async Task<ActionResult<AlertDto>> CreateAlert([FromBody] CreateAlertDto createAlertDto)
+    public async Task<ActionResult<AlertListDto>> CreateAlert([FromBody] CreateAlertDto createAlertDto)
     {
         try
         {
@@ -66,12 +91,11 @@ public class AlertsController : ControllerBase
             {
                 Title = createAlertDto.Title,
                 Description = createAlertDto.Description,
-                AlertTypeId = createAlertDto.AlertTypeId,
-                SeverityLevelId = createAlertDto.SeverityLevelId,
+                AlertTypeId = (int)createAlertDto.AlertTypeId,
+                SeverityLevelId = (int)createAlertDto.SeverityLevelId,
                 StatusId = (int)AlertStatusId.New,
                 SourceIp = createAlertDto.SourceIp,
                 TargetIp = createAlertDto.TargetIp,
-                LogId = createAlertDto.LogId,
                 Timestamp = DateTime.UtcNow
             };
 
@@ -100,23 +124,34 @@ public class AlertsController : ControllerBase
                 return NotFound();
             }
 
-            // Get status ID from name
-            var status = await _alertService.GetAlertStatusByNameAsync(updateStatusDto.Status);
-            if (status == null)
-            {
-                return BadRequest("Invalid status");
-            }
-
-            alert.StatusId = status.Id;
-            alert.ResolvedAt = status.IsTerminal ? DateTime.UtcNow : null;
-            alert.ResolvedById = status.IsTerminal ? User.Identity?.Name : null;
+            alert.StatusId = (int)updateStatusDto.Status;
+            alert.ResolvedAt = updateStatusDto.Status == AlertStatusId.Resolved ? DateTime.UtcNow : null;
+            alert.ResolvedById = updateStatusDto.Status == AlertStatusId.Resolved ? User.Identity?.Name : null;
 
             var updatedAlert = await _alertService.UpdateAlertAsync(id, alert);
             if (updatedAlert == null)
             {
                 return StatusCode(500, "Failed to update alert");
             }
-            return Ok(MapToDto(updatedAlert));
+            
+            // Get the alert with all the required navigation properties
+            var alertWithDetails = await _alertService.GetAlertByIdAsync(id);
+            return Ok(new AlertDetailDto
+            {
+                Id = updatedAlert.Id,
+                Timestamp = updatedAlert.Timestamp,
+                Title = updatedAlert.Title,
+                Description = updatedAlert.Description,
+                AlertType = alertWithDetails?.AlertType?.Name ?? string.Empty,
+                SeverityLevel = alertWithDetails?.SeverityLevel?.Name ?? string.Empty,
+                Status = alertWithDetails?.Status?.Name ?? string.Empty,
+                SourceIp = updatedAlert.SourceIp,
+                TargetIp = updatedAlert.TargetIp,
+                AssignedTo = updatedAlert.AssignedTo?.UserName,
+                ResolvedBy = updatedAlert.ResolvedBy?.UserName,
+                ResolvedAt = updatedAlert.ResolvedAt,
+                Resolution = updatedAlert.Resolution
+            });
         }
         catch (Exception ex)
         {
@@ -125,19 +160,20 @@ public class AlertsController : ControllerBase
         }
     }
 
-    private static AlertDto MapToDto(Alert alert) => new(
-        alert.Id,
-        alert.Timestamp,
-        alert.Title,
-        alert.Description,
-        alert.AlertType?.Name ?? "Unknown",
-        alert.SeverityLevel?.Name ?? "Unknown",
-        alert.Status?.Name ?? "Unknown",
-        alert.SourceIp,
-        alert.TargetIp,
-        alert.AssignedTo?.UserName,
-        alert.ResolvedBy?.UserName,
-        alert.ResolvedAt,
-        alert.Resolution
-    );
+    private static AlertDetailDto MapToDto(Alert alert) => new AlertDetailDto
+    {
+        Id = alert.Id,
+        Timestamp = alert.Timestamp,
+        Title = alert.Title,
+        Description = alert.Description,
+        AlertType = alert.AlertType?.Name ?? "Unknown",
+        SeverityLevel = alert.SeverityLevel?.Name ?? "Unknown",
+        Status = alert.Status?.Name ?? "Unknown",
+        SourceIp = alert.SourceIp,
+        TargetIp = alert.TargetIp,
+        AssignedTo = alert.AssignedTo?.UserName,
+        ResolvedBy = alert.ResolvedBy?.UserName,
+        ResolvedAt = alert.ResolvedAt,
+        Resolution = alert.Resolution
+    };
 }

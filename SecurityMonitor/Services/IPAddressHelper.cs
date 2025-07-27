@@ -8,7 +8,7 @@ namespace SecurityMonitor.Services
         public static string GetClientIPAddress(HttpContext context)
         {
             // Check for X-Forwarded-For header first (used by proxies)
-            string ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            string? ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
             
             if (!string.IsNullOrEmpty(ip))
             {

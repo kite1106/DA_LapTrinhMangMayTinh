@@ -1,0 +1,60 @@
+@using SecurityMonitor.Models
+@model IEnumerable<Alert>
+
+@{
+    ViewData["Title"] = "Cảnh báo của tôi";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-bell"></i> Cảnh báo của tôi</h4>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    Không có cảnh báo nào.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>IP</th>
+                                <th>Loại cảnh báo</th>
+                                <th>Mức độ</th>
+                                <th>Trạng thái</th>
+                                <th>Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var alert in Model)
+                            {
+                                <tr>
+                                    <td>@alert.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                    <td>@(alert.SourceIp ?? "N/A")</td>
+                                    <td>@alert.AlertType.Name</td>
+                                    <td>
+                                        <span class="badge bg-@(alert.SeverityLevel.Name.ToLower())">
+                                            @alert.SeverityLevel.Name
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-@(alert.StatusId == (int)AlertStatusId.New ? "warning" : "success")">
+                                            @alert.Status.Name
+                                        </span>
+                                    </td>
+                                    <td>@alert.Description</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

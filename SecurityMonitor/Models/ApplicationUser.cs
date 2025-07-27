@@ -10,8 +10,12 @@ public class ApplicationUser : IdentityUser
     public string? FullName { get; set; }
     public string? Department { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime? LastLoginAt { get; set; }
+    public DateTime? LastLoginTime { get; set; }
     public bool IsActive { get; set; } = true;
+    public DateTimeOffset? LockoutStart { get; set; }
+    public string? LockoutReason { get; set; }
+    public string? LastLoginIP { get; set; }
+    public bool RequirePasswordChange { get; set; } = false;
 
     // Các quan hệ
     public virtual ICollection<Alert> AssignedAlerts { get; set; } = new List<Alert>();

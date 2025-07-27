@@ -1,54 +1,80 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SecurityMonitor.DTOs;
-using SecurityMonitor.Services;
+using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Data;
+using SecurityMonitor.DTOs.Logs;
+using SecurityMonitor.Models;
 using SecurityMonitor.Services.Interfaces;
 
-namespace SecurityMonitor.Controllers;
-
-[Authorize]
-public class AuditController : Controller
+namespace SecurityMonitor.Controllers
 {
-    private readonly IAuditService _auditService;
-
-    public AuditController(IAuditService auditService)
+    [Authorize(Roles = "Admin")]
+    public class AuditController : Controller
     {
-        _auditService = auditService;
-    }
+        private readonly ApplicationDbContext _context;
+        private readonly IAuditService _auditService;
 
-    // Trả View hiển thị lịch sử hoạt động của user
-    public async Task<IActionResult> UserActivity(string userId)
-    {
-        var logs = await _auditService.GetUserActivityAsync(userId);
-        var dtoList = logs.Select(log => new AuditLogDto(
-            log.Id,
-            log.Timestamp,
-            log.User?.UserName,
-            log.Action,
-            log.EntityType,
-            log.EntityId,
-            log.Details,
-            log.IpAddress
-        )).ToList();
+        public AuditController(ApplicationDbContext context, IAuditService auditService)
+        {
+            _context = context;
+            _auditService = auditService;
+        }
 
-        return View(dtoList); // View tại Views/Audit/UserActivity.cshtml
-    }
+        public async Task<IActionResult> Index()
+        {
+            var logs = await _context.AuditLogs
+                .Include(l => l.User)
+                .OrderByDescending(l => l.Timestamp)
+                .Take(1000)
+                .ToListAsync();
 
-    // Hiển thị log theo khoảng thời gian
-    public async Task<IActionResult> DateRange(DateTime start, DateTime end)
-    {
-        var logs = await _auditService.GetActivityByDateRangeAsync(start, end);
-        var dtoList = logs.Select(log => new AuditLogDto(
-            log.Id,
-            log.Timestamp,
-            log.User?.UserName,
-            log.Action,
-            log.EntityType,
-            log.EntityId,
-            log.Details,
-            log.IpAddress
-        )).ToList();
+            return View(MapToAuditLogDtos(logs));
+        }
 
-        return View(dtoList); // View tại Views/Audit/DateRange.cshtml
+        public async Task<IActionResult> UserActivity(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User ID is required");
+            }
+
+            var logs = await _auditService.GetUserActivityAsync(userId);
+            ViewBag.UserEmail = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.Email)
+                .FirstOrDefaultAsync();
+
+            return View(MapToAuditLogDtos(logs));
+        }
+
+        public async Task<IActionResult> DateRange(DateTime start, DateTime end)
+        {
+            if (end < start)
+            {
+                return BadRequest("End date must be after start date");
+            }
+
+            if (end.Subtract(start).TotalDays > 90)
+            {
+                return BadRequest("Date range cannot exceed 90 days");
+            }
+
+            var logs = await _auditService.GetActivityByDateRangeAsync(start, end);
+            return View("Index", MapToAuditLogDtos(logs));
+        }
+
+        private static List<AuditLogDto> MapToAuditLogDtos(IEnumerable<AuditLog> logs)
+        {
+            return logs.Select(log => new AuditLogDto(
+                Id: log.Id,
+                Timestamp: log.Timestamp,
+                UserEmail: log.User?.Email,
+                Action: log.Action,
+                EntityType: log.EntityType,
+                EntityId: log.EntityId,
+                Details: log.Details,
+                IpAddress: log.IpAddress
+            )).ToList();
+        }
     }
 }
