@@ -70,8 +70,12 @@ namespace SecurityMonitor.Services
 
                 foreach (var group in sourceGroups)
                 {
-                    var ipStats = CalculateAlertStatistics(group.ToList());
-                    stats[group.Key] = ipStats;
+                    var key = group.Key;
+                    if (key != null)
+                    {
+                        var ipStats = CalculateAlertStatistics(group.ToList());
+                        stats[key] = ipStats;
+                    }
                 }
             }
             catch (Exception ex)
@@ -165,7 +169,7 @@ namespace SecurityMonitor.Services
                     .Distinct()
                     .Count(),
                 AlertTypeDistribution = alerts
-                    .Where(a => a.AlertType != null)
+                    .Where(a => a.AlertType?.Name != null)
                     .GroupBy(a => a.AlertType!.Name)
                     .ToDictionary(g => g.Key, g => g.Count()),
                 AverageAlertSeverity = alerts.Average(a => a.SeverityLevelId),

@@ -13,6 +13,8 @@ public class Log
     public string? RawData { get; set; }
     public string? IpAddress { get; set; }
     public DateTime? ProcessedAt { get; set; }
+    public string? UserId { get; set; }
+    public bool WasSuccessful { get; set; }
 
     // Quan hệ
     public virtual LogSource LogSource { get; set; } = null!;

@@ -1,0 +1,162 @@
+@model List<SecurityMonitor.DTOs.Logs.AuditLogDto>
+@{
+    ViewData["Title"] = "Nhật ký hoạt động";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0"><i class="fas fa-history"></i> @ViewData["Title"]</h4>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-light" id="refreshBtn">
+                    <i class="fas fa-sync"></i> Làm mới
+                </button>
+                <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#filterModal">
+                    <i class="fas fa-filter"></i> Lọc
+                </button>
+                <button type="button" class="btn btn-outline-light" id="exportBtn">
+                    <i class="fas fa-file-export"></i> Xuất
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="auditTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>Người dùng</th>
+                            <th>IP</th>
+                            <th>Thao tác</th>
+                            <th>Đối tượng</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model)
+                        {
+                            <tr>
+                                <td>@log.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(log.UserEmail))
+                                    {
+                                        <a asp-action="UserActivity" asp-route-userId="@log.EntityId" class="text-primary">
+                                            @log.UserEmail
+                                        </a>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(log.IpAddress))
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <span>@log.IpAddress</span>
+                                            <a href="#" class="btn btn-sm btn-link ms-2" onclick="checkIP('@log.IpAddress')">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                </td>
+                                <td>@log.Action</td>
+                                <td>@log.EntityType</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(log.Details))
+                                    {
+                                        <span class="text-muted">@log.Details</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)&filter=@ViewBag.Filter">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    }
+                    @{
+                        int currentPage = (int)(ViewBag.CurrentPage ?? 1);
+                        int totalPages = (int)(ViewBag.TotalPages ?? 1);
+                        int start = Math.Max(1, currentPage - 2);
+                        int end = Math.Min(totalPages, currentPage + 2);
+                    }
+                    @for (int i = start; i <= end; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="?page=@i&filter=@ViewBag.Filter">@i</a>
+                        </li>
+                    }
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)&filter=@ViewBag.Filter">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lọc nhật ký</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="get">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Từ khóa tìm kiếm</label>
+                        <input type="text" name="filter" class="form-control" value="@ViewBag.Filter"
+                               placeholder="Tìm theo thao tác, đối tượng hoặc chi tiết...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Áp dụng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function checkIP(ip) {
+            window.open(`https://www.abuseipdb.com/check/${ip}`, '_blank');
+        }
+
+        $(document).ready(function () {
+            $('#auditTable').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json'
+                },
+                order: [[0, 'desc']],
+                pageLength: 25
+            });
+
+            $('#refreshBtn').click(function () {
+                location.reload();
+            });
+
+            $('#exportBtn').click(function () {
+                alert('Chức năng xuất nhật ký đang được phát triển');
+            });
+        });
+    </script>
+}

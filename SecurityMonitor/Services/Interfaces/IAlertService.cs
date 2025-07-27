@@ -5,6 +5,7 @@ namespace SecurityMonitor.Services.Interfaces
     public interface IAlertService
     {
         Task<IEnumerable<Alert>> GetAllAlertsAsync();
+        Task<IEnumerable<Alert>> GetUserAlertsAsync(string userId);
         Task<Alert?> GetAlertByIdAsync(int id);
         Task<Alert> CreateAlertAsync(Alert alert);
         Task<Alert?> UpdateAlertAsync(int id, Alert alert);
@@ -34,5 +35,11 @@ Task<bool> AlertExistsAsync(string ip, AlertTypeId alertTypeId);
 
         // Lấy trạng thái cảnh báo theo tên
         Task<AlertStatus?> GetAlertStatusByNameAsync(string statusName);
+        
+        // Lấy danh sách các loại cảnh báo
+        Task<IEnumerable<AlertType>> GetAllAlertTypesAsync();
+        
+        // Lấy danh sách các mức độ nghiêm trọng
+        Task<IEnumerable<SeverityLevel>> GetAllSeverityLevelsAsync();
     }
 }

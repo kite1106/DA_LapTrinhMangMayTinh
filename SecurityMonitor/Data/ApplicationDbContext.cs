@@ -25,10 +25,28 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Log> Logs { get; set; } = null!;
     public DbSet<Alert> Alerts { get; set; } = null!;
     public DbSet<AuditLog> AuditLogs { get; set; } = null!;
+    public DbSet<AccountRestriction> AccountRestrictions { get; set; } = null!;
+    public DbSet<BlockedIP> BlockedIPs { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        // Account restrictions
+        builder.Entity<AccountRestriction>()
+            .HasOne(ar => ar.User)
+            .WithMany()
+            .HasForeignKey(ar => ar.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<AccountRestriction>()
+            .HasOne(ar => ar.RestrictedByUser)
+            .WithMany()
+            .HasForeignKey(ar => ar.RestrictedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // User activities
+      
 
         // Quan hệ cảnh báo với người dùng được giao
         builder.Entity<Alert>()

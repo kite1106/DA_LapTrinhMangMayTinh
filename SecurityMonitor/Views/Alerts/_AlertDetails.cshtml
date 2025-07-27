@@ -1,0 +1,111 @@
+@model SecurityMonitor.DTOs.Alerts.AlertDetailDto
+
+<div class="modal-body">
+    <div class="mb-3">
+        <label class="text-muted">ID:</label>
+        <div>@Model.Id</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="text-muted">Thời gian:</label>
+        <div>@Model.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="text-muted">Thông tin mạng:</label>
+        <div>
+            @if (!string.IsNullOrEmpty(Model.SourceIp))
+            {
+                <div><strong>IP nguồn:</strong> @Model.SourceIp</div>
+            }
+            @if (!string.IsNullOrEmpty(Model.TargetIp))
+            {
+                <div><strong>IP đích:</strong> @Model.TargetIp</div>
+            }
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="text-muted">Trạng thái:</label>
+        <div>
+            <span class="badge bg-@Model.StatusClass">@Model.Status</span>
+            <span class="badge bg-@Model.SeverityClass ms-2">@Model.SeverityLevel</span>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Description))
+    {
+        <div class="mb-3">
+            <label class="text-muted">Mô tả:</label>
+            <div>@Model.Description</div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.AssignedTo))
+    {
+        <div class="mb-3">
+            <label class="text-muted">Được giao cho:</label>
+            <div>@Model.AssignedTo</div>
+        </div>
+    }
+
+    @if (Model.ResolvedAt.HasValue)
+    {
+        <div class="mb-3">
+            <label class="text-muted">Xử lý:</label>
+            <div>
+                Đã xử lý lúc @Model.ResolvedAt?.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
+                @if (!string.IsNullOrEmpty(Model.ResolvedBy))
+                {
+                    <span>bởi @Model.ResolvedBy</span>
+                }
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Resolution))
+        {
+            <div class="mb-3">
+                <label class="text-muted">Cách xử lý:</label>
+                <div>@Model.Resolution</div>
+            </div>
+        }
+    }
+</div>
+
+<div class="modal-footer">
+    <div class="d-flex gap-2">
+        @if (Model.Status != "Resolved")
+        {
+            <button class="btn btn-warning btn-sm" onclick="assignAlert(@Model.Id)">
+                <i class="fas fa-user-check"></i> Nhận xử lý
+            </button>
+            <button class="btn btn-success btn-sm" onclick="resolveAlert(@Model.Id)">
+                <i class="fas fa-check"></i> Đánh dấu đã xử lý
+            </button>
+        }
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i> Đóng
+        </button>
+    </div>
+</div>
+
+<script>
+function assignAlert(id) {
+    $.post(`/Alerts/Assign/${id}`, function() {
+        location.reload();
+    }).fail(function(xhr) {
+        alert('Lỗi khi nhận xử lý: ' + xhr.responseText);
+    });
+}
+
+function resolveAlert(id) {
+    const resolution = prompt('Nhập cách thức đã xử lý:');
+    if (resolution) {
+        $.post(`/Alerts/Resolve/${id}`, { resolution: resolution }, function() {
+            location.reload();
+        }).fail(function(xhr) {
+            alert('Lỗi khi xử lý: ' + xhr.responseText);
+        });
+    }
+}
+</script>

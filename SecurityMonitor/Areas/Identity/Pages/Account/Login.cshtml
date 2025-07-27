@@ -1,4 +1,6 @@
 ﻿@page
+@using SecurityMonitor.Extensions
+@using SecurityMonitor.Services
 @model LoginModel
 @{
     ViewData["Title"] = "🔐 Đăng nhập hệ thống";
@@ -10,6 +12,7 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white text-center">
                     <h3 class="mb-0">🔐 Đăng nhập tài khoản</h3>
+                    <small>IP của bạn: @Model.ClientIP</small>
                 </div>
                 <div class="card-body">
                     <form id="account" method="post">

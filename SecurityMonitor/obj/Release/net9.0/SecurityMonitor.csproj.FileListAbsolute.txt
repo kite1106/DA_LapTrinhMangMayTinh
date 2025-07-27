@@ -1,0 +1,10 @@
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.csproj.AssemblyReference.cache
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.GeneratedMSBuildEditorConfig.editorconfig
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.AssemblyInfoInputs.cache
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.AssemblyInfo.cs
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.csproj.CoreCompileInputs.cache
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.MvcApplicationPartsAssemblyInfo.cs
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.MvcApplicationPartsAssemblyInfo.cache
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.RazorAssemblyInfo.cache
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.RazorAssemblyInfo.cs
+C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Release\net9.0\SecurityMonitor.sourcelink.json

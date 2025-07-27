@@ -1,8 +1,10 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SecurityMonitor.DTOs;
+using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Data;
+using SecurityMonitor.DTOs.Logs;
 using SecurityMonitor.Models;
-using SecurityMonitor.Services;
 using SecurityMonitor.Services.Interfaces;
 
 namespace SecurityMonitor.Controllers;
@@ -10,78 +12,90 @@ namespace SecurityMonitor.Controllers;
 [Authorize]
 public class LogsController : Controller
 {
-    private readonly ILogService _logService;
+    private readonly ApplicationDbContext _context;
     private readonly IAuditService _auditService;
 
-    public LogsController(ILogService logService, IAuditService auditService)
+    public LogsController(ApplicationDbContext context, IAuditService auditService)
     {
-        _logService = logService;
+        _context = context;
         _auditService = auditService;
     }
 
     // Trang danh sách logs: Views/Logs/Index.cshtml
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? source)
     {
-        var logs = await _logService.GetAllLogsAsync();
-        var dtoList = logs.Select(MapToDto).ToList();
-        return View(dtoList);
+        IQueryable<Log> query = _context.Logs
+            .Include(l => l.LogSource)
+            .OrderByDescending(l => l.Timestamp);
+
+        if (!string.IsNullOrEmpty(source) && source != "all")
+        {
+            query = query.Where(l => l.LogSource.Name.ToLower() == source.ToLower());
+        }
+
+        var logs = await query
+            .Select(l => new MyLogDto(
+                l.Timestamp,
+                l.IpAddress,
+                l.LogSource.Name,
+                l.EventType ?? "Unknown",
+                l.ProcessedAt.HasValue,
+                l.Message
+            ))
+            .ToListAsync();
+
+        return View(logs);
     }
 
     // Chi tiết 1 log: Views/Logs/Details.cshtml
     public async Task<IActionResult> Details(long id)
     {
-        var log = await _logService.GetLogByIdAsync(id);
+        var log = await _context.Logs
+            .Include(l => l.LogSource)
+            .FirstOrDefaultAsync(l => l.Id == id);
+            
         if (log == null) return NotFound();
 
         return View(MapToDto(log));
-    }
-
-    // Lọc theo nguồn
-    public async Task<IActionResult> BySource(int sourceId)
-    {
-        var logs = await _logService.GetLogsBySourceAsync(sourceId);
-        return View("Index", logs.Select(MapToDto).ToList());
-    }
-
-    // Lọc theo khoảng thời gian
-    public async Task<IActionResult> ByDateRange(DateTime start, DateTime end)
-    {
-        var logs = await _logService.GetLogsByDateRangeAsync(start, end);
-        return View("Index", logs.Select(MapToDto).ToList());
     }
 
     // Xử lý log
     [HttpPost]
     public async Task<IActionResult> Process(long id)
     {
-        await _logService.ProcessLogAsync(id);
-        return RedirectToAction("Details", new { id });
-    }
+        var log = await _context.Logs.FindAsync(id);
+        if (log == null) return NotFound();
 
-    // Tạo mới (form nhập từ Razor View)
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateLogDto createDto)
-    {
-        var log = new Log
+        log.ProcessedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        // Ghi audit log
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!string.IsNullOrEmpty(userId))
         {
-            LogSourceId = createDto.LogSourceId,
-            EventType = createDto.EventType,
-            Message = createDto.Message,
-            RawData = createDto.RawData,
-            IpAddress = createDto.IpAddress
-        };
+            await _auditService.LogActivityAsync(
+                userId: userId,
+                action: "ProcessLog",
+                entityType: "Log",
+                entityId: id.ToString(),
+                details: "Đã xử lý log");
+        }
 
-        log = await _logService.CreateLogAsync(log);
-        return RedirectToAction("Details", new { id = log.Id });
+        return RedirectToAction(nameof(Details), new { id });
     }
 
-    private static LogDto MapToDto(Log log) => new(
-        log.Id,
-        log.Timestamp,
-        log.LogSource.Name,
-        log.EventType,
-        log.Message,
-        log.IpAddress,
-        log.ProcessedAt
-    );
+    private static LogDto MapToDto(Log log)
+    {
+        return new LogDto(
+            Id: log.Id,
+            Timestamp: log.Timestamp,
+            IpAddress: log.IpAddress,
+            Message: log.Message ?? string.Empty,
+            Level: log.EventType ?? "Information",
+            SourceName: log.LogSource?.Name ?? "Unknown",
+            Details: log.RawData,
+            IsProcessed: log.ProcessedAt.HasValue,
+            ProcessedAt: log.ProcessedAt
+        );
+    }
 }

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.DependencyInjection;
 using SecurityMonitor.Data;
 using SecurityMonitor.Models;
 using SecurityMonitor.Hubs;
@@ -10,16 +12,82 @@ using SecurityMonitor.Services.Interfaces;
 using SecurityMonitor.Services.Implementation;
 using SecurityMonitor.Middleware;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cấu hình để lắng nghe trên tất cả các địa chỉ IP
-builder.WebHost.UseUrls("http://*:5100");
+// Cấu hình để lắng nghe trên tất cả các địa chỉ IP và ports
+builder.WebHost.UseUrls("http://*:5100", "https://*:5101");
 
-// Cấu hình Kestrel
+// Cấu hình Kestrel chi tiết
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.ListenAnyIP(5100);
+    // HTTP - Port 5100
+    serverOptions.ListenAnyIP(5100, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+    });
+
+    // HTTPS - Port 5101
+    serverOptions.ListenAnyIP(5101, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+        listenOptions.UseHttps();
+    });
+
+    // Cấu hình giới hạn request
+    serverOptions.Limits.MaxConcurrentConnections = 100;
+    serverOptions.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // 10 MB
+    serverOptions.Limits.MinRequestBodyDataRate = null; // Disable rate limiting for upload
+    serverOptions.Limits.MinResponseDataRate = null; // Disable rate limiting for download
+});
+
+// Cấu hình CORS với chính sách bảo mật chặt chẽ hơn
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.SetIsOriginAllowed(origin => 
+            {
+                // Chỉ cho phép các domain cụ thể
+                var allowedOrigins = new[] 
+                { 
+                    "https://localhost:5101",
+                    "http://localhost:5100",
+                    // Thêm domain của ngrok nếu cần
+                };
+                return allowedOrigins.Contains(origin);
+            })
+            .AllowCredentials()
+            .WithMethods("GET", "POST", "PUT", "DELETE") // Chỉ cho phép các methods cần thiết
+            .WithHeaders("Authorization", "Content-Type", "X-Requested-With"); // Chỉ cho phép các headers cần thiết
+    });
+});
+
+// Cấu hình ForwardedHeaders với bảo mật tốt hơn
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    // Chỉ chấp nhận các headers cần thiết
+    options.ForwardedHeaders = 
+        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+    
+    // Chỉ tin tưởng proxy của ngrok
+    options.KnownProxies.Clear();
+    options.KnownNetworks.Clear();
+    
+    // Giới hạn số lần forward để tránh tấn công
+    options.ForwardLimit = 2; // Đủ cho ngrok và 1 proxy
+    options.RequireHeaderSymmetry = true;
+    
+    // Thêm tất cả các header có thể chứa IP
+    options.ForwardedForHeaderName = "X-Forwarded-For";
+    options.ForwardedProtoHeaderName = "X-Forwarded-Proto";
+    options.ForwardedHostHeaderName = "X-Forwarded-Host";
+    options.OriginalForHeaderName = "X-Original-For";
+    options.OriginalHostHeaderName = "X-Original-Host";
+    options.OriginalProtoHeaderName = "X-Original-Proto";
 });
 
 // Kết nối DbContext
@@ -30,7 +98,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Cấu hình Identity + Role + Token provider
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     // Tắt xác thực email khi đăng ký
     options.SignIn.RequireConfirmedAccount = false;
@@ -41,52 +109,63 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredLength = 8;
-
-    // Cấu hình khóa tài khoản
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Email giả lập
-builder.Services.AddTransient<IEmailSender, FakeEmailSender>();
+// Cấu hình Identity Options
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Cấu hình Password đơn giản hơn cho môi trường test
+    options.Password.RequiredLength = 6;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    
+    // Cấu hình Lockout
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30); // Khóa 30 phút sau khi vượt quá số lần
+    options.Lockout.MaxFailedAccessAttempts = 8; // Cho phép thất bại 8 lần
+    options.Lockout.AllowedForNewUsers = true;
+    
+    // Tắt yêu cầu xác nhận email vì chưa có hệ thống email
+    options.SignIn.RequireConfirmedEmail = false;
+    
+    // Cấu hình User
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+});
 
-// Cookie login / access denied
+// Cấu hình Cookie Authentication
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-// Add HttpClient support
+// Email giả lập và các service chính
+builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
 builder.Services.AddHttpClient();
 
-// Register services
+// Register core services
 builder.Services.AddScoped<IIPCheckerService, IPCheckerService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IIPBlockingService, SecurityMonitor.Services.IPBlocking.IPBlockingService>();
+builder.Services.AddScoped<ILogSourceService, LogSourceService>();
+builder.Services.AddScoped<ILogEventService, LogEventService>();
 
 // Register background services
 builder.Services.AddSingleton<LoginMonitorService>();
 builder.Services.AddHostedService<LoginMonitorService>();
 builder.Services.AddSingleton<IIpCheckCache, IpCheckCache>();
 
-// Đăng ký cấu hình
+// Đăng ký cấu hình và IP intelligence services
 builder.Services.Configure<AbuseIPDBConfig>(
     builder.Configuration.GetSection("AbuseIPDB"));
-
-// Đăng ký services cốt lõi
-builder.Services.AddScoped<IAlertService, AlertService>();
-builder.Services.AddScoped<IAuditService, AuditService>();
-builder.Services.AddScoped<ILogService, LogService>();
-
-// Đăng ký IP threat intelligence services
 builder.Services.AddScoped<IAbuseIPDBService, SecurityMonitor.Services.Implementation.AbuseIPDBService>();
-builder.Services.AddHostedService<FakeLogGeneratorService>();
 
 // Background service cho việc kiểm tra IP định kỳ
 builder.Services.AddHostedService<IpCheckerBackgroundService>();
@@ -120,7 +199,7 @@ builder.Services.AddAuthentication()
         {
             OnMessageReceived = context =>
             {
-                var accessToken = context.Request.Query["access_token"];
+                var accessToken = context.Request.Query["access_token"].ToString();
                 var path = context.HttpContext.Request.Path;
                 if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/alertHub"))
                 {
@@ -156,29 +235,50 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
+// Serve files from wwwroot folder
 app.UseStaticFiles();
 
-app.UseRouting();
+// Serve files from lib folder
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "lib")),
+    RequestPath = "/lib"
+});
 
-app.UseAuthentication();
-app.UseAuthorization();
+// Serve files from node_modules
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "node_modules")),
+    RequestPath = "/node_modules"
+});
 
-// Add login monitoring middleware
-app.UseMiddleware<LoginMonitorMiddleware>();
+// IMPORTANT: Các middleware quan trọng phải đặt đầu tiên
+app.UseForwardedHeaders(); // Headers forwarding phải đặt trước các middleware khác
+app.UseMiddleware<DetailedRequestLoggingMiddleware>(); // Logging request
+app.UseCors(); // CORS policy
+app.UseRouting(); // Routing
+app.UseAuthentication(); // Authentication phải đặt trước Authorization
+app.UseAuthorization(); // Authorization
+app.UseMiddleware<LoginMonitorMiddleware>(); // Login monitoring
+app.UseMiddleware<SensitiveEndpointMiddleware>(); // Endpoint monitoring
 
-// Route MVC
+// Map routes directly
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Alerts}/{action=Index}/{id?}");
+app.MapRazorPages(); // Identity pages
+app.MapHub<AlertHub>("/alertHub"); // SignalR hub
 
-// Razor Pages cho Identity
-app.MapRazorPages();
-
-// SignalR hub
-app.MapHub<AlertHub>("/alertHub");
+// Khởi tạo Roles và Admin user
+using (var scope = app.Services.CreateScope())
+{
+    await RoleInitializer.InitializeAsync(scope.ServiceProvider);
+}
 
 app.Run();
 
@@ -201,6 +301,7 @@ static async Task SeedRolesAndDefaultUsersAsync(IServiceProvider services)
 
     // Tạo tài khoản mặc định
     await CreateDefaultUserAsync(userManager, "admin@gmail.com", "Admin@123", "Admin");
+    await CreateDefaultUserAsync(userManager, "kietpro@gmail.com", "Kietpro@123", "Admin");
     await CreateDefaultUserAsync(userManager, "analyst@gmail.com", "Analyst@123", "Analyst");
     await CreateDefaultUserAsync(userManager, "user@gmail.com", "User@123", "User");
 }

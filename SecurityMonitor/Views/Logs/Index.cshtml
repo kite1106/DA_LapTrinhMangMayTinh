@@ -1,0 +1,91 @@
+@model IEnumerable<SecurityMonitor.DTOs.Logs.MyLogDto>
+@{
+    ViewData["Title"] = "Nhật ký hệ thống";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0"><i class="fas fa-clipboard-list"></i> @ViewData["Title"]</h4>
+            </div>
+            <div>
+                <div class="btn-group">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-filter"></i> Nguồn
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="?source=all">Tất cả</a>
+                        <a class="dropdown-item" href="?source=system">Hệ thống</a>
+                        <a class="dropdown-item" href="?source=security">Bảo mật</a>
+                        <a class="dropdown-item" href="?source=auth">Xác thực</a>
+                    </div>
+                </div>
+                <div class="btn-group ms-2">
+                    <button class="btn btn-outline-light" id="exportLogs">
+                        <i class="fas fa-download"></i> Xuất
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>Nguồn</th>
+                            <th>IP</th>
+                            <th>Sự kiện</th>
+                            <th>Nội dung</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model)
+                        {
+                            <tr>
+                                <td>@log.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>@log.LogSourceName</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(log.IpAddress))
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <span>@log.IpAddress</span>
+                                            <a href="#" class="btn btn-sm btn-link ms-2" onclick="checkIP('@log.IpAddress')">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                </td>
+                                <td>@log.EventType</td>
+                                <td>
+                                    <span class="text-wrap">@log.Message</span>
+                                </td>
+                                <td>
+                                    <span class="badge @(log.WasSuccessful ? "bg-success" : "bg-danger")">
+                                        @(log.WasSuccessful ? "Thành công" : "Thất bại")
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function checkIP(ip) {
+            window.open(`https://www.abuseipdb.com/check/${ip}`, '_blank');
+        }
+
+        document.getElementById('exportLogs').addEventListener('click', function() {
+            // TODO: Implement export functionality
+            alert('Chức năng xuất logs đang được phát triển');
+        });
+    </script>
+}

@@ -144,6 +144,80 @@ public static class SeedData
                 );
             }
 
+            // Thêm Alerts mẫu
+            if (!context.Alerts.Any())
+            {
+                var randomUser = context.Users.FirstOrDefault(u => u.Email != "admin@securitymonitor.com");
+                if (randomUser != null)
+                {
+                    context.Alerts.AddRange(
+                        new Alert
+                        {
+                            Title = "Phát hiện tấn công SQL Injection",
+                            Description = "Phát hiện chuỗi SQL độc hại",
+                            AlertTypeId = (int)AlertTypeId.SQLInjection,
+                            SeverityLevelId = (int)SeverityLevelId.High,
+                            StatusId = (int)AlertStatusId.New,
+                            SourceIp = "189.23.45.66",
+                            Timestamp = DateTime.UtcNow.AddHours(-2),
+                            AssignedToId = randomUser.Id
+                        },
+                        new Alert
+                        {
+                            Title = "Phát hiện nhiều lần đăng nhập thất bại",
+                            Description = "Nhiều lần thử đăng nhập không thành công từ cùng một IP",
+                            AlertTypeId = (int)AlertTypeId.BruteForce,
+                            SeverityLevelId = (int)SeverityLevelId.Critical,
+                            StatusId = (int)AlertStatusId.New,
+                            SourceIp = "45.92.158.12",
+                            Timestamp = DateTime.UtcNow.AddHours(-1),
+                            AssignedToId = randomUser.Id
+                        }
+                    );
+                }
+            }
+
+            // Thêm AuditLogs mẫu
+            if (!context.AuditLogs.Any())
+            {
+                var users = context.Users.ToList();
+                foreach (var user in users)
+                {
+                    context.AuditLogs.AddRange(
+                        new AuditLog
+                        {
+                            UserId = user.Id,
+                            Action = "Login",
+                            Timestamp = DateTime.UtcNow.AddHours(-3),
+                            IpAddress = "192.168.1.100",
+                            EntityType = "Authentication",
+                            EntityId = user.Id,
+                            Details = "Đăng nhập thành công"
+                        },
+                        new AuditLog
+                        {
+                            UserId = user.Id,
+                            Action = "PasswordChange",
+                            Timestamp = DateTime.UtcNow.AddHours(-2),
+                            IpAddress = "192.168.1.100",
+                            EntityType = "Authentication",
+                            EntityId = user.Id,
+                            Details = "Đổi mật khẩu thành công"
+                        },
+                        new AuditLog
+                        {
+                            UserId = user.Id,
+                            Action = "Login",
+                            Timestamp = DateTime.UtcNow.AddMinutes(-30),
+                            IpAddress = "192.168.1.100",
+                            EntityType = "Authentication",
+                            EntityId = user.Id,
+                            Details = "Đăng nhập thành công"
+                        }
+                    );
+                }
+            }
+
             context.SaveChanges();
         }
     }

@@ -1,0 +1,112 @@
+@model IEnumerable<SecurityMonitor.DTOs.Logs.MyLogDto>
+
+@{
+    ViewData["Title"] = "Lịch sử hoạt động";
+    Layout = "_UserLayout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0"><i class="fas fa-history"></i> @ViewData["Title"]</h4>
+            </div>
+            <div>
+                <div class="btn-group">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-filter"></i> Lọc
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="?filter=all">Tất cả</a>
+                        <a class="dropdown-item" href="?filter=success">Thành công</a>
+                        <a class="dropdown-item" href="?filter=failed">Thất bại</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>IP</th>
+                            <th>Nguồn</th>
+                            <th>Sự kiện</th>
+                            <th>Trạng thái</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model)
+                        {
+                            <tr>
+                                <td>@log.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(log.IpAddress))
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <span>@log.IpAddress</span>
+                                            <a href="#" class="btn btn-sm btn-link ms-2" onclick="checkIP('@log.IpAddress')">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                </td>
+                                <td>@log.LogSourceName</td>
+                                <td>@log.EventType</td>
+                                <td>
+                                    <span class="badge @(log.WasSuccessful ? "bg-success" : "bg-danger")">
+                                        @(log.WasSuccessful ? "Thành công" : "Thất bại")
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(log.Message))
+                                    {
+                                        <span class="text-muted">@log.Message</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    }
+                    @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="?page=@i">@i</a>
+                        </li>
+                    }
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function checkIP(ip) {
+            window.open(`https://www.abuseipdb.com/check/${ip}`, '_blank');
+        }
+    </script>
+}

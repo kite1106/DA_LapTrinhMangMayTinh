@@ -1,0 +1,206 @@
+@model SecurityMonitor.DTOs.Security.SecurityMetricsDto
+
+@{
+    ViewData["Title"] = "Security Metrics";
+}
+
+<div class="container-fluid">
+    <h2>Security Metrics</h2>
+    <p class="text-muted">Monitoring window: @Model.TimeWindow | Last updated: @Model.SystemStats.LastUpdateTime.ToString("yyyy-MM-dd HH:mm:ss UTC")</p>
+
+    <div class="row">
+        <!-- System Stats Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">System Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h6>Total Requests</h6>
+                            <p class="h3">@Model.SystemStats.TotalRequests</p>
+                        </div>
+                        <div class="col-6">
+                            <h6>Error Count</h6>
+                            <p class="h3 @(Model.SystemStats.ErrorCount > 0 ? "text-danger" : "")">
+                                @Model.SystemStats.ErrorCount
+                            </p>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <h6>Unique Users</h6>
+                            <p class="h3">@Model.SystemStats.UniqueUsers</p>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <h6>Max Consecutive Errors</h6>
+                            <p class="h3 @(Model.SystemStats.MaxConsecutiveErrors > 3 ? "text-danger" : "")">
+                                @Model.SystemStats.MaxConsecutiveErrors
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anomalies Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Detected Anomalies</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Anomalies.Any())
+                    {
+                        <p class="text-success">No anomalies detected</p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Severity</th>
+                                        <th>Description</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var anomaly in Model.Anomalies)
+                                    {
+                                        <tr class="@(anomaly.Severity == "High" ? "table-danger" : "table-warning")">
+                                            <td>@anomaly.Type</td>
+                                            <td>@anomaly.Severity</td>
+                                            <td>@anomaly.Description</td>
+                                            <td>@anomaly.Timestamp.ToString("HH:mm:ss")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Endpoint Metrics Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Endpoint Access Metrics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Endpoint</th>
+                                    <th>Access Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var endpoint in Model.EndpointMetrics.OrderByDescending(e => e.Value))
+                                {
+                                    <tr>
+                                        <td>@endpoint.Key</td>
+                                        <td>@endpoint.Value</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Alerts Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Security Alerts</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.SecurityAlerts.Any())
+                    {
+                        <p class="text-success">No recent security alerts</p>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Level</th>
+                                        <th>Source</th>
+                                        <th>Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var alert in Model.SecurityAlerts)
+                                    {
+                                        <tr class="@(alert.Level == "Error" ? "table-danger" : "table-warning")">
+                                            <td>@alert.Timestamp.ToString("HH:mm:ss")</td>
+                                            <td>@alert.Level</td>
+                                            <td>@alert.Source</td>
+                                            <td>@alert.Message</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Behavior Metrics Card -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">User Behavior Metrics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Request Count</th>
+                                    <th>Unique Endpoints</th>
+                                    <th>Error Count</th>
+                                    <th>Last Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.UserBehaviorMetrics.OrderByDescending(u => u.RequestCount))
+                                {
+                                    <tr class="@(user.ErrorCount > 5 ? "table-warning" : "")">
+                                        <td>@user.UserId</td>
+                                        <td>@user.RequestCount</td>
+                                        <td>@user.UniqueEndpoints</td>
+                                        <td>@user.ErrorCount</td>
+                                        <td>@user.LastActivity.ToString("HH:mm:ss")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-refresh the page every 5 minutes
+        setTimeout(function() {
+            location.reload();
+        }, 300000);
+    </script>
+}

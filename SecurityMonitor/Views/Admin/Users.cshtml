@@ -1,0 +1,120 @@
+@model List<SecurityMonitor.DTOs.UserDto>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0"><i class="fas fa-users"></i> @ViewData["Title"]</h4>
+            </div>
+            <div>
+                <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">
+                    <i class="fas fa-download"></i> Xuất danh sách
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="usersTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Email</th>
+                            <th>Họ tên</th>
+                            <th>Xác thực</th>
+                            <th>Lần đăng nhập</th>
+                            <th>Đăng nhập cuối</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Email</td>
+                                <td>@user.FullName</td>
+                                <td>
+                                    @if (user.IsEmailConfirmed)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check"></i> Đã xác thực
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-clock"></i> Chưa xác thực
+                                        </span>
+                                    }
+                                </td>
+                                <td>@user.LoginCount lần</td>
+                                <td>
+                                    @if (user.LastLoginTime.HasValue)
+                                    {
+                                        var localTime = user.LastLoginTime.Value.ToLocalTime();
+                                        var timeAgo = DateTime.Now - localTime;
+                                        if (timeAgo.TotalMinutes < 60)
+                                        {
+                                            <span title="@localTime.ToString("dd/MM/yyyy HH:mm:ss")">@Math.Round(timeAgo.TotalMinutes) phút trước</span>
+                                        }
+                                        else if (timeAgo.TotalHours < 24)
+                                        {
+                                            <span title="@localTime.ToString("dd/MM/yyyy HH:mm:ss")">@Math.Round(timeAgo.TotalHours) giờ trước</span>
+                                        }
+                                        else
+                                        {
+                                            <span title="@localTime.ToString("dd/MM/yyyy HH:mm:ss")">@localTime.ToString("dd/MM HH:mm")</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa đăng nhập</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <form asp-action="LockUser" method="post" style="display: inline">
+                                                <input type="hidden" name="id" value="@user.Id" />
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="fas fa-lock"></i> Khóa tài khoản
+                                                </button>
+                                            </form>
+                                            <form asp-action="UnlockUser" method="post" style="display: inline">
+                                                <input type="hidden" name="id" value="@user.Id" />
+                                                <button type="submit" class="dropdown-item text-success">
+                                                    <i class="fas fa-unlock"></i> Mở khóa
+                                                </button>
+                                            </form>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" asp-action="ResetPassword" asp-route-id="@user.Id">
+                                                <i class="fas fa-key"></i> Đặt lại mật khẩu
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#usersTable').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json'
+                }
+            });
+        });
+    </script>
+}

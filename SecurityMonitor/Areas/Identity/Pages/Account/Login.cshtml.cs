@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services;
+using SecurityMonitor.Extensions;
 
 namespace SecurityMonitor.Areas.Identity.Pages.Account
 {
@@ -36,30 +37,37 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public required InputModel Input { get; set; }
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public required IList<AuthenticationScheme> ExternalLogins { get; set; } = new List<AuthenticationScheme>();
 
-        public string ReturnUrl { get; set; }
+        public required string ReturnUrl { get; set; } = "/";
 
         [TempData]
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
+
+        public string ClientIP { get; private set; } = "unknown";
+
+        private string GetClientIP()
+        {
+            return HttpContext.GetClientIP();
+        }
 
         public class InputModel
         {
             [Required]
             [EmailAddress]
-            public string Email { get; set; }
+            public required string Email { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
-            public string Password { get; set; }
+            public required string Password { get; set; }
 
             [Display(Name = "Ghi nhớ đăng nhập")]
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string? returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -70,14 +78,20 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
 
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
+            // Lấy IP của client
+            ClientIP = GetClientIP();
+
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl = "/Account/RedirectAfterLogin";
+
+            // Cập nhật IP của client
+            ClientIP = GetClientIP();
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -86,12 +100,18 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
 
                 // Ghi nhận kết quả đăng nhập
-                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                var ipAddress = GetClientIP();
                 await _loginMonitor.RecordLoginAttemptAsync(ipAddress, result.Succeeded, Input.Email);
 
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(Input.Email);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
+
                     var roles = await _userManager.GetRolesAsync(user);
 
                     // ✅ Gán role "User" nếu chưa có
@@ -102,18 +122,18 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account
                     }
 
                     // ✅ Cập nhật thời gian đăng nhập
-                    user.LastLoginAt = DateTime.Now;
+                    user.LastLoginTime = DateTime.UtcNow;
                     await _userManager.UpdateAsync(user);
 
                     _logger.LogInformation("User logged in.");
 
                     // ✅ Điều hướng theo role
                     if (roles.Contains("Admin"))
-                        return LocalRedirect("/Dashboard/Admin");
+                        return LocalRedirect("/Admin/Index");
                     if (roles.Contains("Analyst"))
-                        return LocalRedirect("/Dashboard/Analyst");
+                        return LocalRedirect("/Analyst/Index");
 
-                    return LocalRedirect("/Dashboard/UserDashboard");
+                    return LocalRedirect("/User/Index");
                 }
 
                 if (result.RequiresTwoFactor)

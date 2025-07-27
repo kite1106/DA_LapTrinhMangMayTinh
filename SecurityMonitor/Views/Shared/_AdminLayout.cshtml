@@ -1,0 +1,104 @@
+@*
+    Layout dành cho khu vực Admin
+    Đảm bảo các thư viện CSS/JS được nạp đầy đủ (Bootstrap, jQuery, FontAwesome, Toastr, DataTables)
+*@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Security Monitor (Admin)</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="bg-dark text-white" style="width: 250px; min-height: 100vh;">
+            <div class="p-3">
+                <h5 class="text-white">Security Monitor</h5>
+                <hr />
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-controller="Admin" asp-action="Index">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-controller="Alerts" asp-action="Index">
+                            <i class="fas fa-bell"></i> Alerts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-controller="IPBlocking" asp-action="Index">
+                            <i class="fas fa-ban"></i> Chặn IP
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-controller="Admin" asp-action="Users">
+                            <i class="fas fa-users"></i> Quản lý người dùng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-controller="Logs" asp-action="Index">
+                            <i class="fas fa-list"></i> Nhật ký hệ thống
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-controller="Audit" asp-action="Index">
+                            <i class="fas fa-history"></i> Nhật ký hoạt động
+                        </a>
+                    </li>
+                </ul>
+                <hr />
+                <div class="text-center">
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-grow-1">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <h4 class="mb-0">@ViewData["Title"]</h4>
+                </div>
+            </nav>
+
+            <div class="container-fluid p-4">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/lib/toastr/toastr.min.js"></script>
+
+    <!-- SignalR -->
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+    <!-- Custom site script -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
