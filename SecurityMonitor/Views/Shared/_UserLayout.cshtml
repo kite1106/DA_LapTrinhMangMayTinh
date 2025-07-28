@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @await RenderSectionAsync("Styles", required: false)
     <style>
         .sidebar {
@@ -39,6 +41,84 @@
     </style>
 </head>
 <body>
+    <script>
+        window.currentUserName = '@User.Identity?.Name';
+        window.isRestricted = @(User.Identity != null && ((System.Security.Claims.ClaimsPrincipal)User).HasClaim("IsRestricted", "true") ? "true" : "false");
+
+        // Hiển thị thông báo và chặn điều hướng nếu tài khoản bị hạn chế
+        function showRestrictionMessage() {
+            if (window.toastr) {
+                toastr.warning('Tài khoản của bạn đang bị hạn chế. Bạn chỉ có thể xem trang cảnh báo.');
+            } else {
+                alert('Tài khoản của bạn đang bị hạn chế. Bạn chỉ có thể xem trang cảnh báo.');
+            }
+        }
+
+        if (window.isRestricted === true) {
+            // Hiển thị thông báo ngay khi trang được tải
+            document.addEventListener('DOMContentLoaded', function() {
+                showRestrictionMessage();
+                // Nếu không ở trang alerts, chuyển hướng ngay lập tức
+                if (!window.location.pathname.startsWith('/alerts')) {
+                    window.location.href = '/alerts';
+                }
+            });
+            // Chặn tất cả các sự kiện click trên links
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a');
+                if (link) {
+                    const href = link.getAttribute('href');
+                    // Cho phép chỉ trang alerts và đăng xuất
+                    if (href && !href.startsWith('/alerts') && !href.includes('logout') && !href.includes('/Identity/Account/Logout')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Hiển thị thông báo
+                        showRestrictionMessage();
+                        window.location.href = '/alerts';
+                        return false;
+                    }
+                }
+            }, true);
+
+            // Chặn người dùng sử dụng nút back/forward của trình duyệt
+            window.addEventListener('popstate', function(e) {
+                if (!window.location.pathname.startsWith('/alerts')) {
+                    e.preventDefault();
+                    window.location.href = '/alerts';
+                }
+            });
+
+            // Chặn điều hướng trực tiếp bằng URL
+            window.addEventListener('beforeunload', function(e) {
+                const currentPath = window.location.pathname;
+                if (!currentPath.startsWith('/alerts') && !currentPath.includes('logout')) {
+                    window.location.href = '/alerts';
+                }
+            });
+
+            // Chặn history.pushState và replaceState
+            const originalPushState = history.pushState;
+            const originalReplaceState = history.replaceState;
+            
+            history.pushState = function() {
+                const url = arguments[2];
+                if (url && !url.startsWith('/alerts') && !url.includes('logout')) {
+                    window.location.href = '/alerts';
+                    return;
+                }
+                return originalPushState.apply(this, arguments);
+            };
+
+            history.replaceState = function() {
+                const url = arguments[2];
+                if (url && !url.startsWith('/alerts') && !url.includes('logout')) {
+                    window.location.href = '/alerts';
+                    return;
+                }
+                return originalReplaceState.apply(this, arguments);
+            };
+        }
+    </script>
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="bg-white sidebar">
@@ -113,6 +193,33 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Cấu hình toastr
+        if (window.toastr) {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+                "preventDuplicates": false
+            };
+        }
+
+        // Hiển thị thông báo định kỳ nếu tài khoản bị hạn chế
+        if (window.isRestricted === true) {
+            // Hiển thị thông báo mỗi 30 giây
+            setInterval(function() {
+                if (window.toastr) {
+                    toastr.warning('Tài khoản của bạn đang bị hạn chế. Bạn chỉ có thể xem trang cảnh báo.');
+                }
+            }, 30000);
+
+            // Chuyển hướng về alerts nếu không ở trang alerts
+            if (!window.location.pathname.startsWith('/alerts')) {
+                window.location.href = '/alerts';
+            }
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

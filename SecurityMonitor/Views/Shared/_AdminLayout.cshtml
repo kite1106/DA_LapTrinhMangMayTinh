@@ -42,6 +42,7 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" asp-controller="Alerts" asp-action="Index">
                             <i class="fas fa-bell"></i> Alerts
+                            <span class="badge bg-danger alert-count">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -50,7 +51,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Admin" asp-action="Users">
+                        <a class="nav-link text-white" asp-controller="UserAdmin" asp-action="Index">
                             <i class="fas fa-users"></i> Quản lý người dùng
                         </a>
                     </li>
@@ -96,9 +97,35 @@
     <!-- SignalR -->
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
+    <!-- Init script -->
+    <script src="~/js/init.js" asp-append-version="true"></script>
+    
     <!-- Custom site script -->
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Alert Sound -->
+    <audio id="alertSound" preload="auto">
+        <source src="~/sounds/alert.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- Alerts Container -->
+    <div id="alertsContainer" style="display:none;">
+        <!-- Alerts will be inserted here -->
+    </div>
+
+    <!-- SignalR Connection Status -->
+    <div id="signalRStatus" class="position-fixed bottom-0 end-0 p-3">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">SignalR Status</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                <span id="connectionStatus">Đang kết nối...</span>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

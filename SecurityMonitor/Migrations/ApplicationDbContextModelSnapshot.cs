@@ -349,6 +349,9 @@ namespace SecurityMonitor.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsRestricted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastLoginIP")
                         .HasColumnType("nvarchar(max)");
 

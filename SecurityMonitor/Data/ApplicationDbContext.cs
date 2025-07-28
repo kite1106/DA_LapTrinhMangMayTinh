@@ -26,6 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Alert> Alerts { get; set; } = null!;
     public DbSet<AuditLog> AuditLogs { get; set; } = null!;
     public DbSet<AccountRestriction> AccountRestrictions { get; set; } = null!;
+    public DbSet<AccountRestrictionEvent> AccountRestrictionEvents { get; set; } = null!;
     public DbSet<BlockedIP> BlockedIPs { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -45,8 +46,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(ar => ar.RestrictedBy)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // User activities
-      
+        // Account restriction events
+        builder.Entity<AccountRestrictionEvent>()
+            .HasOne(are => are.User)
+            .WithMany()
+            .HasForeignKey(are => are.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+            
+        builder.Entity<AccountRestrictionEvent>()
+            .HasIndex(are => are.Timestamp);
 
         // Quan hệ cảnh báo với người dùng được giao
         builder.Entity<Alert>()

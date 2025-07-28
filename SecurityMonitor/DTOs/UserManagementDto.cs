@@ -9,6 +9,7 @@ namespace SecurityMonitor.DTOs
         public string Email { get; set; }
         public string UserName { get; set; }
         public bool IsLocked { get; set; }
+        public bool IsRestricted { get; set; }
         public DateTimeOffset? LockoutEnd { get; set; }
         public DateTime? LastLoginTime { get; set; }
         public int FailedAccessCount { get; set; }
