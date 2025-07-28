@@ -9,6 +9,8 @@ using SecurityMonitor.Extensions;
 using SecurityMonitor.Services.Implementation;
 using Microsoft.Extensions.DependencyInjection;
 using SecurityMonitor.Services.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using SecurityMonitor.Hubs;
 
 namespace SecurityMonitor.Middleware
 {
@@ -59,10 +61,16 @@ namespace SecurityMonitor.Middleware
             return false;
         }
 
-        public LoginMonitorMiddleware(RequestDelegate next, ILogger<LoginMonitorMiddleware> logger)
+        private readonly IHubContext<AlertHub> _alertHub;
+        
+        public LoginMonitorMiddleware(
+            RequestDelegate next, 
+            ILogger<LoginMonitorMiddleware> logger,
+            IHubContext<AlertHub> alertHub)
         {
             _next = next;
             _logger = logger;
+            _alertHub = alertHub;
         }
 
         private string GetClientIpAddress(HttpContext context)
@@ -180,15 +188,36 @@ namespace SecurityMonitor.Middleware
 
                 // Log audit
                 var userId = context.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                
+                // Kiểm tra số lần đăng nhập sai trước đó
+                var failedLoginService = scope.ServiceProvider.GetRequiredService<IFailedLoginService>();
+                var failedAttempts = await failedLoginService.GetFailedAttemptsAsync(ipAddress);
+                
+                if (failedAttempts > 0)
+                {
+                    // Gửi thông báo qua SignalR về việc đăng nhập thành công sau nhiều lần thất bại
+                    await _alertHub.Clients.All.SendAsync("ReceiveLoginAlert", new
+                    {
+                        title = "Đăng nhập thành công sau nhiều lần thất bại",
+                        description = $"Người dùng {username} đã đăng nhập thành công sau {failedAttempts} lần thất bại từ IP: {ipAddress}",
+                        email = username,
+                        ip = ipAddress,
+                        failedAttempts = failedAttempts,
+                        severity = failedAttempts > 5 ? "High" : "Medium",
+                        timestamp = DateTime.Now
+                    });
+                }
+
                 await auditService.LogActivityAsync(
                     userId: userId ?? "anonymous",
                     action: "Login Success",
                     entityType: "Authentication",
                     entityId: username,
-                    details: $"User {username} logged in from {ipAddress}",
+                    details: $"User {username} logged in from {ipAddress} after {failedAttempts} failed attempts",
                     ipAddress: ipAddress);
 
-                _logger.LogInformation("👤 Người dùng {Username} đăng nhập từ IP {IP}", username, ipAddress);
+                _logger.LogInformation("👤 Người dùng {Username} đăng nhập từ IP {IP} sau {FailedAttempts} lần thất bại", 
+                    username, ipAddress, failedAttempts);
 
                 // Kiểm tra IP có đáng ngờ không
                 var alerts = await ipCheckerService.CheckIPAsync(ipAddress);

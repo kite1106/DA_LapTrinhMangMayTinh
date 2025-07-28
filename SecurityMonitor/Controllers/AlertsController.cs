@@ -45,6 +45,9 @@ public class AlertsController : Controller
                 }
                 alerts = await _alertService.GetUserAlertsAsync(userId);
             }
+
+            // Thêm ViewBag để báo hiệu có sử dụng SignalR
+            ViewBag.UseSignalR = true;
             
             var alertDtos = alerts.Select(alert => new AlertListDto
             {

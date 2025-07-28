@@ -50,14 +50,8 @@ builder.Services.AddCors(options =>
     {
         builder.SetIsOriginAllowed(origin => 
             {
-                // Chỉ cho phép các domain cụ thể
-                var allowedOrigins = new[] 
-                { 
-                    "https://localhost:5101",
-                    "http://localhost:5100",
-                    // Thêm domain của ngrok nếu cần
-                };
-                return allowedOrigins.Contains(origin);
+                // Cho phép tất cả origin vì đang trong môi trường phát triển
+                return true;
             })
             .AllowCredentials()
             .WithMethods("GET", "POST", "PUT", "DELETE") // Chỉ cho phép các methods cần thiết
@@ -153,9 +147,14 @@ builder.Services.AddScoped<IIPCheckerService, IPCheckerService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IFailedLoginService, FailedLoginService>();
 builder.Services.AddScoped<IIPBlockingService, SecurityMonitor.Services.IPBlocking.IPBlockingService>();
 builder.Services.AddScoped<ILogSourceService, LogSourceService>();
 builder.Services.AddScoped<ILogEventService, LogEventService>();
+
+// Add Memory Cache
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IUserCacheService, UserCacheManager>();
 
 // Register background services
 builder.Services.AddSingleton<LoginMonitorService>();
@@ -269,10 +268,21 @@ app.UseMiddleware<SensitiveEndpointMiddleware>(); // Endpoint monitoring
 
 // Map routes directly
 app.MapControllerRoute(
+    name: "accountManagement",
+    pattern: "AccountManagement/{action=Index}/{id?}",
+    defaults: new { controller = "AccountManagement" });
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Alerts}/{action=Index}/{id?}");
+    pattern: "{controller}/{action=Index}/{id?}",
+    defaults: new { controller = "Alerts" });
 app.MapRazorPages(); // Identity pages
-app.MapHub<AlertHub>("/alertHub"); // SignalR hub
+app.MapHub<AlertHub>("/alertHub"); // SignalR hub for alerts
+app.MapHub<AccountHub>("/accountHub"); // SignalR hub for account status
 
 // Khởi tạo Roles và Admin user
 using (var scope = app.Services.CreateScope())

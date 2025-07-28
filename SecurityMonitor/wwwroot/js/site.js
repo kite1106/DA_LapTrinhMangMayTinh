@@ -1,32 +1,85 @@
-﻿// Initialize SignalR connection
+﻿// Initialize SignalR connections
 const initializeSignalR = () => {
-    const connection = new signalR.HubConnectionBuilder()
+    // Account Hub connection
+    const accountConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/accountHub")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    // Alert Hub connection
+    const alertConnection = new signalR.HubConnectionBuilder()
         .withUrl("/alertHub")
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
-    connection.on("ReceiveAlert", (alert) => {
-        // Update counts if on dashboard
-        const alertCountElement = document.getElementById('activeAlerts');
-        if (alertCountElement) {
-            const currentCount = parseInt(alertCountElement.innerText);
-            alertCountElement.innerText = currentCount + 1;
-        }
+    // Handle login alerts
+    alertConnection.on("ReceiveLoginAlert", (alert) => {
+        // Play alert sound
+        const audio = new Audio('/sounds/alert.mp3');
+        audio.play();
 
-        // Show notification
-        if (alert.severity === 'Critical') {
-            toastr.error(alert.message, 'Cảnh báo nghiêm trọng', {
-                timeOut: 0,
-                extendedTimeOut: 0,
-                closeButton: true
-            });
-        } else if (alert.severity === 'High') {
-            toastr.warning(alert.message, 'Cảnh báo mức độ cao');
+        // Show alert notification
+        toastr.warning(alert.description, alert.title, {
+            timeOut: 0,  // Không tự động ẩn
+            extendedTimeOut: 0,
+            closeButton: true,
+            tapToDismiss: false
+        });
+
+        // If on alerts page, update the alerts table
+        if (window.location.pathname.includes('/alerts')) {
+            // Reload the alerts table if it exists
+            if ($.fn.DataTable.isDataTable('#alertsTable')) {
+                $('#alertsTable').DataTable().ajax.reload();
+            }
         }
     });
 
-    connection.start().catch(err => console.error('SignalR Connection Error:', err));
-    return connection;
+    accountConnection.on("ReceiveAlert", (alert) => {
+        // Existing alert handling code
+    });
+
+    // Lắng nghe sự kiện cập nhật trạng thái user
+    connection.on("UserStatusUpdated", (userName, isLocked, userId) => {
+        const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
+        if (!currentUser || userName !== currentUser) return;
+        
+        if (isLocked) {
+            toastr.error('Tài khoản của bạn đã bị khóa. Bạn sẽ được đăng xuất sau 3 giây.', 'Thông báo');
+            setTimeout(() => {
+                $.post('/Login/Logout', {}, function() {
+                    window.location.href = '/Login/Index';
+                });
+            }, 3000);
+        }
+    });
+
+    // Lắng nghe sự kiện tài khoản bị hạn chế
+    connection.on("UserRestricted", (userName, reason, userId) => {
+        const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
+        if (!currentUser || userName !== currentUser) return;
+        
+        toastr.warning(`Tài khoản của bạn đã bị hạn chế. Lý do: ${reason}`, 'Thông báo');
+        setTimeout(() => {
+            window.location.href = '/Alerts/Index';
+        }, 3000);
+    });
+
+    // Lắng nghe sự kiện tài khoản được bỏ hạn chế
+    connection.on("UserUnrestricted", (userName, userId) => {
+        const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
+        if (!currentUser || userName !== currentUser) return;
+        
+        toastr.success('Tài khoản của bạn đã được bỏ hạn chế', 'Thông báo');
+    });
+
+    // Start both connections
+    Promise.all([
+        accountConnection.start(),
+        alertConnection.start()
+    ]).catch(err => console.error('SignalR Connection Error:', err));
+
+    return { accountConnection, alertConnection };
 };
 
 // Global AJAX error handler

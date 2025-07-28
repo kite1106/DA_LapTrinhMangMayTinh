@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Data;
 using SecurityMonitor.DTOs;
 using SecurityMonitor.DTOs.Dashboard;
 using SecurityMonitor.DTOs.Security;
+using SecurityMonitor.Hubs;
 using SecurityMonitor.Models;
 using SecurityMetricsDto = SecurityMonitor.DTOs.Security.SecurityMetricsDto;
 using SystemStatsDto = SecurityMonitor.DTOs.Security.SystemStatsDto;
@@ -306,23 +308,9 @@ namespace SecurityMonitor.Controllers
             return RedirectToAction(nameof(BlockedIPs));
         }
 
-        // GET: Admin/Users
-        public async Task<IActionResult> Users()
-        {
-            var users = await _userManager.Users
-                .Select(u => new UserDto
-                {
-                    Id = u.Id,
-                    Email = u.Email ?? "no-email",
-                    FullName = u.FullName ?? u.UserName, // Use FullName if available, otherwise UserName
-                    IsEmailConfirmed = u.EmailConfirmed,
-                    LastLoginTime = u.LastLoginTime,
-                    LoginCount = 0 // Since we don't track login count, defaulting to 0
-                })
-                .ToListAsync();
+        // Removed duplicate Users action - now handled by AccountManagementController
 
-            return View(users);
-        }
+        // Removed duplicate LockUser and UnlockUser methods - now handled by AccountManagementController
 
         private int GetMaxConsecutiveErrors(List<AuditLog> errors)
         {
