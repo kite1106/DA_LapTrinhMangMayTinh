@@ -11,6 +11,7 @@ using SecurityMonitor.Services;
 using SecurityMonitor.Services.Interfaces;
 using SecurityMonitor.Services.Implementation;
 using SecurityMonitor.Middleware;
+// using SecurityMonitor.Models.Configuration; // Đã xóa SematextConfig
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -151,6 +152,8 @@ builder.Services.AddScoped<IFailedLoginService, FailedLoginService>();
 builder.Services.AddScoped<IIPBlockingService, SecurityMonitor.Services.IPBlocking.IPBlockingService>();
 builder.Services.AddScoped<ILogSourceService, LogSourceService>();
 builder.Services.AddScoped<ILogEventService, LogEventService>();
+// LogSenderService đã được xóa
+builder.Services.AddScoped<ILogAnalysisService, LogAnalysisService>();
 
 // Add Memory Cache
 builder.Services.AddMemoryCache();
@@ -161,10 +164,16 @@ builder.Services.AddSingleton<LoginMonitorService>();
 builder.Services.AddHostedService<LoginMonitorService>();
 builder.Services.AddSingleton<IIpCheckCache, IpCheckCache>();
 
+// Register real-time update service
+builder.Services.AddScoped<IRealTimeUpdateService, RealTimeUpdateService>();
+builder.Services.AddHostedService<RealTimeUpdateBackgroundService>();
+
 // Đăng ký cấu hình và IP intelligence services
 builder.Services.Configure<AbuseIPDBConfig>(
     builder.Configuration.GetSection("AbuseIPDB"));
 builder.Services.AddScoped<IAbuseIPDBService, SecurityMonitor.Services.Implementation.AbuseIPDBService>();
+
+// Đăng ký cấu hình Sematext đã được xóa
 
 // Background service cho việc kiểm tra IP định kỳ
 builder.Services.AddHostedService<IpCheckerBackgroundService>();
@@ -265,6 +274,9 @@ app.UseAuthentication(); // Authentication phải đặt trước Authorization
 app.UseAuthorization(); // Authorization
 app.UseMiddleware<LoginMonitorMiddleware>(); // Login monitoring
 app.UseMiddleware<SensitiveEndpointMiddleware>(); // Endpoint monitoring
+app.UseIdentityLogging(); // Logging Identity actions
+app.UseSimpleRequestLogging(); // Simple request logging for debugging
+app.UseRestrictedUserCheck(); // Kiểm tra user bị hạn chế
 
 // Map routes directly
 app.MapControllerRoute(

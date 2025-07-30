@@ -6,132 +6,287 @@
 }
 
 <div class="container-fluid mt-4">
-    <!-- Thống kê tổng quan -->
-    <div class="row">
-        <!-- Card Tổng số người dùng -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="@Url.Action("Index", "User")" class="text-decoration-none">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Tổng số người dùng</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalUsersCount</div>
+    <!-- HUTECH Logo and Group Info -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <div class="text-center">
+                                    <div class="hutech-logo mb-2">
+                                        <div class="shield-logo">
+                                            <div class="shield-top">
+                                                <span class="hutech-text">HUTECH</span>
+                                                <span class="university-text">University</span>
+                                            </div>
+                                            <div class="shield-bottom">
+                                                <div class="torch-flame"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h5 class="text-primary mb-1">HUTECH University</h5>
+                                    <p class="text-muted mb-0">Ho Chi Minh City University of Technology</p>
+                                </div>
                             </div>
-                            <div class="col-auto">
-                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <div class="text-center">
+                                    <h4 class="text-success mb-1">Nhóm 8</h4>
+                                    <h3 class="text-warning mb-2">Bò Kho</h3>
+                                    <p class="text-muted mb-0">Security Monitor Project</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
+    </div>
 
-        <!-- Card Tổng số cảnh báo -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="@Url.Action("Index", "Alerts")" class="text-decoration-none">
-                <div class="card border-left-warning shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Cảnh báo</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalAlertsCount</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-bell fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-tachometer-alt"></i> Dashboard Quản trị
+        </h1>
+        <div>
+            <a href="@Url.Action("Index", "Alerts")" class="btn btn-warning btn-sm">
+                <i class="fas fa-exclamation-triangle"></i> Xem Cảnh báo
             </a>
-        </div>
-
-        <!-- Card IP bị chặn -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="@Url.Action("Index", "IPBlocking")" class="text-decoration-none">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    IP bị chặn</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BlockedIPsCount</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-ban fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Card Nhật ký hệ thống -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="@Url.Action("Index", "Logs")" class="text-decoration-none">
-                <div class="card border-left-info shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    Nhật ký hệ thống</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalLogsCount</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <a href="@Url.Action("Index", "UserAdmin")" class="btn btn-primary btn-sm">
+                <i class="fas fa-users"></i> Quản lý User
             </a>
         </div>
     </div>
 
-    <!-- Nội dung chính -->
+    <!-- Thống kê tổng quan -->
     <div class="row">
-        <!-- Biểu đồ cảnh báo -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Thống kê cảnh báo theo thời gian</h6>
-                </div>
+        <!-- Card Tổng số người dùng -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="alertsChart"></canvas>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Tổng số người dùng</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalUsersCount</div>
+                            <div class="text-xs text-muted">Đang hoạt động</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Biểu đồ tròn phân bố cảnh báo -->
-        <div class="col-xl-4 col-lg-5">
+        <!-- Card Tổng số cảnh báo -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Cảnh báo</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalAlertsCount</div>
+                            <div class="text-xs text-muted">Cần xử lý</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-bell fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card IP bị chặn -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                IP bị chặn</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BlockedIPsCount</div>
+                            <div class="text-xs text-muted">Đang bị chặn</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ban fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Nhật ký hệ thống -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Nhật ký hệ thống</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalLogsCount</div>
+                            <div class="text-xs text-muted">Đã ghi nhận</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ và thống kê -->
+    <div class="row">
+        <!-- Biểu đồ cảnh báo theo thời gian -->
+        <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Phân bố loại cảnh báo</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-line"></i> Cảnh báo theo thời gian (7 ngày)
+                    </h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="alertTypesChart"></canvas>
-                    </div>
+                    <canvas id="alertsChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biểu đồ phân bố loại cảnh báo -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-pie"></i> Phân bố loại cảnh báo
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="alertTypesChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Security Metrics -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow">
+    <div class="row">
+        <!-- Endpoint nhạy cảm -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-shield-alt me-2"></i>
-                        Chỉ số an ninh chi tiết
+                    <h6 class="m-0 font-weight-bold text-warning">
+                        <i class="fas fa-shield-alt"></i> Endpoint Nhạy cảm (24h)
                     </h6>
                 </div>
                 <div class="card-body">
-                    @await Html.PartialAsync("_SecurityMetricsPartial", Model.SecurityMetrics)
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="h4 text-warning">@Model.SecurityMetrics.SensitiveEndpoints.TotalAccessAttempts</div>
+                            <small class="text-muted">Tổng truy cập</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="h4 text-danger">@Model.SecurityMetrics.SensitiveEndpoints.UnauthorizedAttempts</div>
+                            <small class="text-muted">Không được phép</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="h4 text-dark">@Model.SecurityMetrics.SensitiveEndpoints.BlockedAttempts</div>
+                            <small class="text-muted">Bị chặn</small>
+                        </div>
+                    </div>
+                    @if (Model.SecurityMetrics.SensitiveEndpoints.RecentAccesses.Any())
+                    {
+                        <hr>
+                        <h6 class="font-weight-bold">Truy cập gần đây:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Endpoint</th>
+                                        <th>IP</th>
+                                        <th>Status</th>
+                                        <th>Thời gian</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var access in Model.SecurityMetrics.SensitiveEndpoints.RecentAccesses.Take(5))
+                                    {
+                                        <tr>
+                                            <td><code>@access.Endpoint</code></td>
+                                            <td>@access.IpAddress</td>
+                                            <td>
+                                                <span class="badge bg-@(access.StatusCode >= 400 ? "danger" : "success")">
+                                                    @access.StatusCode
+                                                </span>
+                                            </td>
+                                            <td>@access.Timestamp.ToString("HH:mm")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Hành vi bất thường -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Hành vi Bất thường (24h)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="h4 text-warning">@Model.SecurityMetrics.Anomalies.HighRequestRateIPs</div>
+                            <small class="text-muted">IP tần suất cao</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="h4 text-danger">@Model.SecurityMetrics.Anomalies.ScanningAttempts</div>
+                            <small class="text-muted">Quét cổng</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="h4 text-dark">@Model.SecurityMetrics.Anomalies.PotentialDDoSAlerts</div>
+                            <small class="text-muted">DDoS tiềm ẩn</small>
+                        </div>
+                    </div>
+                    @if (Model.SecurityMetrics.Anomalies.SuspiciousIPs.Any())
+                    {
+                        <hr>
+                        <h6 class="font-weight-bold">IP đáng ngờ:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>IP</th>
+                                        <th>Loại</th>
+                                        <th>Requests</th>
+                                        <th>Lỗi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ip in Model.SecurityMetrics.Anomalies.SuspiciousIPs.Take(5))
+                                    {
+                                        <tr>
+                                            <td><code>@ip.IpAddress</code></td>
+                                            <td>
+                                                <span class="badge bg-@(ip.ActivityType == "DDoS" ? "danger" : ip.ActivityType == "Scanning" ? "warning" : "info")">
+                                                    @ip.ActivityType
+                                                </span>
+                                            </td>
+                                            <td>@ip.RequestsPerMinute</td>
+                                            <td>@ip.ErrorCount</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -142,17 +297,19 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Hoạt động gần đây</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-history"></i> Hoạt động gần đây
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="recentActivitiesTable" width="100%" cellspacing="0">
+                        <table class="table table-sm">
                             <thead>
                                 <tr>
                                     <th>Thời gian</th>
+                                    <th>User</th>
                                     <th>IP</th>
-                                    <th>Người dùng</th>
-                                    <th>Hoạt động</th>
+                                    <th>Hành động</th>
                                     <th>Chi tiết</th>
                                 </tr>
                             </thead>
@@ -160,10 +317,14 @@
                                 @foreach (var activity in Model.RecentActivities)
                                 {
                                     <tr>
-                                        <td>@activity.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
-                                        <td>@activity.IpAddress</td>
-                                        <td>@activity.UserId</td>
-                                        <td>@activity.Action</td>
+                                        <td>@activity.Timestamp.ToString("dd/MM HH:mm")</td>
+                                        <td><strong>@activity.UserId</strong></td>
+                                        <td><code>@activity.IpAddress</code></td>
+                                        <td>
+                                            <span class="badge bg-@(activity.Action.Contains("Login") ? "success" : activity.Action.Contains("Failed") ? "danger" : "info")">
+                                                @activity.Action
+                                            </span>
+                                        </td>
                                         <td>@activity.Details</td>
                                     </tr>
                                 }
@@ -177,73 +338,212 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Dữ liệu cho biểu đồ cảnh báo theo thời gian
-        const alertsData = {
-            labels: @Html.Raw(Json.Serialize(Model.AlertsChartData.Labels)),
-            datasets: [{
-                label: 'Số cảnh báo',
-                data: @Html.Raw(Json.Serialize(Model.AlertsChartData.Data)),
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        };
-
-        // Dữ liệu cho biểu đồ phân bố loại cảnh báo
-        const alertTypesData = {
-            labels: @Html.Raw(Json.Serialize(Model.AlertTypesChartData.Labels)),
-            datasets: [{
-                data: @Html.Raw(Json.Serialize(Model.AlertTypesChartData.Data)),
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)'
-                ]
-            }]
-        };
-
-        // Cấu hình và vẽ biểu đồ cảnh báo
-        const alertsChart = new Chart(
-            document.getElementById('alertsChart'),
-            {
-                type: 'line',
-                data: alertsData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
+        // Biểu đồ cảnh báo theo thời gian
+        var alertsCtx = document.getElementById('alertsChart').getContext('2d');
+        var alertsChart = new Chart(alertsCtx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.AlertsChartData.Labels)),
+                datasets: [{
+                    label: 'Số cảnh báo',
+                    data: @Html.Raw(Json.Serialize(Model.AlertsChartData.Data)),
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
                         }
                     }
                 }
             }
-        );
+        });
 
-        // Cấu hình và vẽ biểu đồ phân bố
-        const alertTypesChart = new Chart(
-            document.getElementById('alertTypesChart'),
-            {
-                type: 'pie',
-                data: alertTypesData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
+        // Biểu đồ phân bố loại cảnh báo
+        var alertTypesCtx = document.getElementById('alertTypesChart').getContext('2d');
+        var alertTypesChart = new Chart(alertTypesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.AlertTypesChartData.Labels)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.AlertTypesChartData.Data)),
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF',
+                        '#FF9F40'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
                 }
             }
-        );
-
-        // Cấu hình DataTable cho bảng hoạt động
-        $(document).ready(function() {
-            $('#recentActivitiesTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
-                },
-                order: [[0, 'desc']]
-            });
         });
+
+        // Real-time updates with enhanced SignalR
+        if (typeof signalR !== 'undefined') {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/alertHub")
+                .withAutomaticReconnect()
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            // Track recent alerts to prevent duplicates
+            let recentAlerts = new Set();
+            let alertElements = new Map();
+
+            // Handle dashboard stats updates
+            connection.on("ReceiveDashboardStats", (stats) => {
+                console.log('Received dashboard stats update:', stats);
+                updateDashboardStats(stats);
+            });
+
+            // Handle alert counts updates
+            connection.on("ReceiveAlertCounts", (alertCounts) => {
+                console.log('Received alert counts update:', alertCounts);
+                updateAlertCounts(alertCounts);
+            });
+
+            // Handle security metrics updates
+            connection.on("ReceiveSecurityMetrics", (securityMetrics) => {
+                console.log('Received security metrics update:', securityMetrics);
+                updateSecurityMetrics(securityMetrics);
+            });
+
+            connection.on("ReceiveAlert", (alert) => {
+                // Tạo key duy nhất cho alert
+                const alertKey = `${alert.sourceIp}-${alert.type}-${alert.severityLevel}`;
+                
+                // Kiểm tra xem alert này đã tồn tại chưa
+                if (recentAlerts.has(alertKey)) {
+                    // Nếu đã tồn tại, chỉ highlight lại element cũ
+                    const existingElement = alertElements.get(alertKey);
+                    if (existingElement) {
+                        // Highlight effect
+                        existingElement.style.backgroundColor = '#fff3cd';
+                        existingElement.style.border = '2px solid #ffc107';
+                        existingElement.style.transform = 'scale(1.02)';
+                        
+                        // Reset sau 2 giây
+                        setTimeout(() => {
+                            existingElement.style.backgroundColor = '';
+                            existingElement.style.border = '';
+                            existingElement.style.transform = '';
+                        }, 2000);
+                    }
+                    return; // Không tạo alert mới
+                }
+                
+                // Thêm vào tracking
+                recentAlerts.add(alertKey);
+                
+                // Cập nhật số cảnh báo
+                const alertCount = document.querySelector('.card.border-left-warning .h5');
+                if (alertCount) {
+                    const currentCount = parseInt(alertCount.textContent);
+                    alertCount.textContent = currentCount + 1;
+                }
+
+                // Hiển thị thông báo với timeout 5 giây và tránh trùng lặp
+                const toastElement = toastr.warning(alert.description, alert.title, {
+                    timeOut: 5000,
+                    extendedTimeOut: 2000,
+                    closeButton: true,
+                    tapToDismiss: true,
+                    newestOnTop: true,
+                    preventDuplicates: true
+                });
+
+                // Lưu reference đến element
+                if (toastElement) {
+                    alertElements.set(alertKey, toastElement);
+                }
+                
+                // Xóa khỏi tracking sau 10 giây
+                setTimeout(() => {
+                    recentAlerts.delete(alertKey);
+                    alertElements.delete(alertKey);
+                }, 10000);
+            });
+
+            // Connection events
+            connection.onreconnecting((error) => {
+                console.log('Admin dashboard reconnecting...', error);
+            });
+
+            connection.onreconnected((connectionId) => {
+                console.log('Admin dashboard reconnected:', connectionId);
+                toastr.success('Kết nối SignalR đã được khôi phục');
+            });
+
+            connection.onclose((error) => {
+                console.log('Admin dashboard connection closed:', error);
+                toastr.error('Mất kết nối với server. Vui lòng tải lại trang.');
+            });
+
+            // Start connection
+            connection.start()
+                .then(() => {
+                    console.log('Admin dashboard SignalR connection established');
+                })
+                .catch(err => {
+                    console.error('Admin dashboard SignalR connection error:', err);
+                });
+        }
+
+        function updateDashboardStats(stats) {
+            // Update dashboard cards
+            $('.card.border-left-primary .h5').text(stats.totalUsers);
+            $('.card.border-left-warning .h5').text(stats.totalAlerts);
+            $('.card.border-left-danger .h5').text(stats.blockedIPs);
+            $('.card.border-left-info .h5').text(stats.totalLogs);
+        }
+
+        function updateAlertCounts(alertCounts) {
+            $('.critical-count').text(alertCounts.critical);
+            $('.high-count').text(alertCounts.high);
+            $('.inprogress-count').text(alertCounts.inProgress);
+            $('.resolved-count').text(alertCounts.resolved);
+        }
+
+        function updateSecurityMetrics(securityMetrics) {
+            // Update sensitive endpoints metrics
+            $('#sensitiveEndpointsTotal').text(securityMetrics.sensitiveEndpoints.totalAccessAttempts);
+            $('#sensitiveEndpointsUnauthorized').text(securityMetrics.sensitiveEndpoints.unauthorizedAttempts);
+            $('#sensitiveEndpointsBlocked').text(securityMetrics.sensitiveEndpoints.blockedAttempts);
+
+            // Update anomalies metrics
+            $('#anomaliesHighRequestRate').text(securityMetrics.anomalies.highRequestRateIPs);
+            $('#anomaliesScanningAttempts').text(securityMetrics.anomalies.scanningAttempts);
+            $('#anomaliesPotentialDDoS').text(securityMetrics.anomalies.potentialDDoSAlerts);
+        }
     </script>
 }
 
@@ -281,6 +581,95 @@
             transform: translateY(-5px);
             cursor: pointer;
             box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        }
+        
+        /* HUTECH Logo Styles */
+        .hutech-logo {
+            display: inline-block;
+        }
+        
+        .shield-logo {
+            width: 80px;
+            height: 100px;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .shield-top {
+            width: 100%;
+            height: 60%;
+            background: #0056b3;
+            border-radius: 40px 40px 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .shield-bottom {
+            width: 100%;
+            height: 40%;
+            background: #ffd700;
+            border-radius: 0 0 40px 40px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hutech-text {
+            font-size: 12px;
+            line-height: 1;
+        }
+        
+        .university-text {
+            font-size: 8px;
+            line-height: 1;
+        }
+        
+        .torch-flame {
+            width: 20px;
+            height: 30px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e, #ff4500);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            transform: rotate(-15deg);
+        }
+        
+        .torch-flame::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 15px;
+            background: linear-gradient(45deg, #ff4500, #ff6b35);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+        
+        /* Responsive improvements */
+        @@media (max-width: 768px) {
+            .shield-logo {
+                width: 60px;
+                height: 75px;
+            }
+            
+            .hutech-text {
+                font-size: 10px;
+            }
+            
+            .university-text {
+                font-size: 7px;
+            }
+            
+            .torch-flame {
+                width: 15px;
+                height: 22px;
+            }
         }
     </style>
 }

@@ -30,11 +30,10 @@ namespace SecurityMonitor.Services.Implementation
 
                 string fakeIp = $"203.0.113.{_counter++ % 255}";
 
-                var log = new Log
+                var log = new LogEntry
                 {
                     Timestamp = DateTime.UtcNow,
                     IpAddress = fakeIp,
-                    EventType = "LoginFailed",
                     Message = $"Tấn công brute force từ IP {fakeIp}",
                     LogSourceId = 1
                 };

@@ -54,13 +54,13 @@ namespace SecurityMonitor.Services.Implementation
 
             await _hubContext.Clients.All.SendAsync("ReceiveAlert", new
             {
-                alert.Id,
-                alert.Title,
-                alert.Description,
-                alert.SourceIp,
-                alert.Timestamp,
-                SeverityLevel = alert.SeverityLevelId.ToString(),
-                Type = alert.AlertTypeId.ToString()
+                id = alert.Id,
+                title = alert.Title,
+                description = alert.Description,
+                sourceIp = alert.SourceIp,
+                timestamp = alert.Timestamp,
+                severityLevel = alert.SeverityLevelId.ToString(),
+                type = alert.AlertTypeId.ToString()
             });
 
             _logger.LogInformation("Created new alert: {Title}", alert.Title);

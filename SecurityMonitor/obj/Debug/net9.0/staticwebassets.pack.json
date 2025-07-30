@@ -17,8 +17,8 @@
       "PackagePath": "staticwebassets\\images\\alert-icon.png"
     },
     {
-      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\account-management.js",
-      "PackagePath": "staticwebassets\\js\\account-management.js"
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\images\\logohutech.png",
+      "PackagePath": "staticwebassets\\images\\logohutech.png"
     },
     {
       "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert.js",
@@ -31,6 +31,10 @@
     {
       "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\init.js",
       "PackagePath": "staticwebassets\\js\\init.js"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\realtime-monitor.js",
+      "PackagePath": "staticwebassets\\js\\realtime-monitor.js"
     },
     {
       "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js",

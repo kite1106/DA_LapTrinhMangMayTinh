@@ -16,7 +16,7 @@ const initializeSignalR = () => {
     alertConnection.on("ReceiveLoginAlert", (alert) => {
         // Play alert sound
         const audio = new Audio('/sounds/alert.mp3');
-        audio.play();
+        audio.play().catch(e => console.log('Error playing sound:', e));
 
         // Show alert notification
         toastr.warning(alert.description, alert.title, {
@@ -26,21 +26,34 @@ const initializeSignalR = () => {
             tapToDismiss: false
         });
 
-        // If on alerts page, update the alerts table
+        // If on alerts page, SignalR will handle real-time updates
         if (window.location.pathname.includes('/alerts')) {
-            // Reload the alerts table if it exists
-            if ($.fn.DataTable.isDataTable('#alertsTable')) {
-                $('#alertsTable').DataTable().ajax.reload();
-            }
+            console.log('Alert received, SignalR will handle real-time updates');
         }
     });
 
-    accountConnection.on("ReceiveAlert", (alert) => {
-        // Existing alert handling code
+    // Handle general alerts
+    alertConnection.on("ReceiveAlert", (alert) => {
+        // Play alert sound
+        const audio = new Audio('/sounds/alert.mp3');
+        audio.play().catch(e => console.log('Error playing sound:', e));
+
+        // Show alert notification
+        toastr.warning(alert.description || alert.message, alert.title, {
+            timeOut: 0,
+            extendedTimeOut: 0,
+            closeButton: true,
+            tapToDismiss: false
+        });
+
+        // Update dashboard if on alerts page - SignalR will handle real-time updates
+        if (window.location.pathname.includes('/alerts')) {
+            console.log('General alert received, SignalR will handle real-time updates');
+        }
     });
 
     // Lắng nghe sự kiện cập nhật trạng thái user
-    connection.on("UserStatusUpdated", (userName, isLocked, userId) => {
+    accountConnection.on("UserStatusUpdated", (userName, isLocked, userId) => {
         const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
         if (!currentUser || userName !== currentUser) return;
         
@@ -55,7 +68,7 @@ const initializeSignalR = () => {
     });
 
     // Lắng nghe sự kiện tài khoản bị hạn chế
-    connection.on("UserRestricted", (userName, reason, userId) => {
+    accountConnection.on("UserRestricted", (userName, reason, userId) => {
         const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
         if (!currentUser || userName !== currentUser) return;
         
@@ -66,7 +79,7 @@ const initializeSignalR = () => {
     });
 
     // Lắng nghe sự kiện tài khoản được bỏ hạn chế
-    connection.on("UserUnrestricted", (userName, userId) => {
+    accountConnection.on("UserUnrestricted", (userName, userId) => {
         const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
         if (!currentUser || userName !== currentUser) return;
         
@@ -77,7 +90,12 @@ const initializeSignalR = () => {
     Promise.all([
         accountConnection.start(),
         alertConnection.start()
-    ]).catch(err => console.error('SignalR Connection Error:', err));
+    ]).then(() => {
+        console.log('SignalR connections established successfully');
+    }).catch(err => {
+        console.error('SignalR Connection Error:', err);
+        toastr.error('Không thể kết nối với server real-time', 'Lỗi kết nối');
+    });
 
     return { accountConnection, alertConnection };
 };

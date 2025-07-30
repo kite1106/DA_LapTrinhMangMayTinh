@@ -57,13 +57,12 @@ public class LogAnalyzerService : ILogAnalyzerService
         var webServer = await GetOrCreateLogSource(sourceService);
 
         // 1. Log mọi request
-        await logService.CreateLogAsync(new Log
+        await logService.CreateLogAsync(new LogEntry
         {
             Timestamp = now,
             LogSourceId = webServer.Id,
-            EventType = "WebRequest",
             Message = $"Request to {endpoint}",
-            RawData = $"Status: {statusCode}, User: {userId}",
+            Details = $"Status: {statusCode}, User: {userId}",
             IpAddress = ipAddress,
             ProcessedAt = now
         });
@@ -71,13 +70,12 @@ public class LogAnalyzerService : ILogAnalyzerService
         // 2. Kiểm tra truy cập endpoint nhạy cảm
         if (IsSensitiveEndpoint(endpoint))
         {
-            await logService.CreateLogAsync(new Log
+            await logService.CreateLogAsync(new LogEntry
             {
                 Timestamp = now,
                 LogSourceId = webServer.Id,
-                EventType = "Security",
                 Message = $"Sensitive endpoint access: {endpoint}",
-                RawData = $"IP: {ipAddress}, User: {userId}",
+                Details = $"IP: {ipAddress}, User: {userId}",
                 IpAddress = ipAddress,
                 ProcessedAt = now
             });

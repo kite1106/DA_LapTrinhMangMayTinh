@@ -16,47 +16,71 @@ namespace SecurityMonitor.Services.Implementation
             _logger = logger;
         }
 
-        public async Task<IEnumerable<Log>> GetAllLogsAsync()
+        public async Task<IEnumerable<LogEntry>> GetAllLogsAsync()
         {
-            return await _context.Logs
+            return await _context.LogEntries
                 .OrderByDescending(l => l.Timestamp)
                 .ToListAsync();
         }
 
-        public async Task<Log?> GetLogByIdAsync(long id)
+        public async Task<LogEntry?> GetLogByIdAsync(long id)
         {
-            return await _context.Logs.FindAsync(id);
+            return await _context.LogEntries.FindAsync(id);
         }
 
-        public async Task<Log> CreateLogAsync(Log log)
+        public async Task<LogEntry> CreateLogAsync(LogEntry log)
         {
             log.Timestamp = DateTime.UtcNow;
-            _context.Logs.Add(log);
+            
+            // Tự động set LogLevelTypeId mặc định nếu không có
+            if (log.LogLevelTypeId == 0)
+            {
+                var defaultLevel = await _context.LogLevelTypes.FirstOrDefaultAsync(lt => lt.Name == "Information");
+                if (defaultLevel != null)
+                {
+                    log.LogLevelTypeId = defaultLevel.Id;
+                }
+                else
+                {
+                    // Nếu không có LogLevelType nào, tạo một cái mặc định
+                    var newLevel = new LogLevelType 
+                    { 
+                        Name = "Information", 
+                        Description = "Thông tin", 
+                        Priority = 1 
+                    };
+                    _context.LogLevelTypes.Add(newLevel);
+                    await _context.SaveChangesAsync();
+                    log.LogLevelTypeId = newLevel.Id;
+                }
+            }
+            
+            _context.LogEntries.Add(log);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Created new log entry with ID: {Id}", log.Id);
             return log;
         }
 
-        public async Task<IEnumerable<Log>> GetLogsBySourceAsync(int sourceId)
+        public async Task<IEnumerable<LogEntry>> GetLogsBySourceAsync(int sourceId)
         {
-            return await _context.Logs
+            return await _context.LogEntries
                 .Where(l => l.LogSourceId == sourceId)
                 .OrderByDescending(l => l.Timestamp)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Log>> GetLogsByDateRangeAsync(DateTime start, DateTime end)
+        public async Task<IEnumerable<LogEntry>> GetLogsByDateRangeAsync(DateTime start, DateTime end)
         {
-            return await _context.Logs
+            return await _context.LogEntries
                 .Where(l => l.Timestamp >= start && l.Timestamp <= end)
                 .OrderByDescending(l => l.Timestamp)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Log>> GetRecentLogsAsync(TimeSpan duration)
+        public async Task<IEnumerable<LogEntry>> GetRecentLogsAsync(TimeSpan duration)
         {
             var cutoffDate = DateTime.UtcNow.Subtract(duration);
-            return await _context.Logs
+            return await _context.LogEntries
                 .Where(l => l.Timestamp >= cutoffDate)
                 .OrderByDescending(l => l.Timestamp)
                 .ToListAsync();
@@ -64,7 +88,7 @@ namespace SecurityMonitor.Services.Implementation
 
         public async Task ProcessLogAsync(long logId)
         {
-            var log = await _context.Logs.FindAsync(logId);
+            var log = await _context.LogEntries.FindAsync(logId);
             if (log != null)
             {
                 // Add any processing logic here

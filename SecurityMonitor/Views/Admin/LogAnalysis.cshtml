@@ -1,0 +1,393 @@
+@{
+    ViewData["Title"] = "Log Analysis Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Log Analysis Dashboard</h1>
+        <div>
+            <button class="btn btn-primary" onclick="detectAnomalies()">
+                <i class="fas fa-search"></i> Phát hiện Anomalies
+            </button>
+            <button class="btn btn-danger" onclick="analyzeThreats()">
+                <i class="fas fa-shield-alt"></i> Phân tích Threats
+            </button>
+            <button class="btn btn-success" onclick="getAnalysisStats()">
+                <i class="fas fa-chart-bar"></i> Thống kê
+            </button>
+        </div>
+    </div>
+
+    <!-- Thống kê tổng quan -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Tổng phân tích</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalAnalyses">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Anomalies</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalAnomalies">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Threats</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalThreats">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shield-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Độ tin cậy TB</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="avgConfidence">0%</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-percentage fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nội dung chính -->
+    <div class="row">
+        <!-- Biểu đồ phân tích -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Thống kê phân tích theo thời gian</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="analysisChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phân bố rủi ro -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Phân bố mức độ rủi ro</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie">
+                        <canvas id="riskLevelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng kết quả phân tích -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Kết quả phân tích gần đây</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="analysisTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>Loại phân tích</th>
+                            <th>Kết quả</th>
+                            <th>Mức độ rủi ro</th>
+                            <th>Độ tin cậy</th>
+                            <th>Anomaly</th>
+                            <th>Threat</th>
+                            <th>Khuyến nghị</th>
+                        </tr>
+                    </thead>
+                    <tbody id="analysisTableBody">
+                        <!-- Dữ liệu sẽ được load bằng JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let analysisChart;
+        let riskLevelChart;
+
+        $(document).ready(function() {
+            loadAnalysisStats();
+            initializeCharts();
+        });
+
+        function detectAnomalies() {
+            $.ajax({
+                url: '/api/loganalysis/detect-anomalies',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        showAlert('success', `Phát hiện ${response.totalAnomalies} anomalies!`);
+                        updateAnalysisTable(response.anomalies);
+                    } else {
+                        showAlert('error', 'Lỗi: ' + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    showAlert('error', 'Lỗi kết nối: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function analyzeThreats() {
+            $.ajax({
+                url: '/api/loganalysis/analyze-threats',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        showAlert('success', `Phát hiện ${response.totalThreats} threats!`);
+                        updateAnalysisTable(response.threats);
+                    } else {
+                        showAlert('error', 'Lỗi: ' + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    showAlert('error', 'Lỗi kết nối: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function getAnalysisStats() {
+            $.ajax({
+                url: '/api/loganalysis/stats',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        updateStats(response.stats);
+                        updateCharts(response.stats);
+                    } else {
+                        showAlert('error', 'Lỗi: ' + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    showAlert('error', 'Lỗi kết nối: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function loadAnalysisStats() {
+            getAnalysisStats();
+        }
+
+        function updateStats(stats) {
+            $('#totalAnalyses').text(stats.totalAnalyses || 0);
+            $('#totalAnomalies').text(stats.anomalies || 0);
+            $('#totalThreats').text(stats.threats || 0);
+            $('#avgConfidence').text(Math.round((stats.averageConfidence || 0) * 100) + '%');
+        }
+
+        function updateCharts(stats) {
+            // Cập nhật biểu đồ phân tích
+            if (analysisChart) {
+                analysisChart.data.datasets[0].data = [stats.totalAnalyses || 0, stats.anomalies || 0, stats.threats || 0];
+                analysisChart.update();
+            }
+
+            // Cập nhật biểu đồ mức độ rủi ro
+            if (riskLevelChart && stats.riskLevels) {
+                riskLevelChart.data.labels = stats.riskLevels.map(r => r.riskLevel);
+                riskLevelChart.data.datasets[0].data = stats.riskLevels.map(r => r.count);
+                riskLevelChart.update();
+            }
+        }
+
+        function updateAnalysisTable(analyses) {
+            const tbody = $('#analysisTableBody');
+            tbody.empty();
+
+            analyses.forEach(analysis => {
+                const row = `
+                    <tr>
+                        <td>${new Date(analysis.analyzedAt).toLocaleString()}</td>
+                        <td>${analysis.analysisType}</td>
+                        <td>${analysis.analysisResult || 'N/A'}</td>
+                        <td>
+                            <span class="badge badge-${getRiskLevelClass(analysis.riskLevel)}">
+                                ${analysis.riskLevel || 'N/A'}
+                            </span>
+                        </td>
+                        <td>${Math.round((analysis.confidenceScore || 0) * 100)}%</td>
+                        <td>
+                            <span class="badge badge-${analysis.isAnomaly ? 'warning' : 'secondary'}">
+                                ${analysis.isAnomaly ? 'Có' : 'Không'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge badge-${analysis.isThreat ? 'danger' : 'secondary'}">
+                                ${analysis.isThreat ? 'Có' : 'Không'}
+                            </span>
+                        </td>
+                        <td>${analysis.recommendations || 'N/A'}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        function getRiskLevelClass(riskLevel) {
+            switch (riskLevel?.toUpperCase()) {
+                case 'HIGH': return 'danger';
+                case 'MEDIUM': return 'warning';
+                case 'LOW': return 'success';
+                default: return 'secondary';
+            }
+        }
+
+        function initializeCharts() {
+            // Biểu đồ phân tích
+            const ctx1 = document.getElementById('analysisChart').getContext('2d');
+            analysisChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Tổng phân tích', 'Anomalies', 'Threats'],
+                    datasets: [{
+                        label: 'Số lượng',
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)',
+                            'rgb(255, 99, 132)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Biểu đồ mức độ rủi ro
+            const ctx2 = document.getElementById('riskLevelChart').getContext('2d');
+            riskLevelChart = new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                    labels: ['LOW', 'MEDIUM', 'HIGH'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgb(75, 192, 192)',
+                            'rgb(255, 205, 86)',
+                            'rgb(255, 99, 132)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function showAlert(type, message) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `;
+            
+            $('.container-fluid').prepend(alertHtml);
+            
+            setTimeout(function() {
+                $('.alert').fadeOut();
+            }, 5000);
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .border-left-primary {
+            border-left: .25rem solid #4e73df!important;
+        }
+        .border-left-success {
+            border-left: .25rem solid #1cc88a!important;
+        }
+        .border-left-info {
+            border-left: .25rem solid #36b9cc!important;
+        }
+        .border-left-warning {
+            border-left: .25rem solid #f6c23e!important;
+        }
+        .border-left-danger {
+            border-left: .25rem solid #e74a3b!important;
+        }
+        .chart-area {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .chart-pie {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            cursor: pointer;
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        }
+    </style>
+} 

@@ -23,7 +23,9 @@ public record LogDto(
     string SourceName = "",
     string? Details = null,
     bool IsProcessed = false,
-    DateTime? ProcessedAt = null
+    DateTime? ProcessedAt = null,
+    string? Username = null,
+    bool WasSuccessful = false
 );
 
 /// <summary>
@@ -35,7 +37,9 @@ public record MyLogDto(
     string LogSourceName,
     string EventType,
     bool WasSuccessful,
-    string? Message = null
+    string? Message = null,
+    string? Username = null,
+    string? Details = null
 );
 
 /// <summary>
@@ -44,7 +48,7 @@ public record MyLogDto(
 public record AuditLogDto(
     long Id,
     DateTime Timestamp,
-    string? UserEmail,
+    string? UserEmail, // Giờ sẽ chứa username thay vì email
     string Action,
     string EntityType,
     string EntityId,

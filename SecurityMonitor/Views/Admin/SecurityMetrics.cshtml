@@ -198,9 +198,56 @@
 
 @section Scripts {
     <script>
-        // Auto-refresh the page every 5 minutes
-        setTimeout(function() {
-            location.reload();
-        }, 300000);
+        // Initialize SignalR for real-time security metrics updates
+        const securityMetricsConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/alertHub")
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        // Handle security metrics updates
+        securityMetricsConnection.on("ReceiveSecurityMetrics", (securityMetrics) => {
+            console.log('Received security metrics update:', securityMetrics);
+            updateSecurityMetricsDisplay(securityMetrics);
+        });
+
+        // Connection events
+        securityMetricsConnection.onreconnecting((error) => {
+            console.log('Security metrics reconnecting...', error);
+        });
+
+        securityMetricsConnection.onreconnected((connectionId) => {
+            console.log('Security metrics reconnected:', connectionId);
+            toastr.success('Kết nối SignalR đã được khôi phục');
+        });
+
+        securityMetricsConnection.onclose((error) => {
+            console.log('Security metrics connection closed:', error);
+            toastr.error('Mất kết nối với server. Vui lòng tải lại trang.');
+        });
+
+        // Start connection
+        securityMetricsConnection.start()
+            .then(() => {
+                console.log('Security metrics SignalR connection established');
+            })
+            .catch(err => {
+                console.error('Security metrics SignalR connection error:', err);
+            });
+
+        function updateSecurityMetricsDisplay(securityMetrics) {
+            // Update sensitive endpoints metrics
+            $('#sensitiveEndpointsTotal').text(securityMetrics.sensitiveEndpoints.totalAccessAttempts);
+            $('#sensitiveEndpointsUnauthorized').text(securityMetrics.sensitiveEndpoints.unauthorizedAttempts);
+            $('#sensitiveEndpointsBlocked').text(securityMetrics.sensitiveEndpoints.blockedAttempts);
+
+            // Update anomalies metrics
+            $('#anomaliesHighRequestRate').text(securityMetrics.anomalies.highRequestRateIPs);
+            $('#anomaliesScanningAttempts').text(securityMetrics.anomalies.scanningAttempts);
+            $('#anomaliesPotentialDDoS').text(securityMetrics.anomalies.potentialDDoSAlerts);
+
+            // Update timestamp
+            $('#lastUpdateTime').text(new Date().toLocaleString('vi-VN'));
+        }
     </script>
 }

@@ -1,152 +1,195 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Services.Interfaces;
 using SecurityMonitor.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using SecurityMonitor.DTOs.Dashboard;
 using SecurityMonitor.DTOs.Logs;
 using SecurityMonitor.DTOs.Common;
-using SecurityMonitor.Models;
-using SecurityMonitor.Services.Interfaces;
-using System.Security.Claims;
 
 namespace SecurityMonitor.Controllers
 {
-    [Authorize(Roles = "User")]
+    [Authorize]
     public class UserController : Controller
     {
-        private async Task<IActionResult> CheckUserStatus()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return RedirectToAction("Login", "Account", new { area = "Identity" });
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return RedirectToAction("Login", "Account", new { area = "Identity" });
-            if (user.LockoutEnd != null && user.LockoutEnd > DateTimeOffset.UtcNow)
-            {
-                await _userManager.UpdateSecurityStampAsync(user);
-                await _userManager.UpdateAsync(user);
-                await _signInManager.SignOutAsync();
-                TempData["Error"] = "Tài khoản của bạn đã bị khóa!";
-                return RedirectToAction("Index", "Login");
-            }
-            if (user.IsRestricted)
-            {
-                TempData["Warning"] = "Tài khoản của bạn đã bị hạn chế!";
-                return RedirectToAction("Dashboard", "User");
-            }
-            return base.Ok();
-        }
-
         private readonly IAlertService _alertService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogService _logService;
+        private readonly ILogAnalysisService _logAnalysisService;
         private readonly ApplicationDbContext _context;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public UserController(IAlertService alertService, UserManager<ApplicationUser> userManager, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
+        public UserController(
+            IAlertService alertService,
+            ILogService logService,
+            ILogAnalysisService logAnalysisService,
+            ApplicationDbContext context)
         {
             _alertService = alertService;
-            _userManager = userManager;
+            _logService = logService;
+            _logAnalysisService = logAnalysisService;
             _context = context;
-            _signInManager = signInManager;
         }
 
-    public async Task<IActionResult> Index()
-    {
-        return RedirectToAction("Index", "Alerts");
-    }
-
-    public async Task<IActionResult> Alerts()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
+        public async Task<IActionResult> Index()
         {
-            return RedirectToAction("Login", "Account", new { area = "Identity" });
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = User.Identity?.Name;
+
+            // Lấy thống kê cho user hiện tại
+            var userStats = await GetUserStats(userId, userName);
+
+            return View(userStats);
         }
 
-        var alerts = await _alertService.GetUserAlertsAsync(userId);
-        return View(alerts);
-    }
-
-    public async Task<IActionResult> Profile()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        return View(user);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword)
-    {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        [HttpGet("user/logs")]
+        public async Task<IActionResult> GetUserLogs()
         {
-            return RedirectToAction("Login", "Account", new { area = "Identity" });
-        }
-
-        var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
-
-        if (result.Succeeded)
-        {
-            TempData["SuccessMessage"] = "Mật khẩu đã được thay đổi thành công.";
-            return RedirectToAction(nameof(Profile));
-        }
-
-        foreach (var error in result.Errors)
-        {
-            ModelState.AddModelError("", error.Description);
-        }
-
-        return View("Profile");
-    }
-
-    public async Task<IActionResult> MyLogs(string? filter, int page = 1)
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var pageSize = 10;
-
-        // Lấy logs của user hiện tại 
-        var query = _context.AuditLogs
-            .Where(l => l.UserId == userId);
-
-        // Áp dụng filter
-        if (!string.IsNullOrEmpty(filter))
-        {
-            switch (filter.ToLower())
+            try
             {
-                case "success":
-                    query = query.Where(l => l.Action == "Login" || l.Action == "PasswordChange");
-                    break;
-                case "failed":
-                    query = query.Where(l => l.Action == "LoginFailed" || l.Action == "PasswordChangeFailed");
-                    break;
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userName = User.Identity?.Name;
+
+                // Lấy logs của user hiện tại
+                var userLogs = await _context.LogEntries
+                    .Where(l => l.UserId == userName)
+                    .OrderByDescending(l => l.Timestamp)
+                    .Take(50)
+                    .Select(l => new
+                    {
+                        id = l.Id,
+                        timestamp = l.Timestamp,
+                        message = l.Message,
+                        level = l.LogLevelType.Name,
+                        ipAddress = l.IpAddress,
+                        wasSuccessful = l.WasSuccessful,
+                        analysis = l.LogAnalyses.Select(la => new
+                        {
+                            analysisResult = la.AnalysisResult,
+                            riskLevel = la.RiskLevel,
+                            isAnomaly = la.IsAnomaly,
+                            isThreat = la.IsThreat
+                        }).FirstOrDefault(),
+                        alert = l.Alerts.Select(a => new
+                        {
+                            id = a.Id,
+                            title = a.Title,
+                            severity = a.SeverityLevelId
+                        }).FirstOrDefault()
+                    })
+                    .ToListAsync();
+
+                return Json(new { success = true, logs = userLogs });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
             }
         }
 
-        // Đếm tổng số items và tính số trang
-        var totalItems = await query.CountAsync();
-        var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-        page = Math.Min(Math.Max(1, page), totalPages);
+        [HttpGet("user/stats")]
+        public async Task<IActionResult> GetUserStats()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userName = User.Identity?.Name;
 
-        // Lấy dữ liệu theo trang và map sang DTO
-        var logs = await query
-            .OrderByDescending(l => l.Timestamp)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(l => new MyLogDto(
-                l.Timestamp,
-                l.IpAddress,
-                l.EntityType ?? "Unknown",
-                l.Action ?? "Unknown",
-                !string.IsNullOrEmpty(l.Action) && !l.Action.Contains("Failed"),
-                l.Details
-            ))
-            .ToListAsync();
+                var stats = await GetUserStats(userId, userName);
 
-        ViewBag.CurrentPage = page;
-        ViewBag.TotalPages = totalPages;
-        ViewBag.Filter = filter;
+                return Json(new { success = true, stats = stats });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
 
-        return View(logs);
+        private async Task<UserDashboardDto> GetUserStats(string userId, string userName)
+        {
+            // Đếm logs của user
+            var userLogsCount = await _context.LogEntries
+                .Where(l => l.UserId == userName)
+                .CountAsync();
+
+            // Đếm alerts được tạo từ logs của user
+            var userAlertsCount = await _context.Alerts
+                .Where(a => a.SourceIp != null && a.LogId != null)
+                .Join(_context.LogEntries, a => a.LogId, l => l.Id, (a, l) => new { Alert = a, Log = l })
+                .Where(x => x.Log.UserId == userName)
+                .CountAsync();
+
+            // Đếm anomalies
+            var userAnomaliesCount = await _context.LogAnalyses
+                .Where(la => la.LogEntry.UserId == userName && la.IsAnomaly)
+                .CountAsync();
+
+            // Đếm threats
+            var userThreatsCount = await _context.LogAnalyses
+                .Where(la => la.LogEntry.UserId == userName && la.IsThreat)
+                .CountAsync();
+
+            // Lấy recent login history
+            var recentLoginHistory = await _context.AuditLogs
+                .Include(al => al.User)
+                .Where(al => al.UserId == userId && al.Action == "Login")
+                .OrderByDescending(al => al.Timestamp)
+                .Take(10)
+                .Select(al => new
+                {
+                    al.Id,
+                    al.Timestamp,
+                    al.Action,
+                    al.EntityType,
+                    al.EntityId,
+                    al.Details,
+                    al.IpAddress,
+                    UserEmail = al.User != null ? al.User.UserName : al.UserId // Hiển thị username thay vì email
+                })
+                .ToListAsync();
+
+            var auditLogDtos = recentLoginHistory.Select(al => new AuditLogDto(
+                Id: al.Id,
+                Timestamp: al.Timestamp,
+                UserEmail: al.UserEmail,
+                Action: al.Action,
+                EntityType: al.EntityType,
+                EntityId: al.EntityId,
+                Details: al.Details,
+                IpAddress: al.IpAddress
+            )).ToList();
+
+            // Lấy recent alerts
+            var recentAlerts = await _context.Alerts
+                .Where(a => a.SourceIp != null && a.LogId != null)
+                .Join(_context.LogEntries, a => a.LogId, l => l.Id, (a, l) => new { Alert = a, Log = l })
+                .Where(x => x.Log.UserId == userName)
+                .OrderByDescending(x => x.Alert.Timestamp)
+                .Take(5)
+                .Select(x => new
+                {
+                    x.Alert.Timestamp,
+                    x.Alert.SourceIp,
+                    x.Alert.Description,
+                    SeverityLevel = x.Alert.SeverityLevel != null ? x.Alert.SeverityLevel.Name : "Unknown",
+                    Status = x.Alert.Status != null ? x.Alert.Status.Name : "Unknown"
+                })
+                .ToListAsync();
+
+            var alertSummaryDtos = recentAlerts.Select(x => new AlertSummaryDto(
+                Timestamp: x.Timestamp,
+                SourceIp: x.SourceIp,
+                Description: x.Description,
+                SeverityLevel: x.SeverityLevel,
+                Status: x.Status
+            )).ToList();
+
+            return new UserDashboardDto(
+                TotalAlerts: userAlertsCount,
+                ImportantAlerts: userThreatsCount,
+                RecentLogins: userLogsCount,
+                RecentLoginHistory: auditLogDtos,
+                RecentAlerts: alertSummaryDtos
+            );
+        }
     }
-}
 }

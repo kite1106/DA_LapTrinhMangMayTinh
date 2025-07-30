@@ -453,13 +453,14 @@
                     $(row).addClass('alert-new');
                     setTimeout(() => $(row).removeClass('alert-new'), 5000);
 
-                    // Show notification
+                    // Show notification với timeout 5 giây và tránh trùng lặp
                     toastr.warning(alert.description, alert.title, {
-                        timeOut: 0,
-                        extendedTimeOut: 0,
+                        timeOut: 5000,
+                        extendedTimeOut: 2000,
                         closeButton: true,
-                        tapToDismiss: false,
+                        tapToDismiss: true,
                         newestOnTop: true,
+                        preventDuplicates: true,
                         onclick: function() {
                             $('html, body').animate({
                                 scrollTop: $("#alertsTable").offset().top
@@ -491,9 +492,39 @@
                 }
             });
 
+            // Track recent alerts to prevent duplicates
+            let recentAlerts = new Set();
+            let alertElements = new Map();
+
             // Handle regular alerts
             connection.on("ReceiveAlert", (alert) => {
                 try {
+                    // Tạo key duy nhất cho alert
+                    const alertKey = `${alert.sourceIp}-${alert.type}-${alert.severityLevel}`;
+                    
+                    // Kiểm tra xem alert này đã tồn tại chưa
+                    if (recentAlerts.has(alertKey)) {
+                        // Nếu đã tồn tại, chỉ highlight lại element cũ
+                        const existingElement = alertElements.get(alertKey);
+                        if (existingElement) {
+                            // Highlight effect
+                            existingElement.style.backgroundColor = '#fff3cd';
+                            existingElement.style.border = '2px solid #ffc107';
+                            existingElement.style.transform = 'scale(1.02)';
+                            
+                            // Reset sau 2 giây
+                            setTimeout(() => {
+                                existingElement.style.backgroundColor = '';
+                                existingElement.style.border = '';
+                                existingElement.style.transform = '';
+                            }, 2000);
+                        }
+                        return; // Không tạo alert mới
+                    }
+                    
+                    // Thêm vào tracking
+                    recentAlerts.add(alertKey);
+                    
                     // Play alert sound
                     const audio = new Audio('/sounds/alert.mp3');
                     audio.play().catch(e => console.log('Error playing sound:', e));
@@ -556,13 +587,19 @@
                     tr.classList.add('alert-new');
                     setTimeout(() => tr.classList.remove('alert-new'), 5000);
 
-                    // Show notification
+                    // Lưu reference đến element
+                    alertElements.set(alertKey, tr);
+
+                    // Show notification với timeout 5 giây và tránh trùng lặp
+                    let toastElement;
                     if (alert.severityLevel === 'Critical') {
-                        toastr.error(`Cảnh báo mới: ${alert.title}`, 'Cảnh báo nghiêm trọng', {
-                            timeOut: 0,
-                            extendedTimeOut: 0,
+                        toastElement = toastr.error(`Cảnh báo mới: ${alert.title}`, 'Cảnh báo nghiêm trọng', {
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
                             closeButton: true,
-                            tapToDismiss: false,
+                            tapToDismiss: true,
+                            newestOnTop: true,
+                            preventDuplicates: true,
                             onclick: function() {
                                 $('html, body').animate({
                                     scrollTop: $("#alertsTable").offset().top
@@ -570,11 +607,13 @@
                             }
                         });
                     } else {
-                        toastr.warning(`Cảnh báo mới: ${alert.title}`, 'Cảnh báo mới', {
-                            timeOut: 0,
-                            extendedTimeOut: 0,
+                        toastElement = toastr.warning(`Cảnh báo mới: ${alert.title}`, 'Cảnh báo mới', {
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
                             closeButton: true,
-                            tapToDismiss: false,
+                            tapToDismiss: true,
+                            newestOnTop: true,
+                            preventDuplicates: true,
                             onclick: function() {
                                 $('html, body').animate({
                                     scrollTop: $("#alertsTable").offset().top
@@ -582,6 +621,18 @@
                             }
                         });
                     }
+
+                    // Lưu reference đến toast element
+                    if (toastElement) {
+                        alertElements.set(alertKey + '-toast', toastElement);
+                    }
+                    
+                    // Xóa khỏi tracking sau 10 giây
+                    setTimeout(() => {
+                        recentAlerts.delete(alertKey);
+                        alertElements.delete(alertKey);
+                        alertElements.delete(alertKey + '-toast');
+                    }, 10000);
                 } catch (error) {
                     console.error('Error handling regular alert:', error);
                     toastr.error('Có lỗi khi xử lý cảnh báo mới');

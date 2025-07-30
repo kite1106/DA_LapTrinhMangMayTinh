@@ -44,20 +44,21 @@ namespace SecurityMonitor.Controllers
                 TotalUsersCount = await _userManager.Users.CountAsync(),
                 TotalAlertsCount = await _context.Alerts.CountAsync(),
                 BlockedIPsCount = await _context.BlockedIPs.CountAsync(),
-                TotalLogsCount = await _context.Logs.CountAsync(),
+                TotalLogsCount = await _context.LogEntries.CountAsync(),
                 RecentActivities = await _context.AuditLogs
-                    .Where(x => x.Action != "Create" || (x.Details != null && !x.Details.StartsWith("Created log from source")))  // Lọc bỏ các log ảo
+                    .Include(x => x.User)
+                    .Where(x => x.Action != "Create" || (x.Details != null && !x.Details.StartsWith("Created log from source")))
                     .Where(x => !string.IsNullOrEmpty(x.IpAddress) 
                            && x.IpAddress != "127.0.0.1" 
                            && x.IpAddress != "::1"
-                           && x.IpAddress != "localhost")  // Lọc bỏ localhost
+                           && x.IpAddress != "localhost")
                     .OrderByDescending(x => x.Timestamp)
                     .Take(10)
                     .Select(x => new RecentActivityDto
                     {
                         Timestamp = x.Timestamp,
                         IpAddress = x.IpAddress,
-                        UserId = x.UserId,
+                        UserId = x.User != null ? x.User.UserName : (x.UserId ?? "Anonymous"), // Hiển thị username thay vì ID
                         Action = x.Action,
                         Details = x.Details ?? string.Empty
                     })
@@ -81,13 +82,19 @@ namespace SecurityMonitor.Controllers
                 .Select(d => alertsByDay.GetValueOrDefault(d.Date, 0))
                 .ToList();
 
-            // Dữ liệu cho biểu đồ phân bố loại cảnh báo
+            // Dữ liệu cho biểu đồ phân bố loại cảnh báo với màu sắc
             var alertTypes = await _context.Alerts
-                .GroupBy(a => a.AlertType.Name)
-                .Select(g => new { Type = g.Key, Count = g.Count() })
+                .Include(a => a.AlertType)
+                .Include(a => a.SeverityLevel)
+                .GroupBy(a => new { AlertTypeName = a.AlertType.Name, SeverityLevelName = a.SeverityLevel.Name })
+                .Select(g => new { 
+                    Type = g.Key.AlertTypeName, 
+                    Severity = g.Key.SeverityLevelName, 
+                    Count = g.Count()
+                })
                 .ToListAsync();
 
-            model.AlertTypesChartData.Labels = alertTypes.Select(t => t.Type).ToList();
+            model.AlertTypesChartData.Labels = alertTypes.Select(t => $"{t.Type} ({t.Severity})").ToList();
             model.AlertTypesChartData.Data = alertTypes.Select(t => t.Count).ToList();
 
             // Thêm dữ liệu cho Security Metrics
@@ -98,6 +105,7 @@ namespace SecurityMonitor.Controllers
             var sensitiveEndpoints = await _context.AuditLogs
                 .Where(l => l.Timestamp >= last24Hours && 
                            ((l.Path ?? "").StartsWith("/admin") || (l.Path ?? "").StartsWith("/config") || (l.Path ?? "").Contains("api")))
+                .Include(l => l.User)
                 .ToListAsync();
 
             model.SecurityMetrics.SensitiveEndpoints = new()
@@ -126,7 +134,8 @@ namespace SecurityMonitor.Controllers
                 {
                     IP = g.Key,
                     RequestCount = g.Count(),
-                    ErrorCount = g.Count(x => x.StatusCode >= 400)
+                    ErrorCount = g.Count(x => x.StatusCode >= 400),
+                    LastActivity = g.Max(x => x.Timestamp)
                 })
                 .ToListAsync();
 
@@ -140,81 +149,70 @@ namespace SecurityMonitor.Controllers
                     .Select(x => new IPActivity
                     {
                         IpAddress = x.IP ?? "unknown",
-                        RequestsPerMinute = x.RequestCount / 1440, // per minute in 24h
+                        RequestsPerMinute = x.RequestCount,
                         ErrorCount = x.ErrorCount,
-                        ActivityType = x.RequestCount > 1000 ? "DDoS" : x.ErrorCount > 20 ? "Scanner" : "High Traffic"
+                        ActivityType = x.RequestCount > 1000 ? "DDoS" : x.ErrorCount > 20 ? "Scanning" : "High Rate"
                     })
                     .ToList()
             };
 
-            // System Errors
-            var systemErrors = await _context.AuditLogs
-                .Where(l => l.Timestamp >= last24Hours && l.StatusCode >= 500)
-                .ToListAsync();
-
-            model.SecurityMetrics.SystemErrors = new()
-            {
-                TotalErrors = systemErrors.Count,
-                ConsecutiveErrors = GetMaxConsecutiveErrors(systemErrors),
-                UniqueErrorTypes = systemErrors.Select(x => x.Details).Distinct().Count(),
-                RecentErrors = systemErrors
-                    .GroupBy(x => x.Details)
-                    .Select(g => new ErrorEvent
-                    {
-                        ErrorType = g.Key ?? "Unknown",
-                        Timestamp = g.Max(x => x.Timestamp),
-                        Source = g.First().Path ?? "unknown",
-                        Count = g.Count()
-                    })
-                    .OrderByDescending(x => x.Count)
-                    .Take(5)
-                    .ToList()
-            };
-
-            // User Behavior
-            var userActivities = await _context.AuditLogs
-                .Where(l => l.Timestamp >= last24Hours && 
-                           (l.Action.Contains("Password") || l.Action.Contains("Email") || l.Action == "Login"))
+            // Hành vi người dùng
+            var userBehaviors = await _context.AuditLogs
+                .Where(l => l.Timestamp >= last24Hours && l.UserId != null)
+                .Include(l => l.User)
+                .GroupBy(l => l.UserId)
+                .Select(g => new
+                {
+                    UserId = g.Key,
+                    Username = g.First().User != null ? g.First().User.UserName : (g.Key ?? "Anonymous"),
+                    RequestCount = g.Count(),
+                    UniqueEndpoints = g.Select(x => x.Path).Distinct().Count(),
+                    ErrorCount = g.Count(x => x.StatusCode >= 400),
+                    LastActivity = g.Max(x => x.Timestamp)
+                })
                 .ToListAsync();
 
             model.SecurityMetrics.Behaviors = new()
             {
-                PasswordResetAttempts = userActivities.Count(x => x.Action.Contains("Password")),
-                EmailChangeAttempts = userActivities.Count(x => x.Action.Contains("Email")),
-                SuspiciousActivities = userActivities.Count(x => x.StatusCode >= 400),
-                RecentActivities = userActivities
-                    .OrderByDescending(x => x.Timestamp)
-                    .Take(5)
+                PasswordResetAttempts = userBehaviors.Count(x => x.RequestCount > 10),
+                EmailChangeAttempts = userBehaviors.Count(x => x.ErrorCount > 5),
+                SuspiciousActivities = userBehaviors.Count(x => x.UniqueEndpoints > 50),
+                RecentActivities = userBehaviors
+                    .Where(x => x.RequestCount > 10 || x.ErrorCount > 5)
                     .Select(x => new UserActivity
                     {
-                        UserId = x.UserId ?? "anonymous",
-                        ActivityType = x.Action,
-                        Timestamp = x.Timestamp,
-                        Details = x.Details ?? "No details"
+                        UserId = x.Username, // Hiển thị username thay vì ID
+                        ActivityType = x.ErrorCount > 5 ? "Suspicious" : "Normal",
+                        Timestamp = x.LastActivity,
+                        Details = $"Requests: {x.RequestCount}, Errors: {x.ErrorCount}, Endpoints: {x.UniqueEndpoints}"
                     })
                     .ToList()
             };
 
-            // Security Keywords
-            var keywords = new[] { "injection", "xss", "csrf", "script", "select", "union", "delete", "drop" };
-            var suspiciousRequests = await _context.AuditLogs
-                .Where(l => l.Timestamp >= last24Hours && 
-                           keywords.Any(k => (l.Path + " " + l.Details).ToLower().Contains(k)))
+            // Lỗi hệ thống
+            var systemErrors = await _context.AuditLogs
+                .Where(l => l.Timestamp >= last24Hours && l.StatusCode >= 500)
+                .GroupBy(l => l.StatusCode)
+                .Select(g => new
+                {
+                    ErrorType = g.Key.ToString(),
+                    Count = g.Count(),
+                    LastOccurrence = g.Max(x => x.Timestamp)
+                })
                 .ToListAsync();
 
-            model.SecurityMetrics.Keywords = new()
+            model.SecurityMetrics.SystemErrors = new()
             {
-                TotalDetections = suspiciousRequests.Count,
-                HighRiskDetections = suspiciousRequests.Count(x => x.StatusCode >= 400),
-                RecentDetections = suspiciousRequests
-                    .OrderByDescending(x => x.Timestamp)
-                    .Take(5)
-                    .Select(x => new KeywordDetection
+                TotalErrors = systemErrors.Sum(x => x.Count),
+                ConsecutiveErrors = systemErrors.Count(x => x.Count > 10),
+                UniqueErrorTypes = systemErrors.Count,
+                RecentErrors = systemErrors
+                    .Select(x => new ErrorEvent
                     {
-                        Keyword = keywords.First(k => (x.Path + " " + x.Details).ToLower().Contains(k)),
-                        Context = x.Path ?? "unknown",
-                        Timestamp = x.Timestamp,
-                        Source = x.IpAddress ?? "unknown"
+                        ErrorType = x.ErrorType,
+                        Timestamp = x.LastOccurrence,
+                        Source = "System",
+                        Count = x.Count
                     })
                     .ToList()
             };
@@ -479,6 +477,16 @@ namespace SecurityMonitor.Controllers
             metrics.SystemStats.MaxConsecutiveErrors = GetMaxConsecutiveErrors(recentErrors);
 
             return View(metrics);
+        }
+
+        public IActionResult SematextIntegration()
+        {
+            return View();
+        }
+
+        public IActionResult LogAnalysis()
+        {
+            return View();
         }
     }
 }

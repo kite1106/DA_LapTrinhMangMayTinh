@@ -88,7 +88,10 @@
         // Khai báo các hàm xử lý
         async function handleLock(userId, email) {
             try {
-                toastr.info("Đang khóa tài khoản...");
+                toastr.info("Đang khóa tài khoản...", "", {
+                    timeOut: 5000,
+                    extendedTimeOut: 2000
+                });
                 const response = await fetch('/UserAdmin/Lock?id=' + userId, {
                     method: 'POST',
                     headers: {
@@ -101,7 +104,10 @@
                     // Cập nhật UI ngay lập tức
                     setTimeout(() => {
                         updateUserRow(userId, true, false);
-                        toastr.success("Đã khóa tài khoản " + email);
+                        toastr.success("Đã khóa tài khoản " + email, "", {
+                            timeOut: 5000,
+                            extendedTimeOut: 2000
+                        });
                     }, 0);
                     return;
                 }
@@ -110,9 +116,15 @@
                 const errorData = await response.text();
                 console.log('Server response:', errorData);
                 if (response.status === 400) {
-                    toastr.warning(errorData || "Yêu cầu không hợp lệ");
+                    toastr.warning(errorData || "Yêu cầu không hợp lệ", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 } else {
-                    toastr.error("Không thể khóa tài khoản");
+                    toastr.error("Không thể khóa tài khoản", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -121,7 +133,10 @@
 
         async function handleUnlock(userId, email) {
             try {
-                toastr.info("Đang mở khóa tài khoản...");
+                toastr.info("Đang mở khóa tài khoản...", "", {
+                    timeOut: 5000,
+                    extendedTimeOut: 2000
+                });
                 const response = await fetch('/UserAdmin/Unlock?id=' + userId, {
                     method: 'POST',
                     headers: {
@@ -134,7 +149,10 @@
                     // Cập nhật UI ngay lập tức
                     setTimeout(() => {
                         updateUserRow(userId, false, false);
-                        toastr.success("Đã mở khóa tài khoản " + email);
+                        toastr.success("Đã mở khóa tài khoản " + email, "", {
+                            timeOut: 5000,
+                            extendedTimeOut: 2000
+                        });
                     }, 0);
                     return;
                 }
@@ -143,9 +161,15 @@
                 const errorData = await response.text();
                 console.log('Server response:', errorData);
                 if (response.status === 400) {
-                    toastr.warning(errorData || "Yêu cầu không hợp lệ");
+                    toastr.warning(errorData || "Yêu cầu không hợp lệ", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 } else {
-                    toastr.error("Không thể mở khóa tài khoản");
+                    toastr.error("Không thể mở khóa tài khoản", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -154,7 +178,10 @@
 
         async function handleRestrict(userId, email) {
             try {
-                toastr.info("Đang hạn chế tài khoản...");
+                toastr.info("Đang hạn chế tài khoản...", "", {
+                    timeOut: 5000,
+                    extendedTimeOut: 2000
+                });
                 const response = await fetch('/UserAdmin/Restrict?id=' + userId, {
                     method: 'POST',
                     headers: {
@@ -165,7 +192,10 @@
                 // Cập nhật UI ngay lập tức nếu status code là 200-299
                 if (response.ok) {
                     updateUserRow(userId, false, true);
-                    toastr.success("Đã hạn chế tài khoản " + email);
+                    toastr.success("Đã hạn chế tài khoản " + email, "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                     return;
                 }
 
@@ -173,9 +203,15 @@
                 const errorData = await response.text();
                 console.log('Server response:', errorData);
                 if (response.status === 400) {
-                    toastr.warning(errorData || "Yêu cầu không hợp lệ");
+                    toastr.warning(errorData || "Yêu cầu không hợp lệ", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 } else {
-                    toastr.error("Không thể hạn chế tài khoản");
+                    toastr.error("Không thể hạn chế tài khoản", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -184,7 +220,10 @@
 
         async function handleUnrestrict(userId, email) {
             try {
-                toastr.info("Đang bỏ hạn chế tài khoản...");
+                toastr.info("Đang bỏ hạn chế tài khoản...", "", {
+                    timeOut: 5000,
+                    extendedTimeOut: 2000
+                });
                 const response = await fetch('/UserAdmin/Unrestrict?id=' + userId, {
                     method: 'POST',
                     headers: {
@@ -195,7 +234,10 @@
                 // Cập nhật UI ngay lập tức nếu status code là 200-299
                 if (response.ok) {
                     updateUserRow(userId, false, false);
-                    toastr.success("Đã bỏ hạn chế tài khoản " + email);
+                    toastr.success("Đã bỏ hạn chế tài khoản " + email, "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                     return;
                 }
 
@@ -203,9 +245,15 @@
                 const errorData = await response.text();
                 console.log('Server response:', errorData);
                 if (response.status === 400) {
-                    toastr.warning(errorData || "Yêu cầu không hợp lệ");
+                    toastr.warning(errorData || "Yêu cầu không hợp lệ", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 } else {
-                    toastr.error("Không thể bỏ hạn chế tài khoản");
+                    toastr.error("Không thể bỏ hạn chế tài khoản", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -434,9 +482,15 @@
                 }
             } else {
                 if (isLocked) {
-                    toastr.info("Tài khoản " + userName + " đã bị khóa");
+                    toastr.info("Tài khoản " + userName + " đã bị khóa", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 } else {
-                    toastr.info("Tài khoản " + userName + " đã được mở khóa");
+                    toastr.info("Tài khoản " + userName + " đã được mở khóa", "", {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000
+                    });
                 }
             }
         });
@@ -478,7 +532,10 @@
                     window.location.href = '/alerts/index';
                 }, 3000);
             } else {
-                toastr.info("Tài khoản " + userName + " đã bị hạn chế");
+                toastr.info("Tài khoản " + userName + " đã bị hạn chế", "", {
+                    timeOut: 5000,
+                    extendedTimeOut: 2000
+                });
             }
         });
 
@@ -492,9 +549,15 @@
             }, 0);
 
             if (userName === '@ViewBag.CurrentUserName') {
-                toastr.success("Tài khoản của bạn đã được bỏ hạn chế.");
+                toastr.success("Tài khoản của bạn đã được bỏ hạn chế.", "", {
+                    timeOut: 5000,
+                    extendedTimeOut: 2000
+                });
             } else {
-                toastr.info("Tài khoản " + userName + " đã được bỏ hạn chế");
+                toastr.info("Tài khoản " + userName + " đã được bỏ hạn chế", "", {
+                    timeOut: 5000,
+                    extendedTimeOut: 2000
+                });
             }
         });
 

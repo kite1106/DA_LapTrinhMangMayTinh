@@ -4,12 +4,12 @@ namespace SecurityMonitor.Services.Interfaces
 {
     public interface ILogService
     {
-        Task<IEnumerable<Log>> GetAllLogsAsync();
-        Task<Log?> GetLogByIdAsync(long id);
-        Task<Log> CreateLogAsync(Log log);
-        Task<IEnumerable<Log>> GetLogsBySourceAsync(int sourceId);
-        Task<IEnumerable<Log>> GetLogsByDateRangeAsync(DateTime start, DateTime end);
-        Task<IEnumerable<Log>> GetRecentLogsAsync(TimeSpan duration);
+        Task<IEnumerable<LogEntry>> GetAllLogsAsync();
+        Task<LogEntry?> GetLogByIdAsync(long id);
+        Task<LogEntry> CreateLogAsync(LogEntry log);
+        Task<IEnumerable<LogEntry>> GetLogsBySourceAsync(int sourceId);
+        Task<IEnumerable<LogEntry>> GetLogsByDateRangeAsync(DateTime start, DateTime end);
+        Task<IEnumerable<LogEntry>> GetRecentLogsAsync(TimeSpan duration);
         Task ProcessLogAsync(long logId);
         
         // Log Source methods

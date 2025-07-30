@@ -35,6 +35,70 @@ public class AlertHub : Hub
         });
     }
 
+    /// <summary>
+    /// Gửi cập nhật thống kê dashboard real-time
+    /// </summary>
+    public async Task SendDashboardStatsUpdate(object stats)
+    {
+        await Clients.All.SendAsync("ReceiveDashboardStats", stats);
+    }
+
+    /// <summary>
+    /// Gửi cập nhật số lượng cảnh báo real-time
+    /// </summary>
+    public async Task SendAlertCountsUpdate(object alertCounts)
+    {
+        await Clients.All.SendAsync("ReceiveAlertCounts", alertCounts);
+    }
+
+    /// <summary>
+    /// Gửi cập nhật bảng cảnh báo real-time
+    /// </summary>
+    public async Task SendAlertsTableUpdate(object alertsData)
+    {
+        await Clients.All.SendAsync("ReceiveAlertsTableUpdate", alertsData);
+    }
+
+    /// <summary>
+    /// Gửi cập nhật thống kê người dùng real-time
+    /// </summary>
+    public async Task SendUserStatsUpdate(object userStats)
+    {
+        await Clients.All.SendAsync("ReceiveUserStats", userStats);
+    }
+
+    /// <summary>
+    /// Gửi cập nhật lịch sử đăng nhập real-time
+    /// </summary>
+    public async Task SendLoginHistoryUpdate(object loginHistory)
+    {
+        await Clients.All.SendAsync("ReceiveLoginHistory", loginHistory);
+    }
+
+    /// <summary>
+    /// Gửi cập nhật cảnh báo gần đây real-time
+    /// </summary>
+    public async Task SendRecentAlertsUpdate(object recentAlerts)
+    {
+        await Clients.All.SendAsync("ReceiveRecentAlerts", recentAlerts);
+    }
+
+    /// <summary>
+    /// Gửi cập nhật biểu đồ real-time
+    /// </summary>
+    public async Task SendChartDataUpdate(string chartType, object chartData)
+    {
+        await Clients.All.SendAsync("ReceiveChartData", chartType, chartData);
+    }
+
+    /// <summary>
+    /// Gửi cập nhật metrics bảo mật real-time
+    /// </summary>
+    public async Task SendSecurityMetricsUpdate(object securityMetrics)
+    {
+        await Clients.All.SendAsync("ReceiveSecurityMetrics", securityMetrics);
+    }
+
     public async Task JoinAlertGroup(string severity)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, severity);

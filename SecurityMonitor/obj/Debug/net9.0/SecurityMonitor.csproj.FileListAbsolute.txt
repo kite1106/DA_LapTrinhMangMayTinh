@@ -938,7 +938,6 @@ C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\ref\Se
 C:\Da_LapTrinhMMT\DA_LapTrinhMangMayTinh\SecurityMonitor\bin\Debug\net9.0\Data\AlertTypes.json
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\bin\Debug\net9.0\appsettings.Development.json
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\bin\Debug\net9.0\appsettings.json
-C:\DA_LapTrinhMangMayTinh\SecurityMonitor\bin\Debug\net9.0\Data\AlertTypes.json
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\bin\Debug\net9.0\libman.json
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\bin\Debug\net9.0\package-lock.json
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\bin\Debug\net9.0\package.json
@@ -1502,7 +1501,7 @@ C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\refint\SecurityMonito
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\SecurityMonitor.pdb
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\SecurityMonitor.genruntimeconfig.cache
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\ref\SecurityMonitor.dll
-C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\l6w0r7h2rq-5ipweew5fc.gz
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\se5xsyxoi7-b5njbf53e0.gz
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\98sl4c83ik-wr9zvhhh8c.gz
-C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\y56j80b9qy-rmkrtokd2j.gz
+C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\5ie4swdhdc-drdes5agp4.gz
+C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\y56j80b9qy-napcapw3rz.gz

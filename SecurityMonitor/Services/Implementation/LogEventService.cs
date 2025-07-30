@@ -17,10 +17,14 @@ public class LogEventService : ILogEventService
     private readonly ConcurrentDictionary<string, UserActivityTracker> _userTrackers;
     private readonly ConcurrentDictionary<string, EndpointTracker> _endpointTrackers;
 
-    // Cấu hình các ngưỡng
+    // Cấu hình các ngưỡng - Đã giảm để dễ test
     private const int RESET_PASSWORD_THRESHOLD = 3; // Số lần reset password trong 5 phút
     private const int CHANGE_EMAIL_THRESHOLD = 3; // Số lần đổi email trong 5 phút
     private const int TRACKING_WINDOW_MINUTES = 5;
+    private const int SCANNER_THRESHOLD = 10; // Số lần 404 để phát hiện scanner
+    private const int SYSTEM_ERROR_THRESHOLD = 5; // Số lỗi hệ thống để cảnh báo
+    private const int HIGH_TRAFFIC_THRESHOLD = 20; // Số request để phát hiện high traffic
+    private const int DDOS_THRESHOLD = 50; // Số request để phát hiện DDoS
 
     // Từ khóa đáng ngờ trong logs
     private static readonly string[] SUSPICIOUS_KEYWORDS = new[]
@@ -59,12 +63,11 @@ public class LogEventService : ILogEventService
         var logSource = await EnsureLogSourceExistsAsync(logService, "Web Server", "Web Application", ipAddress);
         
         // Ghi nhận event vào log
-        await logService.CreateLogAsync(new Log
+        await logService.CreateLogAsync(new LogEntry
         {
             Timestamp = DateTime.UtcNow,
-            EventType = "API",
             Message = $"{method} {endpoint}",
-            RawData = $"Status: {statusCode}, User: {userId}",
+            Details = $"Status: {statusCode}, User: {userId}",
             IpAddress = ipAddress,
             LogSourceId = logSource.Id
         });
@@ -92,7 +95,7 @@ public class LogEventService : ILogEventService
             var tracker = _endpointTrackers.GetOrAdd(ipAddress, _ => new EndpointTracker(ipAddress));
             tracker.RecordNotFound();
 
-            if (tracker.NotFoundCount >= 10) // Ngưỡng 10 lần 404 trong 5 phút
+            if (tracker.NotFoundCount >= SCANNER_THRESHOLD)
             {
                 await CreateAlertAsync(alertService,
                     "Phát hiện hoạt động scan",
@@ -101,6 +104,31 @@ public class LogEventService : ILogEventService
                     AlertTypeId.SuspiciousIP,
                     SeverityLevelId.Medium);
             }
+        }
+
+        // Phát hiện high traffic
+        var trafficTracker = _endpointTrackers.GetOrAdd(ipAddress, _ => new EndpointTracker(ipAddress));
+        trafficTracker.RecordAccess(userId, ipAddress, statusCode);
+
+        if (trafficTracker.AccessCount >= HIGH_TRAFFIC_THRESHOLD)
+        {
+            await CreateAlertAsync(alertService,
+                "Phát hiện high traffic",
+                $"IP {ipAddress} gửi {trafficTracker.AccessCount} request trong {TRACKING_WINDOW_MINUTES} phút",
+                ipAddress,
+                AlertTypeId.SuspiciousIP,
+                SeverityLevelId.Medium);
+        }
+
+        // Phát hiện DDoS
+        if (trafficTracker.AccessCount >= DDOS_THRESHOLD)
+        {
+            await CreateAlertAsync(alertService,
+                "Phát hiện tấn công DDoS",
+                $"IP {ipAddress} gửi {trafficTracker.AccessCount} request - có thể là DDoS",
+                ipAddress,
+                AlertTypeId.SuspiciousIP,
+                SeverityLevelId.High);
         }
     }
 
@@ -113,12 +141,11 @@ public class LogEventService : ILogEventService
         // Ghi log mọi sự kiện xác thực
         var logSource = await EnsureLogSourceExistsAsync(logService, "Authentication Server", "Authentication Service", ipAddress);
         
-        await logService.CreateLogAsync(new Log
+        await logService.CreateLogAsync(new LogEntry
         {
             Timestamp = DateTime.UtcNow,
-            EventType = "Authentication",
             Message = $"{action} - {(isSuccessful ? "Success" : "Failed")}",
-            RawData = $"User: {userId}",
+            Details = $"User: {userId}",
             IpAddress = ipAddress,
             LogSourceId = logSource.Id
         });
@@ -139,6 +166,19 @@ public class LogEventService : ILogEventService
                     SeverityLevelId.High);
             }
         }
+        else if (action.Contains("ChangePassword", StringComparison.OrdinalIgnoreCase))
+        {
+            tracker.RecordPasswordChange();
+            if (tracker.PasswordChangeCount >= RESET_PASSWORD_THRESHOLD)
+            {
+                await CreateAlertAsync(alertService,
+                    "Phát hiện nhiều lần đổi mật khẩu",
+                    $"User {userId} từ IP {ipAddress} đã đổi mật khẩu {tracker.PasswordChangeCount} lần trong {TRACKING_WINDOW_MINUTES} phút",
+                    ipAddress,
+                    AlertTypeId.SuspiciousIP,
+                    SeverityLevelId.High);
+            }
+        }
         else if (action.Contains("ChangeEmail", StringComparison.OrdinalIgnoreCase))
         {
             tracker.RecordEmailChange();
@@ -152,6 +192,30 @@ public class LogEventService : ILogEventService
                     SeverityLevelId.High);
             }
         }
+        else if (action.Contains("Login", StringComparison.OrdinalIgnoreCase) && !isSuccessful)
+        {
+            // Bắt failed login attempts
+            tracker.RecordFailedLogin();
+            if (tracker.FailedLoginCount >= 5) // 5 lần failed login
+            {
+                await CreateAlertAsync(alertService,
+                    "Phát hiện nhiều lần đăng nhập thất bại",
+                    $"User {userId} từ IP {ipAddress} đã đăng nhập thất bại {tracker.FailedLoginCount} lần trong {TRACKING_WINDOW_MINUTES} phút",
+                    ipAddress,
+                    AlertTypeId.SuspiciousIP,
+                    SeverityLevelId.High);
+            }
+        }
+        else if (action.Contains("AdminAccess", StringComparison.OrdinalIgnoreCase))
+        {
+            // Bắt admin access attempts - tạo alert ngay lập tức
+            await CreateAlertAsync(alertService,
+                "Phát hiện truy cập admin từ user account",
+                $"User {userId} từ IP {ipAddress} đã cố gắng truy cập vào admin area",
+                ipAddress,
+                AlertTypeId.SuspiciousIP,
+                SeverityLevelId.High);
+        }
     }
 
     public async Task RecordSystemEventAsync(string eventType, string message, string source, string? ipAddress = null)
@@ -163,12 +227,11 @@ public class LogEventService : ILogEventService
         // Ghi log sự kiện hệ thống
         var logSource = await EnsureLogSourceExistsAsync(logService, source, "System Service", ipAddress ?? "system");
         
-        await logService.CreateLogAsync(new Log
+        await logService.CreateLogAsync(new LogEntry
         {
             Timestamp = DateTime.UtcNow,
-            EventType = eventType,
             Message = message,
-            RawData = $"Source: {source}",
+            Details = $"Source: {source}",
             IpAddress = ipAddress,
             LogSourceId = logSource.Id
         });
@@ -190,7 +253,7 @@ public class LogEventService : ILogEventService
             var sourceTracker = _endpointTrackers.GetOrAdd(source, _ => new EndpointTracker(source));
             sourceTracker.RecordError();
 
-            if (sourceTracker.ErrorCount >= 5) // Ngưỡng 5 lỗi trong 5 phút
+            if (sourceTracker.ErrorCount >= SYSTEM_ERROR_THRESHOLD)
             {
                 await CreateAlertAsync(alertService,
                     "Phát hiện nhiều lỗi hệ thống",
@@ -209,12 +272,11 @@ public class LogEventService : ILogEventService
         var alertService = scope.ServiceProvider.GetRequiredService<IAlertService>();
 
         // Ghi log sự kiện đáng ngờ
-        await logService.CreateLogAsync(new Log
+        await logService.CreateLogAsync(new LogEntry
         {
             Timestamp = DateTime.UtcNow,
-            EventType = "Security",
             Message = $"Suspicious: {eventType}",
-            RawData = description,
+            Details = description,
             IpAddress = ipAddress
         });
 
@@ -302,7 +364,9 @@ public class UserActivityTracker
     
     public string UserId { get; }
     public int PasswordResetCount { get; private set; }
+    public int PasswordChangeCount { get; private set; }
     public int EmailChangeCount { get; private set; }
+    public int FailedLoginCount { get; private set; }
     public DateTime LastActivityTime { get; private set; }
     private readonly List<DateTime> _activities;
 
@@ -312,13 +376,23 @@ public class UserActivityTracker
         LastActivityTime = DateTime.UtcNow;
         _activities = new List<DateTime>();
         PasswordResetCount = 0;
+        PasswordChangeCount = 0;
         EmailChangeCount = 0;
+        FailedLoginCount = 0;
     }
 
     public void RecordPasswordReset()
     {
         CleanupOldActivities();
         PasswordResetCount++;
+        _activities.Add(DateTime.UtcNow);
+        LastActivityTime = DateTime.UtcNow;
+    }
+
+    public void RecordPasswordChange()
+    {
+        CleanupOldActivities();
+        PasswordChangeCount++;
         _activities.Add(DateTime.UtcNow);
         LastActivityTime = DateTime.UtcNow;
     }
@@ -331,12 +405,27 @@ public class UserActivityTracker
         LastActivityTime = DateTime.UtcNow;
     }
 
+    public void RecordFailedLogin()
+    {
+        CleanupOldActivities();
+        FailedLoginCount++;
+        _activities.Add(DateTime.UtcNow);
+        LastActivityTime = DateTime.UtcNow;
+    }
+
     private void CleanupOldActivities()
     {
         var cutoff = DateTime.UtcNow.AddMinutes(-TRACKING_WINDOW_MINUTES);
         _activities.RemoveAll(t => t < cutoff);
-        PasswordResetCount = 0;
-        EmailChangeCount = 0;
+        
+        // Chỉ reset count nếu không có hoạt động nào trong 5 phút qua
+        if (_activities.Count == 0)
+        {
+            PasswordResetCount = 0;
+            PasswordChangeCount = 0;
+            EmailChangeCount = 0;
+            FailedLoginCount = 0;
+        }
     }
 }
 

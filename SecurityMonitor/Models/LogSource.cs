@@ -16,5 +16,5 @@ public class LogSource
     public DateTime? LastSeenAt { get; set; }
 
     // Quan hệ
-    public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
+    public virtual ICollection<LogEntry> Logs { get; set; } = new List<LogEntry>();
 }

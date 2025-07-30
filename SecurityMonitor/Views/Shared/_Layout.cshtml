@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
     <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     @* ✅ Xác định returnUrl theo role trước *@
@@ -31,12 +32,13 @@
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Alerts" asp-action="Index">
+                    <a class="nav-link" asp-controller="User" asp-action="Index">
                         <i class="bi bi-exclamation-triangle"></i> Cảnh báo
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Logs" asp-action="Index">
+                    <a class="nav-link" asp-controller="Logs" a
+                    sp-action="Index">
                         <i class="bi bi-journal-text"></i> Logs
                     </a>
                 </li>
@@ -127,6 +129,7 @@
             window.currentUserName = "@User.Identity.Name";
         </script>
     }
+    <script src="~/js/realtime-monitor.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
 
@@ -135,8 +138,11 @@
         toastr.options = {
             "closeButton": true,
             "progressBar": true,
-            "positionClass": "toast-bottom-right",
-            "timeOut": "5000"
+            "positionClass": "toast-top-right",
+            "timeOut": "0",
+            "extendedTimeOut": "0",
+            "newestOnTop": true,
+            "preventDuplicates": true
         };
     </script>
 
