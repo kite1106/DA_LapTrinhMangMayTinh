@@ -48,6 +48,18 @@ public static class SeedData
                 );
             }
 
+            // Thêm LogLevelTypes
+            if (!context.LogLevelTypes.Any())
+            {
+                context.LogLevelTypes.AddRange(
+                    new LogLevelType { Name = "Information", Description = "Thông tin", Priority = 1 },
+                    new LogLevelType { Name = "Warning", Description = "Cảnh báo", Priority = 2 },
+                    new LogLevelType { Name = "Error", Description = "Lỗi", Priority = 3 },
+                    new LogLevelType { Name = "Critical", Description = "Nghiêm trọng", Priority = 4 },
+                    new LogLevelType { Name = "Debug", Description = "Debug", Priority = 5 }
+                );
+            }
+
             // Thêm LogSources mẫu
             if (!context.LogSources.Any())
             {
@@ -82,62 +94,63 @@ public static class SeedData
                 );
             }
 
-            // Lưu thay đổi để có Id của LogSources
+            // Lưu thay đổi để có Id của LogSources và LogLevelTypes
             context.SaveChanges();
 
             // Thêm Logs mẫu
-            if (!context.Logs.Any())
-            {
-                var winServer = context.LogSources.First(ls => ls.Name == "Windows Server 2022");
-                var ubuntuServer = context.LogSources.First(ls => ls.Name == "Ubuntu Server");
-                var dbServer = context.LogSources.First(ls => ls.Name == "Database Server");
+                    if (!context.LogEntries.Any())
+        {
+            var winServer = context.LogSources.First(ls => ls.Name == "Windows Server 2022");
+            var ubuntuServer = context.LogSources.First(ls => ls.Name == "Ubuntu Server");
+            var dbServer = context.LogSources.First(ls => ls.Name == "Database Server");
 
-                context.Logs.AddRange(
-                    new Log
+                // Lấy LogLevelType mặc định
+                var infoLevel = context.LogLevelTypes.First(lt => lt.Name == "Information");
+                var errorLevel = context.LogLevelTypes.First(lt => lt.Name == "Error");
+                var warningLevel = context.LogLevelTypes.First(lt => lt.Name == "Warning");
+
+                context.LogEntries.AddRange(
+                    new LogEntry
                     {
                         Timestamp = DateTime.Now.AddMinutes(-30),
                         LogSourceId = winServer.Id,
-                        EventType = "Security",
                         Message = "Failed login attempt for user 'administrator'",
-                        RawData = "Event ID: 4625, Multiple failed login attempts detected",
+                        Details = "Event ID: 4625, Multiple failed login attempts detected",
                         IpAddress = "45.92.158.12",
                         ProcessedAt = DateTime.Now.AddMinutes(-29)
                     },
-                    new Log
+                    new LogEntry
                     {
                         Timestamp = DateTime.Now.AddMinutes(-25),
                         LogSourceId = ubuntuServer.Id,
-                        EventType = "System",
-                        Message = "High CPU usage detected",
-                        RawData = "CPU usage at 95% for 5 minutes",
+                        Message = "Suspicious file access detected",
+                        Details = "User 'root' accessed sensitive file /etc/passwd",
+                        IpAddress = "189.23.45.66",
                         ProcessedAt = DateTime.Now.AddMinutes(-24)
                     },
-                    new Log
+                    new LogEntry
                     {
                         Timestamp = DateTime.Now.AddMinutes(-20),
                         LogSourceId = dbServer.Id,
-                        EventType = "Database",
-                        Message = "Suspicious SQL query detected",
-                        RawData = "SELECT * FROM users WHERE 1=1; DROP TABLE users;--",
-                        IpAddress = "189.23.45.66",
+                        Message = "SQL injection attempt detected",
+                        Details = "Malicious SQL query: SELECT * FROM users WHERE id = 1 OR 1=1",
+                        IpAddress = "78.45.123.90",
                         ProcessedAt = DateTime.Now.AddMinutes(-19)
                     },
-                    new Log
+                    new LogEntry
                     {
                         Timestamp = DateTime.Now.AddMinutes(-15),
                         LogSourceId = winServer.Id,
-                        EventType = "Security",
                         Message = "New service installed",
-                        RawData = "Service 'BadService' was installed and started",
+                        Details = "Service 'BadService' was installed and started",
                         ProcessedAt = DateTime.Now.AddMinutes(-14)
                     },
-                    new Log
+                    new LogEntry
                     {
                         Timestamp = DateTime.Now.AddMinutes(-10),
                         LogSourceId = ubuntuServer.Id,
-                        EventType = "Network",
                         Message = "Port scan detected",
-                        RawData = "Multiple connection attempts from IP 78.45.123.90",
+                        Details = "Multiple connection attempts from IP 78.45.123.90",
                         IpAddress = "78.45.123.90",
                         ProcessedAt = DateTime.Now.AddMinutes(-9)
                     }

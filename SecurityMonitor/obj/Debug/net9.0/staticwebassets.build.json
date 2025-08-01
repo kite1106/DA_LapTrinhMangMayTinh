@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "HyCjZoF3igXJd31jc0JLyy1/yeG2epo0PPkT02cyMCs=",
+  "Hash": "w5B+AK9EKVH7tp8Ckfb8UVqwoZu8sEJ3UJGGhdt0+fE=",
   "Source": "SecurityMonitor",
   "BasePath": "_content/SecurityMonitor",
   "Mode": "Default",
@@ -771,6 +771,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_kk.min.js"
+    },
+    {
+      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\5ie4swdhdc-drdes5agp4.gz",
+      "SourceId": "SecurityMonitor",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/SecurityMonitor",
+      "RelativePath": "js/realtime-monitor#[.{fingerprint=drdes5agp4}]?.js.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\realtime-monitor.js",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "7d3h88lkh1",
+      "Integrity": "tVzTly0+Aiun+EI0CqqPvA9IpqAGZ0LfYicy/9xlby4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\realtime-monitor.js"
     },
     {
       "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\5nh5fjgo6m-xr5mzhhzao.gz",
@@ -3377,27 +3398,6 @@
       "OriginalItemSpec": "C:\\Users\\KIET\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\9.0.7\\staticwebassets\\V5\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
     },
     {
-      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\l6w0r7h2rq-5ipweew5fc.gz",
-      "SourceId": "SecurityMonitor",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\",
-      "BasePath": "_content/SecurityMonitor",
-      "RelativePath": "js/account-management#[.{fingerprint=5ipweew5fc}]?.js.gz",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Alternative",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\account-management.js",
-      "AssetTraitName": "Content-Encoding",
-      "AssetTraitValue": "gzip",
-      "Fingerprint": "5ipweew5fc",
-      "Integrity": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\account-management.js"
-    },
-    {
       "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\l8i5luag6j-j1w85hpy51.gz",
       "SourceId": "SecurityMonitor",
       "SourceType": "Discovered",
@@ -3774,6 +3774,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\nj0jp199j0-mrjb6khaff.gz",
+      "SourceId": "SecurityMonitor",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/SecurityMonitor",
+      "RelativePath": "css/alert-notifications#[.{fingerprint=mrjb6khaff}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alert-notifications.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "jt6jd9qalu",
+      "Integrity": "uUVSt78n7N6/ZvB84lkrg58K9ozyr/s5HpftdmZimGw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alert-notifications.css"
     },
     {
       "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\nj21k1lv8e-8oc7ip9mz7.gz",
@@ -5519,12 +5540,12 @@
       "OriginalItemSpec": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hi.js"
     },
     {
-      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-rmkrtokd2j.gz",
+      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-0df0idrhht.gz",
       "SourceId": "SecurityMonitor",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/SecurityMonitor",
-      "RelativePath": "js/site#[.{fingerprint=rmkrtokd2j}]?.js.gz",
+      "RelativePath": "js/site#[.{fingerprint=0df0idrhht}]?.js.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -5533,8 +5554,8 @@
       "RelatedAsset": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "3t8c0r1c76",
-      "Integrity": "lxMxRZC5pu1gknsttyPyz2DOpYLxMKxWuJgumnk+iHs=",
+      "Fingerprint": "arta0cibjb",
+      "Integrity": "2rrdekXvF4nwUJNtM5Aqr805l/uCxDoel4CuqU0thHs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js"
@@ -5750,6 +5771,27 @@
       "OriginalItemSpec": "C:\\Users\\KIET\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\9.0.7\\staticwebassets\\V5\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
     },
     {
+      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\zd8vad3z2a-w0ml7p17l2.gz",
+      "SourceId": "SecurityMonitor",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/SecurityMonitor",
+      "RelativePath": "js/alert-notifications#[.{fingerprint=w0ml7p17l2}]?.js.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert-notifications.js",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "dofpj6o5gv",
+      "Integrity": "naZlIF89M7c0AftWNda6id97etx5hDdsVX77IPK0MYU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert-notifications.js"
+    },
+    {
       "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\zmxn9i6hmd-caz9dtw6qw.gz",
       "SourceId": "SecurityMonitor",
       "SourceType": "Discovered",
@@ -5832,6 +5874,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\KIET\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\9.0.7\\staticwebassets\\V5\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alert-notifications.css",
+      "SourceId": "SecurityMonitor",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\",
+      "BasePath": "_content/SecurityMonitor",
+      "RelativePath": "css/alert-notifications#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "mrjb6khaff",
+      "Integrity": "LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\alert-notifications.css"
     },
     {
       "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alerts.css",
@@ -5918,12 +5981,12 @@
       "OriginalItemSpec": "wwwroot\\images\\alert-icon.png"
     },
     {
-      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\account-management.js",
+      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\images\\logohutech.png",
       "SourceId": "SecurityMonitor",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\",
       "BasePath": "_content/SecurityMonitor",
-      "RelativePath": "js/account-management#[.{fingerprint}]?.js",
+      "RelativePath": "images/logohutech#[.{fingerprint}]?.png",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -5932,11 +5995,32 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "5ipweew5fc",
-      "Integrity": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+      "Fingerprint": "qioae4ix48",
+      "Integrity": "oljyOjGwded/ajfw+Cv2ORkMW5TQMVAsEEdERgvIps8=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\account-management.js"
+      "OriginalItemSpec": "wwwroot\\images\\logohutech.png"
+    },
+    {
+      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert-notifications.js",
+      "SourceId": "SecurityMonitor",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\",
+      "BasePath": "_content/SecurityMonitor",
+      "RelativePath": "js/alert-notifications#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "w0ml7p17l2",
+      "Integrity": "wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\alert-notifications.js"
     },
     {
       "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert.js",
@@ -6002,6 +6086,27 @@
       "OriginalItemSpec": "wwwroot\\js\\init.js"
     },
     {
+      "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\realtime-monitor.js",
+      "SourceId": "SecurityMonitor",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\",
+      "BasePath": "_content/SecurityMonitor",
+      "RelativePath": "js/realtime-monitor#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "drdes5agp4",
+      "Integrity": "Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\realtime-monitor.js"
+    },
+    {
       "Identity": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js",
       "SourceId": "SecurityMonitor",
       "SourceType": "Discovered",
@@ -6016,8 +6121,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "rmkrtokd2j",
-      "Integrity": "M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I=",
+      "Fingerprint": "0df0idrhht",
+      "Integrity": "PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
@@ -13774,6 +13879,304 @@
   ],
   "Endpoints": [
     {
+      "Route": "css/alert-notifications.css",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\nj0jp199j0-mrjb6khaff.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000918273646"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1088"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uUVSt78n7N6/ZvB84lkrg58K9ozyr/s5HpftdmZimGw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:13:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0="
+        }
+      ]
+    },
+    {
+      "Route": "css/alert-notifications.css",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alert-notifications.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3224"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:13:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0="
+        }
+      ]
+    },
+    {
+      "Route": "css/alert-notifications.css.gz",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\nj0jp199j0-mrjb6khaff.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1088"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uUVSt78n7N6/ZvB84lkrg58K9ozyr/s5HpftdmZimGw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:13:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-uUVSt78n7N6/ZvB84lkrg58K9ozyr/s5HpftdmZimGw="
+        }
+      ]
+    },
+    {
+      "Route": "css/alert-notifications.mrjb6khaff.css",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\nj0jp199j0-mrjb6khaff.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000918273646"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1088"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uUVSt78n7N6/ZvB84lkrg58K9ozyr/s5HpftdmZimGw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:13:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "mrjb6khaff"
+        },
+        {
+          "Name": "label",
+          "Value": "css/alert-notifications.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0="
+        }
+      ]
+    },
+    {
+      "Route": "css/alert-notifications.mrjb6khaff.css",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alert-notifications.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3224"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:13:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "mrjb6khaff"
+        },
+        {
+          "Name": "label",
+          "Value": "css/alert-notifications.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-LqFvo6d8RROjFsBKxOGV3uqz2CA7U1vXy61HyX1SiG0="
+        }
+      ]
+    },
+    {
+      "Route": "css/alert-notifications.mrjb6khaff.css.gz",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\nj0jp199j0-mrjb6khaff.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1088"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uUVSt78n7N6/ZvB84lkrg58K9ozyr/s5HpftdmZimGw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:13:21 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "mrjb6khaff"
+        },
+        {
+          "Name": "label",
+          "Value": "css/alert-notifications.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-uUVSt78n7N6/ZvB84lkrg58K9ozyr/s5HpftdmZimGw="
+        }
+      ]
+    },
+    {
       "Route": "css/alerts.b5njbf53e0.css",
       "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\se5xsyxoi7-b5njbf53e0.gz",
       "Selectors": [
@@ -13798,7 +14201,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 10:59:19 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13859,7 +14262,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 10:59:19 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13904,7 +14307,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 10:59:19 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13959,7 +14362,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 10:59:19 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14012,7 +14415,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 10:59:19 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14049,7 +14452,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 10:59:19 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -23281,13 +23684,95 @@
       ]
     },
     {
-      "Route": "js/account-management.5ipweew5fc.js",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\l6w0r7h2rq-5ipweew5fc.gz",
+      "Route": "images/logohutech.png",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\images\\logohutech.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "38057"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"oljyOjGwded/ajfw+Cv2ORkMW5TQMVAsEEdERgvIps8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 30 Jul 2025 14:10:18 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-oljyOjGwded/ajfw+Cv2ORkMW5TQMVAsEEdERgvIps8="
+        }
+      ]
+    },
+    {
+      "Route": "images/logohutech.qioae4ix48.png",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\images\\logohutech.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "38057"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"oljyOjGwded/ajfw+Cv2ORkMW5TQMVAsEEdERgvIps8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 30 Jul 2025 14:10:18 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qioae4ix48"
+        },
+        {
+          "Name": "label",
+          "Value": "images/logohutech.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-oljyOjGwded/ajfw+Cv2ORkMW5TQMVAsEEdERgvIps8="
+        }
+      ]
+    },
+    {
+      "Route": "js/alert-notifications.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\zd8vad3z2a-w0ml7p17l2.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "1.000000000000"
+          "Quality": "0.000572082380"
         }
       ],
       "ResponseHeaders": [
@@ -23297,19 +23782,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "0"
+          "Value": "1747"
         },
         {
           "Name": "ETag",
-          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+          "Value": "\"naZlIF89M7c0AftWNda6id97etx5hDdsVX77IPK0MYU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 06:26:41 GMT"
+          "Value": "Fri, 01 Aug 2025 14:58:42 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
+          "Value": "no-cache"
         },
         {
           "Name": "Content-Encoding",
@@ -23325,27 +23810,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+          "Value": "W/\"wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE=\""
         }
       ],
       "EndpointProperties": [
         {
-          "Name": "fingerprint",
-          "Value": "5ipweew5fc"
-        },
-        {
-          "Name": "label",
-          "Value": "js/account-management.js"
-        },
-        {
           "Name": "integrity",
-          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+          "Value": "sha256-wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE="
         }
       ]
     },
     {
-      "Route": "js/account-management.5ipweew5fc.js",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\account-management.js",
+      "Route": "js/alert-notifications.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert-notifications.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -23354,7 +23831,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "0"
+          "Value": "6105"
         },
         {
           "Name": "Content-Type",
@@ -23362,35 +23839,27 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+          "Value": "\"wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 06:26:41 GMT"
+          "Value": "Fri, 01 Aug 2025 14:58:42 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
+          "Value": "no-cache"
         }
       ],
       "EndpointProperties": [
         {
-          "Name": "fingerprint",
-          "Value": "5ipweew5fc"
-        },
-        {
-          "Name": "label",
-          "Value": "js/account-management.js"
-        },
-        {
           "Name": "integrity",
-          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+          "Value": "sha256-wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE="
         }
       ]
     },
     {
-      "Route": "js/account-management.5ipweew5fc.js.gz",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\l6w0r7h2rq-5ipweew5fc.gz",
+      "Route": "js/alert-notifications.js.gz",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\zd8vad3z2a-w0ml7p17l2.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -23399,7 +23868,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "0"
+          "Value": "1747"
         },
         {
           "Name": "Content-Type",
@@ -23407,15 +23876,15 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+          "Value": "\"naZlIF89M7c0AftWNda6id97etx5hDdsVX77IPK0MYU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 06:26:41 GMT"
+          "Value": "Fri, 01 Aug 2025 14:58:42 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
+          "Value": "no-cache"
         },
         {
           "Name": "Content-Encoding",
@@ -23428,27 +23897,19 @@
       ],
       "EndpointProperties": [
         {
-          "Name": "fingerprint",
-          "Value": "5ipweew5fc"
-        },
-        {
-          "Name": "label",
-          "Value": "js/account-management.js.gz"
-        },
-        {
           "Name": "integrity",
-          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+          "Value": "sha256-naZlIF89M7c0AftWNda6id97etx5hDdsVX77IPK0MYU="
         }
       ]
     },
     {
-      "Route": "js/account-management.js",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\l6w0r7h2rq-5ipweew5fc.gz",
+      "Route": "js/alert-notifications.w0ml7p17l2.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\zd8vad3z2a-w0ml7p17l2.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "1.000000000000"
+          "Quality": "0.000572082380"
         }
       ],
       "ResponseHeaders": [
@@ -23458,19 +23919,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "0"
+          "Value": "1747"
         },
         {
           "Name": "ETag",
-          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+          "Value": "\"naZlIF89M7c0AftWNda6id97etx5hDdsVX77IPK0MYU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 06:26:41 GMT"
+          "Value": "Fri, 01 Aug 2025 14:58:42 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Encoding",
@@ -23486,19 +23947,27 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+          "Value": "W/\"wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE=\""
         }
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "w0ml7p17l2"
+        },
+        {
+          "Name": "label",
+          "Value": "js/alert-notifications.js"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+          "Value": "sha256-wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE="
         }
       ]
     },
     {
-      "Route": "js/account-management.js",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\account-management.js",
+      "Route": "js/alert-notifications.w0ml7p17l2.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert-notifications.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -23507,7 +23976,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "0"
+          "Value": "6105"
         },
         {
           "Name": "Content-Type",
@@ -23515,27 +23984,35 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+          "Value": "\"wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 06:26:41 GMT"
+          "Value": "Fri, 01 Aug 2025 14:58:42 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         }
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "w0ml7p17l2"
+        },
+        {
+          "Name": "label",
+          "Value": "js/alert-notifications.js"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+          "Value": "sha256-wJ1cCtHs5w1NiWA/FkpxSA3eIvwVDy+7+cwrrfHUBXE="
         }
       ]
     },
     {
-      "Route": "js/account-management.js.gz",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\l6w0r7h2rq-5ipweew5fc.gz",
+      "Route": "js/alert-notifications.w0ml7p17l2.js.gz",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\zd8vad3z2a-w0ml7p17l2.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -23544,7 +24021,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "0"
+          "Value": "1747"
         },
         {
           "Name": "Content-Type",
@@ -23552,15 +24029,15 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\""
+          "Value": "\"naZlIF89M7c0AftWNda6id97etx5hDdsVX77IPK0MYU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 06:26:41 GMT"
+          "Value": "Fri, 01 Aug 2025 14:58:42 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Encoding",
@@ -23573,8 +24050,16 @@
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "w0ml7p17l2"
+        },
+        {
+          "Name": "label",
+          "Value": "js/alert-notifications.js.gz"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+          "Value": "sha256-naZlIF89M7c0AftWNda6id97etx5hDdsVX77IPK0MYU="
         }
       ]
     },
@@ -24199,7 +24684,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 11:14:09 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -24252,7 +24737,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 11:14:09 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -24289,7 +24774,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 11:14:09 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -24336,7 +24821,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 11:14:09 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -24397,7 +24882,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 11:14:09 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -24442,7 +24927,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 11:14:09 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -24473,13 +24958,13 @@
       ]
     },
     {
-      "Route": "js/site.js",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-rmkrtokd2j.gz",
+      "Route": "js/realtime-monitor.drdes5agp4.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\5ie4swdhdc-drdes5agp4.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000529380625"
+          "Quality": "0.000285877644"
         }
       ],
       "ResponseHeaders": [
@@ -24489,15 +24974,176 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1888"
+          "Value": "3497"
         },
         {
           "Name": "ETag",
-          "Value": "\"lxMxRZC5pu1gknsttyPyz2DOpYLxMKxWuJgumnk+iHs=\""
+          "Value": "\"tVzTly0+Aiun+EI0CqqPvA9IpqAGZ0LfYicy/9xlby4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 16:00:13 GMT"
+          "Value": "Wed, 30 Jul 2025 13:18:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "drdes5agp4"
+        },
+        {
+          "Name": "label",
+          "Value": "js/realtime-monitor.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8="
+        }
+      ]
+    },
+    {
+      "Route": "js/realtime-monitor.drdes5agp4.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\realtime-monitor.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "15010"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 30 Jul 2025 13:18:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "drdes5agp4"
+        },
+        {
+          "Name": "label",
+          "Value": "js/realtime-monitor.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8="
+        }
+      ]
+    },
+    {
+      "Route": "js/realtime-monitor.drdes5agp4.js.gz",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\5ie4swdhdc-drdes5agp4.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3497"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tVzTly0+Aiun+EI0CqqPvA9IpqAGZ0LfYicy/9xlby4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 30 Jul 2025 13:18:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "drdes5agp4"
+        },
+        {
+          "Name": "label",
+          "Value": "js/realtime-monitor.js.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tVzTly0+Aiun+EI0CqqPvA9IpqAGZ0LfYicy/9xlby4="
+        }
+      ]
+    },
+    {
+      "Route": "js/realtime-monitor.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\5ie4swdhdc-drdes5agp4.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000285877644"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3497"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tVzTly0+Aiun+EI0CqqPvA9IpqAGZ0LfYicy/9xlby4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 30 Jul 2025 13:18:22 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -24517,18 +25163,163 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I=\""
+          "Value": "W/\"Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I="
+          "Value": "sha256-Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8="
         }
       ]
     },
     {
-      "Route": "js/site.js",
+      "Route": "js/realtime-monitor.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\realtime-monitor.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "15010"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 30 Jul 2025 13:18:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ka1wJGOqYNRtocEpXPxnCc0IkS7ZPASbN5bfr/z8+z8="
+        }
+      ]
+    },
+    {
+      "Route": "js/realtime-monitor.js.gz",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\5ie4swdhdc-drdes5agp4.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3497"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tVzTly0+Aiun+EI0CqqPvA9IpqAGZ0LfYicy/9xlby4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 30 Jul 2025 13:18:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tVzTly0+Aiun+EI0CqqPvA9IpqAGZ0LfYicy/9xlby4="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.0df0idrhht.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-0df0idrhht.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000498504487"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2005"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"2rrdekXvF4nwUJNtM5Aqr805l/uCxDoel4CuqU0thHs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:11:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "0df0idrhht"
+        },
+        {
+          "Name": "label",
+          "Value": "js/site.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.0df0idrhht.js",
       "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -24538,7 +25329,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5625"
+          "Value": "7166"
         },
         {
           "Name": "Content-Type",
@@ -24546,121 +25337,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I=\""
+          "Value": "\"PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 16:00:13 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I="
-        }
-      ]
-    },
-    {
-      "Route": "js/site.js.gz",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-rmkrtokd2j.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1888"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"lxMxRZC5pu1gknsttyPyz2DOpYLxMKxWuJgumnk+iHs=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 16:00:13 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-lxMxRZC5pu1gknsttyPyz2DOpYLxMKxWuJgumnk+iHs="
-        }
-      ]
-    },
-    {
-      "Route": "js/site.rmkrtokd2j.js",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-rmkrtokd2j.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000529380625"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1888"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"lxMxRZC5pu1gknsttyPyz2DOpYLxMKxWuJgumnk+iHs=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 16:00:13 GMT"
+          "Value": "Fri, 01 Aug 2025 07:11:17 GMT"
         },
         {
           "Name": "Cache-Control",
           "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "rmkrtokd2j"
+          "Value": "0df0idrhht"
         },
         {
           "Name": "label",
@@ -24668,13 +25359,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I="
+          "Value": "sha256-PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A="
         }
       ]
     },
     {
-      "Route": "js/site.rmkrtokd2j.js",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js",
+      "Route": "js/site.0df0idrhht.js.gz",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-0df0idrhht.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -24683,7 +25374,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5625"
+          "Value": "2005"
         },
         {
           "Name": "Content-Type",
@@ -24691,56 +25382,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I=\""
+          "Value": "\"2rrdekXvF4nwUJNtM5Aqr805l/uCxDoel4CuqU0thHs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 16:00:13 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "rmkrtokd2j"
-        },
-        {
-          "Name": "label",
-          "Value": "js/site.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-M74+fpyHedFswlHGv18mIQ2ffoQEpJBrE8RBgsbYe1I="
-        }
-      ]
-    },
-    {
-      "Route": "js/site.rmkrtokd2j.js.gz",
-      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-rmkrtokd2j.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1888"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"lxMxRZC5pu1gknsttyPyz2DOpYLxMKxWuJgumnk+iHs=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 16:00:13 GMT"
+          "Value": "Fri, 01 Aug 2025 07:11:17 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -24758,7 +25404,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "rmkrtokd2j"
+          "Value": "0df0idrhht"
         },
         {
           "Name": "label",
@@ -24766,7 +25412,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-lxMxRZC5pu1gknsttyPyz2DOpYLxMKxWuJgumnk+iHs="
+          "Value": "sha256-2rrdekXvF4nwUJNtM5Aqr805l/uCxDoel4CuqU0thHs="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-0df0idrhht.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000498504487"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2005"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"2rrdekXvF4nwUJNtM5Aqr805l/uCxDoel4CuqU0thHs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:11:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.js",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7166"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:11:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-PBwq9luHbBm7nLUD5kfyAEsBFX2jnhKT8T4yg7edL7A="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.js.gz",
+      "AssetFile": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\Debug\\net9.0\\compressed\\y56j80b9qy-0df0idrhht.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2005"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"2rrdekXvF4nwUJNtM5Aqr805l/uCxDoel4CuqU0thHs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 01 Aug 2025 07:11:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-2rrdekXvF4nwUJNtM5Aqr805l/uCxDoel4CuqU0thHs="
         }
       ]
     },
@@ -94515,7 +95298,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 16:08:31 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -94560,7 +95343,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 28 Jul 2025 16:08:31 GMT"
+          "Value": "Mon, 28 Jul 2025 17:55:12 GMT"
         },
         {
           "Name": "Cache-Control",

@@ -1,0 +1,384 @@
+@{
+    ViewData["Title"] = "Test Cảnh Báo";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-vial"></i> Test Hệ Thống Cảnh Báo
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Hướng dẫn:</strong> Click vào các nút bên dưới để test các điều kiện cảnh báo khác nhau. 
+                        Sau khi test, kiểm tra trang Alerts để xem các cảnh báo được tạo.
+                    </div>
+
+                    <div class="row">
+                        <!-- Giám sát Endpoint Nhạy Cảm -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-shield-alt"></i> Endpoint Nhạy Cảm
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Test truy cập endpoint nhạy cảm với status 403</p>
+                                    <button class="btn btn-primary btn-sm" onclick="testSensitiveEndpoint()">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scanner Detection -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-search"></i> Scanner Detection
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Test phát hiện scanner (15 request 404)</p>
+                                    <button class="btn btn-warning btn-sm" onclick="testScanner()">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Password Reset -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-danger">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-key"></i> Password Reset
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Test nhiều lần reset password</p>
+                                    <button class="btn btn-danger btn-sm" onclick="testPasswordReset()">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email Change -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-envelope"></i> Email Change
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Test nhiều lần thay đổi email</p>
+                                    <button class="btn btn-info btn-sm" onclick="testEmailChange()">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Errors -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-secondary">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-exclamation-triangle"></i> System Errors
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Test nhiều lỗi hệ thống</p>
+                                    <button class="btn btn-secondary btn-sm" onclick="testSystemErrors()">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Suspicious Keywords -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-dark">
+                                <div class="card-header bg-dark text-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-bug"></i> Suspicious Keywords
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Test từ khóa đáng ngờ</p>
+                                    <button class="btn btn-dark btn-sm" onclick="testSuspiciousKeywords()">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DDoS -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-danger">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-bolt"></i> DDoS Attack
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Test DDoS (50 request liên tiếp)</p>
+                                    <button class="btn btn-danger btn-sm" onclick="testDDoS()">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- High Traffic -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-chart-line"></i> High Traffic
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Test high traffic (25 request)</p>
+                                    <button class="btn btn-warning btn-sm" onclick="testHighTraffic()">
+                                        <i class="fas fa-play"></i> Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                                                 <!-- Test All -->
+                         <div class="col-md-6 col-lg-4 mb-3">
+                             <div class="card border-success">
+                                 <div class="card-header bg-success text-white">
+                                     <h5 class="card-title mb-0">
+                                         <i class="fas fa-rocket"></i> Test All Scenarios
+                                     </h5>
+                                 </div>
+                                 <div class="card-body">
+                                     <p class="card-text">Test tất cả các scenario</p>
+                                     <button class="btn btn-success btn-sm" onclick="testAllScenarios()">
+                                         <i class="fas fa-play"></i> Test All
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <!-- Test Real Password Reset -->
+                         <div class="col-md-6 col-lg-4 mb-3">
+                             <div class="card border-danger">
+                                 <div class="card-header bg-danger text-white">
+                                     <h5 class="card-title mb-0">
+                                         <i class="fas fa-key"></i> Test Reset Password Thật
+                                     </h5>
+                                 </div>
+                                 <div class="card-body">
+                                     <p class="card-text">Test reset password thật 3 lần</p>
+                                     <button class="btn btn-danger btn-sm" onclick="testRealPasswordReset()">
+                                         <i class="fas fa-play"></i> Test Thật
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <!-- Test Real Email Change -->
+                         <div class="col-md-6 col-lg-4 mb-3">
+                             <div class="card border-info">
+                                 <div class="card-header bg-info text-white">
+                                     <h5 class="card-title mb-0">
+                                         <i class="fas fa-envelope"></i> Test Email Change Thật
+                                     </h5>
+                                 </div>
+                                 <div class="card-body">
+                                     <p class="card-text">Test thay đổi email thật 3 lần</p>
+                                     <button class="btn btn-info btn-sm" onclick="testRealEmailChange()">
+                                         <i class="fas fa-play"></i> Test Thật
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <!-- Test Real Password Change -->
+                         <div class="col-md-6 col-lg-4 mb-3">
+                             <div class="card border-warning">
+                                 <div class="card-header bg-warning text-dark">
+                                     <h5 class="card-title mb-0">
+                                         <i class="fas fa-key"></i> Test Đổi Mật Khẩu Thật
+                                     </h5>
+                                 </div>
+                                 <div class="card-body">
+                                     <p class="card-text">Test đổi mật khẩu thật 3 lần</p>
+                                     <button class="btn btn-warning btn-sm" onclick="testRealPasswordChange()">
+                                         <i class="fas fa-play"></i> Test Thật
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <!-- Link to Identity Change Password -->
+                         <div class="col-md-6 col-lg-4 mb-3">
+                             <div class="card border-success">
+                                 <div class="card-header bg-success text-white">
+                                     <h5 class="card-title mb-0">
+                                         <i class="fas fa-user-edit"></i> Đổi Mật Khẩu Thật
+                                     </h5>
+                                 </div>
+                                 <div class="card-body">
+                                     <p class="card-text">Vào trang Identity để đổi mật khẩu thật</p>
+                                     <a href="/Identity/Account/Manage/ChangePassword" class="btn btn-success btn-sm">
+                                         <i class="fas fa-external-link-alt"></i> Đổi Mật Khẩu
+                                     </a>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-list"></i> Kết Quả Test
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="testResults">
+                                        <p class="text-muted">Kết quả test sẽ hiển thị ở đây...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function showResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            const resultHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show">
+                    <i class="fas fa-clock"></i> <strong>${timestamp}:</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = resultHtml + resultsDiv.innerHTML;
+        }
+
+        function testSensitiveEndpoint() {
+            $.post('/Test/TestSensitiveEndpoint', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test endpoint nhạy cảm', 'error');
+            });
+        }
+
+        function testScanner() {
+            $.post('/Test/TestScanner', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test scanner', 'error');
+            });
+        }
+
+        function testPasswordReset() {
+            $.post('/Test/TestPasswordReset', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test password reset', 'error');
+            });
+        }
+
+        function testEmailChange() {
+            $.post('/Test/TestEmailChange', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test email change', 'error');
+            });
+        }
+
+        function testSystemErrors() {
+            $.post('/Test/TestSystemErrors', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test system errors', 'error');
+            });
+        }
+
+        function testSuspiciousKeywords() {
+            $.post('/Test/TestSuspiciousKeywords', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test suspicious keywords', 'error');
+            });
+        }
+
+        function testDDoS() {
+            $.post('/Test/TestDDoS', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test DDoS', 'error');
+            });
+        }
+
+        function testHighTraffic() {
+            $.post('/Test/TestHighTraffic', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test high traffic', 'error');
+            });
+        }
+
+        function testAllScenarios() {
+            showResult('Bắt đầu test tất cả các scenario...', 'info');
+            $.post('/Test/TestAllScenarios', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test all scenarios', 'error');
+            });
+        }
+
+        function testRealPasswordReset() {
+            showResult('Bắt đầu test reset password thật...', 'info');
+            $.post('/Test/TestRealPasswordReset', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test reset password thật', 'error');
+            });
+        }
+
+        function testRealEmailChange() {
+            showResult('Bắt đầu test thay đổi email thật...', 'info');
+            $.post('/Test/TestRealEmailChange', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test thay đổi email thật', 'error');
+            });
+        }
+
+        function testRealPasswordChange() {
+            showResult('Bắt đầu test đổi mật khẩu thật...', 'info');
+            $.post('/Test/TestRealPasswordChange', function(data) {
+                showResult(data.message, 'success');
+            }).fail(function() {
+                showResult('Lỗi khi test đổi mật khẩu thật', 'error');
+            });
+        }
+    </script>
+} 

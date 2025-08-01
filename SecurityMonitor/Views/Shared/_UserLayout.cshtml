@@ -11,32 +11,212 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @await RenderSectionAsync("Styles", required: false)
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1d4ed8;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --light-bg: #f8fafc;
+            --dark-bg: #1e293b;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
         .sidebar {
-            width: 250px;
+            width: var(--sidebar-width);
             min-height: 100vh;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-logo-img {
+            width: 30px;
+            height: 30px;
+            margin-right: 8px;
+        }
+
+        .group-info {
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .sidebar-title {
+            color: var(--dark-bg);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
         .nav-link {
-            color: #666;
-            padding: 10px 15px;
-            margin: 5px 0;
-            border-radius: 5px;
-            transition: all 0.3s;
+            color: var(--dark-bg);
+            padding: 12px 20px;
+            margin: 4px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
         }
+
         .nav-link:hover {
-            background-color: #f8f9fa;
-            color: #007bff;
+            background: #f3f4f6;
+            color: var(--primary-color);
+            transform: translateX(4px);
         }
+
         .nav-link.active {
-            background-color: #007bff;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
+
         .nav-link i {
-            width: 25px;
+            width: 20px;
+            margin-right: 12px;
+            font-size: 1.1rem;
         }
+
         .main-content {
+            margin-left: var(--sidebar-width);
             min-height: 100vh;
-            background-color: #f8f9fa;
+            background: var(--light-bg);
+            transition: all 0.3s ease;
+            width: calc(100vw - var(--sidebar-width));
+        }
+
+        .top-navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: none;
+            padding: 1rem 2rem;
+            width: 100%;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+            margin: 0;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        .notification-badge {
+            position: relative;
+        }
+
+        .notification-badge::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+            background: white;
+            margin: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: calc(100% - 2rem);
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 100%;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100vw;
+            }
+
+            .content-wrapper {
+                margin: 0.5rem;
+                padding: 1rem;
+                width: calc(100% - 1rem);
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
@@ -119,14 +299,21 @@
             };
         }
     </script>
+    
     <div class="d-flex">
         <!-- Sidebar -->
-        <div class="bg-white sidebar">
-            <div class="p-4">
-                <div class="text-center mb-4">
-                    <i class="fas fa-shield-alt fa-3x text-primary mb-2"></i>
-                    <h4 class="font-weight-bold">Security Monitor</h4>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <img src="~/images/logohutech.png" alt="HUTECH" class="sidebar-logo-img" />
+                    <h5 class="sidebar-title">Security Monitor</h5>
                 </div>
+                <div class="group-info">
+                    <small class="text-muted">Nhóm 8 - Bò Kho</small>
+                </div>
+            </div>
+            
+            <nav class="mt-4">
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
@@ -156,35 +343,48 @@
                         </a>
                     </li>
                 </ul>
-                <hr class="my-4" />
-                <div>
-                    <partial name="_LoginPartial" />
-                </div>
+            </nav>
+            
+            <div class="mt-auto p-3">
+                <partial name="_LoginPartial" />
             </div>
         </div>
 
         <!-- Main content -->
-        <div class="flex-grow-1 main-content">
+        <div class="main-content">
             <!-- Top navigation -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom py-3">
-                <div class="container-fluid px-4">
-                    <h4 class="mb-0">@ViewData["Title"]</h4>
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="fas fa-bell text-muted"></i>
+            <nav class="top-navbar">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-link d-md-none me-3" id="sidebarToggle">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <h1 class="page-title">@ViewData["Title"]</h1>
                         </div>
-                        <div>
-                            <img src="https://ui-avatars.com/api/?name=@User.Identity?.Name" 
-                                 class="rounded-circle" 
-                                 style="width: 35px; height: 35px;" 
-                                 alt="User avatar" />
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="notification-badge me-3">
+                                <i class="fas fa-bell text-muted"></i>
+                            </div>
+                            <div class="dropdown">
+                                <img src="https://ui-avatars.com/api/?name=@User.Identity?.Name&background=4f46e5&color=fff" 
+                                     class="user-avatar" 
+                                     alt="User avatar" 
+                                     data-bs-toggle="dropdown" />
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Hồ sơ</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Cài đặt</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <h4 class="mb-0">@ViewData["Title"]</h4>
                 </div>
             </nav>
 
-            <div class="container-fluid p-4">
+            <div class="content-wrapper fade-in">
                 @RenderBody()
             </div>
         </div>
@@ -204,6 +404,24 @@
                 "preventDuplicates": false
             };
         }
+
+        // Sidebar toggle for mobile
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            if (window.innerWidth <= 768 && 
+                !sidebar.contains(e.target) && 
+                !sidebarToggle.contains(e.target) && 
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
 
         // Hiển thị thông báo định kỳ nếu tài khoản bị hạn chế
         if (window.isRestricted === true) {

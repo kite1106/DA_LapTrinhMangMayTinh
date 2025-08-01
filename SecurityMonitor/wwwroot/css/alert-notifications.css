@@ -1,0 +1,148 @@
+/* Alert Notification System - Góc trái */
+.alert-notification-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 99999;
+    max-width: 350px;
+    pointer-events: none;
+    /* Đảm bảo không bị che khuất bởi các element khác */
+    isolation: isolate;
+    /* Giới hạn số lượng thông báo hiển thị */
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.alert-notification {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    border-left: 4px solid #ff4757;
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.alert-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.alert-notification.hide {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.alert-notification::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #ff4757;
+    animation: alertPulse 2s infinite;
+}
+
+@keyframes alertPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.alert-notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.alert-notification-title {
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.alert-notification-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-notification-close:hover {
+    opacity: 1;
+}
+
+.alert-notification-content {
+    font-size: 13px;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+.alert-notification-time {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+/* Các loại cảnh báo khác nhau */
+.alert-notification.critical {
+    background: linear-gradient(135deg, #ff4757, #ff3742);
+    border-left-color: #ff3742;
+}
+
+.alert-notification.high {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    border-left-color: #ff4757;
+}
+
+.alert-notification.medium {
+    background: linear-gradient(135deg, #ffa502, #ff9500);
+    border-left-color: #ff9500;
+}
+
+.alert-notification.low {
+    background: linear-gradient(135deg, #2ed573, #1e90ff);
+    border-left-color: #2ed573;
+}
+
+/* Animation cho icon */
+.alert-notification-icon {
+    animation: alertIconShake 0.5s ease-in-out;
+}
+
+@keyframes alertIconShake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .alert-notification-container {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+    
+    .alert-notification {
+        padding: 12px 15px;
+    }
+} 

@@ -188,12 +188,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/AccountManagement/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudE1hbmFnZW1lbnRcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Admin/.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cLmNzaHRtbA==
+[C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Admin/Alerts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWxlcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Admin/BlockedIPs.cshtml]
@@ -202,6 +198,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Admin/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Admin/LogAnalysis.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTG9nQW5hbHlzaXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Admin/Logs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTG9ncy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Admin/MultiSourceLogs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTXVsdGlTb3VyY2VMb2dzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Admin/SecurityMetrics.cshtml]
@@ -252,10 +260,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9nc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Shared/_AdminAlerts.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkFsZXJ0cy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Shared/_AdminLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -294,6 +298,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Shared/_UserLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Vc2VyTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/Test/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/DA_LapTrinhMangMayTinh/SecurityMonitor/Views/UserAdmin/Index.cshtml]

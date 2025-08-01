@@ -1,0 +1,188 @@
+@model IEnumerable<SecurityMonitor.Models.BlockedIP>
+@{
+    ViewData["Title"] = "IP Bị Chặn";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-ban me-2"></i>
+                        Quản Lý IP Bị Chặn
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="ipAddress" placeholder="Nhập địa chỉ IP...">
+                                <input type="text" class="form-control" id="blockReason" placeholder="Lý do chặn...">
+                                <button class="btn btn-modern btn-danger" onclick="blockIP()">
+                                    <i class="fas fa-ban me-2"></i>
+                                    Chặn IP
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-modern btn-secondary" onclick="refreshBlockedIPs()">
+                                <i class="fas fa-sync-alt me-2"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blocked IPs Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        Danh Sách IP Bị Chặn
+                    </h5>
+                    <span class="badge bg-danger" id="blockedCount">@Model.Count() IPs</span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-modern table-hover" id="blockedIPsTable">
+                            <thead>
+                                <tr>
+                                    <th>IP Address</th>
+                                    <th>Lý Do</th>
+                                    <th>Thời Gian Chặn</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blockedIPsTableBody">
+                                @foreach (var ip in Model)
+                                {
+                                    <tr data-ip="@ip.IpAddress">
+                                        <td><code>@ip.IpAddress</code></td>
+                                        <td>@ip.Reason</td>
+                                        <td>@ip.BlockedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                        <td>
+                                            <span class="badge bg-danger">Bị Chặn</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-success" onclick="unblockIP('@ip.IpAddress')">
+                                                <i class="fas fa-unlock me-1"></i>
+                                                Bỏ Chặn
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Html.AntiForgeryToken()
+    <script>
+        function blockIP() {
+            const ip = $("#ipAddress").val().trim();
+            const reason = $("#blockReason").val().trim();
+
+            if (!ip) {
+                toastr.error("Vui lòng nhập địa chỉ IP");
+                return;
+            }
+
+            if (!reason) {
+                toastr.error("Vui lòng nhập lý do chặn");
+                return;
+            }
+
+            // Validate IP format
+            if (!isValidIP(ip)) {
+                toastr.error("Địa chỉ IP không hợp lệ");
+                return;
+            }
+
+            const button = $("button[onclick='blockIP()']");
+            const originalText = button.html();
+            
+            showLoading(button);
+            
+            $.post("/Admin/BlockIP", { ip: ip, reason: reason }, function(response) {
+                hideLoading(button, originalText);
+                if (response.success) {
+                    toastr.success("Đã chặn IP thành công");
+                    $("#ipAddress").val("");
+                    $("#blockReason").val("");
+                    refreshBlockedIPs();
+                } else {
+                    toastr.error(response.message || "Có lỗi xảy ra");
+                }
+            }).fail(function() {
+                hideLoading(button, originalText);
+                toastr.error("Có lỗi xảy ra khi chặn IP");
+            });
+        }
+
+        function unblockIP(ip) {
+            if (confirm(`Bạn có chắc muốn bỏ chặn IP ${ip}?`)) {
+                $.ajax({
+                    url: '/api/admin/unblockIP',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ ipAddress: ip }),
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            $(`tr[data-ip="${ip}"]`).fadeOut();
+                            updateBlockedCount();
+                        } else {
+                            toastr.error(response.error || "Có lỗi xảy ra");
+                        }
+                    },
+                    error: function(xhr) {
+                        const response = xhr.responseJSON;
+                        toastr.error(response?.error || "Có lỗi xảy ra khi bỏ chặn IP");
+                    }
+                });
+            }
+        }
+
+        function refreshBlockedIPs() {
+            const button = $("button[onclick='refreshBlockedIPs()']");
+            const originalText = button.html();
+            
+            showLoading(button);
+            
+            $.get("/Admin/BlockedIPs", function(data) {
+                hideLoading(button, originalText);
+                // Reload the page to get fresh data
+                location.reload();
+            });
+        }
+
+        function updateBlockedCount() {
+            const count = $("#blockedIPsTableBody tr").length;
+            $("#blockedCount").text(count + " IPs");
+        }
+
+        function isValidIP(ip) {
+            const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+            return ipRegex.test(ip);
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(function() {
+            updateBlockedCount();
+        }, 30000);
+    </script>
+} 

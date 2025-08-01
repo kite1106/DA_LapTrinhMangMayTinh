@@ -15,6 +15,28 @@
                     <small>IP của bạn: @Model.ClientIP</small>
                 </div>
                 <div class="card-body">
+                    <!-- Thông báo khi tài khoản bị khóa -->
+                    @if (Request.Query["message"].ToString() == "account_locked")
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-ban me-2"></i>
+                            <strong>⚠️ Tài khoản đã bị khóa!</strong><br>
+                            Tài khoản của bạn đã bị admin khóa. Vui lòng liên hệ admin để được hỗ trợ.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    
+                    <!-- Thông báo khi tài khoản bị hạn chế -->
+                    @if (Request.Query["message"].ToString() == "account_restricted")
+                    {
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="fas fa-user-lock me-2"></i>
+                            <strong>🔒 Tài khoản đã bị hạn chế!</strong><br>
+                            Tài khoản của bạn đã bị admin hạn chế quyền truy cập. Vui lòng liên hệ admin để được hỗ trợ.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    
                     <form id="account" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 

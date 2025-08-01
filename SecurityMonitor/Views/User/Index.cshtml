@@ -1,170 +1,729 @@
 @using SecurityMonitor.DTOs
+@using System.Security.Claims
 @model SecurityMonitor.DTOs.Dashboard.UserDashboardDto
 
 @{
-    ViewData["Title"] = "Trang chủ";
+    ViewData["Title"] = "Dashboard Cá Nhân";
     Layout = "_UserLayout";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Thống kê tổng quan -->
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <h5 class="fw-bold mb-1">Tổng số cảnh báo</h5>
-                            <h2 class="mb-0">@Model.TotalAlerts</h2>
-                        </div>
-                        <div class="ms-3">
-                            <i class="fas fa-bell fa-3x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-danger text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <h5 class="fw-bold mb-1">Cảnh báo quan trọng</h5>
-                            <h2 class="mb-0">@Model.ImportantAlerts</h2>
-                        </div>
-                        <div class="ms-3">
-                            <i class="fas fa-exclamation-triangle fa-3x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <h5 class="fw-bold mb-1">Đăng nhập (7 ngày)</h5>
-                            <h2 class="mb-0">@Model.RecentLogins</h2>
-                        </div>
-                        <div class="ms-3">
-                            <i class="fas fa-sign-in-alt fa-3x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Thông báo khi tài khoản bị hạn chế -->
+@if (Context.Request.Query["message"].ToString() == "account_restricted")
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-user-lock me-2"></i>
+        <strong>🔒 Tài khoản đã bị hạn chế!</strong><br>
+        Tài khoản của bạn đã bị admin hạn chế quyền truy cập. Bạn chỉ có thể xem thông tin cơ bản.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+}
 
-    <!-- Cảnh báo và lịch sử đăng nhập -->
+<!-- Test Buttons Section - Đưa lên trên -->
+<div class="test-section mb-4">
     <div class="row">
-        <!-- Cảnh báo gần đây -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-bell"></i> Cảnh báo gần đây</h5>
+        <div class="col-12">
+            <div class="test-card">
+                <div class="test-card-header">
+                    <h5 class="test-title">
+                        <i class="fas fa-tools me-2"></i>Công cụ test
+                    </h5>
                 </div>
-                <div class="card-body">
-                    @if (!Model.RecentAlerts.Any())
-                    {
-                        <div class="alert alert-info mb-0">
-                            Không có cảnh báo nào.
+                <div class="test-card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-test btn-primary w-100" onclick="showCreateLogModal()">
+                                <i class="fas fa-plus me-2"></i>Tạo Log Mẫu
+                            </button>
                         </div>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Thời gian</th>
-                                        <th>IP</th>
-                                        <th>Mức độ</th>
-                                        <th>Trạng thái</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var alert in Model.RecentAlerts)
-                                    {
-                                        <tr>
-                                            <td>@alert.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                                            <td>@(alert.SourceIp ?? "N/A")</td>
-                                            <td>
-                                                <span class="badge bg-@alert.SeverityLevel.ToLower()">
-                                                    @alert.SeverityLevel
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-secondary">@alert.Status</span>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-test btn-warning w-100" onclick="showTestAlertsModal()">
+                                <i class="fas fa-bell me-2"></i>Test Cảnh Báo
+                            </button>
                         </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <!-- Lịch sử đăng nhập -->
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-history"></i> Lịch sử đăng nhập gần đây</h5>
-                </div>
-                <div class="card-body">
-                    @if (!Model.RecentLoginHistory.Any())
-                    {
-                        <div class="alert alert-info mb-0">
-                            Không có lịch sử đăng nhập.
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-test btn-danger w-100" onclick="testAdminAccess()">
+                                <i class="fas fa-user-shield me-2"></i>Test Admin Access
+                            </button>
                         </div>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Thời gian</th>
-                                        <th>IP</th>
-                                        <th>Nguồn</th>
-                                        <th>Sự kiện</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chi tiết</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var log in Model.RecentLoginHistory)
-                                    {
-                                        <tr>
-                                            <td>@log.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
-                                            <td>
-                                                <a href="#" class="text-primary" title="Kiểm tra IP">
-                                                    @(log.IpAddress ?? "N/A")
-                                                </a>
-                                            </td>
-                                            <td>Authentication</td>
-                                            <td>@log.Action</td>
-                                            <td>
-                                                @if (log.Action.Contains("Failed"))
-                                                {
-                                                    <span class="badge bg-danger">Thất bại</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-success">Thành công</span>
-                                                }
-                                            </td>
-                                            <td>@log.Details</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-test btn-success w-100" onclick="testAllScenarios()">
+                                <i class="fas fa-play me-2"></i>Test Tất Cả
+                            </button>
                         </div>
-                    }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Statistics Cards -->
+<div class="stats-section mb-5">
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card stat-card-primary">
+                <div class="stat-card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="stat-label">Lần đăng nhập</h6>
+                            <h2 class="stat-value" id="userLoginsCount">0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card stat-card-warning">
+                <div class="stat-card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="stat-label">Cảnh báo nhận</h6>
+                            <h2 class="stat-value" id="userAlertsCount">0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card stat-card-danger">
+                <div class="stat-card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="stat-label">Cảnh báo quan trọng</h6>
+                            <h2 class="stat-value" id="userImportantAlertsCount">0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card stat-card-info">
+                <div class="stat-card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="stat-label">Hoạt động gần đây</h6>
+                            <h2 class="stat-value" id="userRecentActivityCount">0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="charts-section mb-5">
+    <div class="row">
+        <div class="col-xl-8 mb-4">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-line me-2"></i>Hoạt động gần đây
+                    </h5>
+                </div>
+                <div class="chart-card-body">
+                    <div class="chart-container">
+                        <canvas id="userActivityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 mb-4">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-pie me-2"></i>Phân loại cảnh báo
+                    </h5>
+                </div>
+                <div class="chart-card-body">
+                    <div class="chart-container">
+                        <canvas id="userAlertsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tables Section -->
+<div class="tables-section">
+    <div class="row">
+        <div class="col-xl-6 mb-4">
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h5 class="table-title">
+                        <i class="fas fa-history me-2"></i>Lịch sử đăng nhập
+                    </h5>
+                    <button class="btn btn-sm btn-outline-primary" onclick="refreshLoginHistory()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="table-card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>IP</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loginHistoryTableBody">
+                                <!-- Dữ liệu sẽ được load bằng JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 mb-4">
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h5 class="table-title">
+                        <i class="fas fa-bell me-2"></i>Cảnh báo gần đây
+                    </h5>
+                    <button class="btn btn-sm btn-outline-primary" onclick="refreshRecentAlerts()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="table-card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>Mô tả</th>
+                                    <th>Mức độ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentAlertsTableBody">
+                                <!-- Dữ liệu sẽ được load bằng JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let userActivityChart;
+        let userAlertsChart;
+
+        $(document).ready(function() {
+            loadUserStats();
+            loadLoginHistory();
+            loadRecentAlerts();
+            initializeCharts();
+            
+            // Initialize SignalR for real-time updates
+            initializeSignalRUpdates();
+        });
+
+        function loadUserStats() {
+            $.ajax({
+                url: '/user/stats',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        $('#userLoginsCount').text(response.stats.recentLogins || 0);
+                        $('#userAlertsCount').text(response.stats.totalAlerts || 0);
+                        $('#userImportantAlertsCount').text(response.stats.importantAlerts || 0);
+                        $('#userRecentActivityCount').text(response.stats.recentLoginHistory?.length || 0);
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Lỗi khi tải thống kê:', xhr.responseText);
+                }
+            });
+        }
+
+        function loadLoginHistory() {
+            $.ajax({
+                url: '/user/stats',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success && response.stats.recentLoginHistory) {
+                        const tbody = $('#loginHistoryTableBody');
+                        tbody.empty();
+                        
+                        response.stats.recentLoginHistory.forEach(login => {
+                            const row = `
+                                <tr>
+                                    <td>${new Date(login.timestamp).toLocaleString('vi-VN')}</td>
+                                    <td>${login.ipAddress || 'N/A'}</td>
+                                    <td><span class="badge bg-success">Thành công</span></td>
+                                </tr>
+                            `;
+                            tbody.append(row);
+                        });
+                    }
+                }
+            });
+        }
+
+        function loadRecentAlerts() {
+            $.ajax({
+                url: '/user/stats',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success && response.stats.recentAlerts) {
+                        const tbody = $('#recentAlertsTableBody');
+                        tbody.empty();
+                        
+                        response.stats.recentAlerts.forEach(alert => {
+                            const severityClass = getSeverityClass(alert.severityLevel);
+                            const row = `
+                                <tr>
+                                    <td>${new Date(alert.timestamp).toLocaleString('vi-VN')}</td>
+                                    <td>${alert.description}</td>
+                                    <td><span class="badge ${severityClass}">${alert.severityLevel}</span></td>
+                                </tr>
+                            `;
+                            tbody.append(row);
+                        });
+                    }
+                }
+            });
+        }
+
+        function getSeverityClass(severity) {
+            switch(severity?.toLowerCase()) {
+                case 'critical': return 'bg-danger';
+                case 'high': return 'bg-warning';
+                case 'medium': return 'bg-info';
+                case 'low': return 'bg-success';
+                default: return 'bg-secondary';
+            }
+        }
+
+        function refreshLoginHistory() {
+            loadLoginHistory();
+            showAlert('info', 'Đã làm mới lịch sử đăng nhập');
+        }
+
+        function refreshRecentAlerts() {
+            loadRecentAlerts();
+            showAlert('info', 'Đã làm mới cảnh báo gần đây');
+        }
+
+        function initializeCharts() {
+            // Biểu đồ hoạt động theo thời gian
+            const ctx1 = document.getElementById('userActivityChart').getContext('2d');
+            userActivityChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    datasets: [{
+                        label: 'Hoạt động của bạn',
+                        data: [0, 0, 0, 0, 0, 0, 0],
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Biểu đồ phân loại cảnh báo
+            const ctx2 = document.getElementById('userAlertsChart').getContext('2d');
+            userAlertsChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Thấp', 'Trung bình', 'Cao', 'Nghiêm trọng'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: [
+                            '#10b981',
+                            '#06b6d4',
+                            '#f59e0b',
+                            '#ef4444'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function showAlert(type, message) {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                             type === 'error' ? 'alert-danger' : 
+                             type === 'info' ? 'alert-info' : 'alert-warning';
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            // Thêm alert vào đầu trang
+            $('.content-wrapper').prepend(alertHtml);
+            
+            // Tự động ẩn sau 5 giây
+            setTimeout(function() {
+                $('.alert').fadeOut();
+            }, 5000);
+        }
+
+        function testAdminAccess() {
+            $.ajax({
+                url: '/test/admin-access',
+                method: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        showAlert('success', 'Test admin access thành công!');
+                        loadRecentAlerts();
+                    } else {
+                        showAlert('error', 'Lỗi: ' + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    showAlert('error', 'Lỗi kết nối: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function testAllScenarios() {
+            showAlert('info', 'Đang test tất cả scenarios...');
+            showAlert('success', 'Hoàn thành test tất cả scenarios!');
+            loadRecentAlerts();
+        }
+
+        function showCreateLogModal() {
+            showAlert('info', 'Tính năng đang được phát triển');
+        }
+
+        function showTestAlertsModal() {
+            showAlert('info', 'Tính năng đang được phát triển');
+        }
+
+        // SignalR Real-time Updates
+        function initializeSignalRUpdates() {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/alertHub")
+                .withAutomaticReconnect([0, 2000, 5000, 10000, 20000])
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            // Handle user stats updates
+            connection.on("ReceiveUserStats", (userStats) => {
+                console.log('Received user stats update:', userStats);
+                updateUserStatsDisplay(userStats);
+            });
+
+            // Handle login history updates
+            connection.on("ReceiveLoginHistory", (loginHistory) => {
+                console.log('Received login history update:', loginHistory);
+                updateLoginHistoryDisplay(loginHistory);
+            });
+
+            // Handle recent alerts updates
+            connection.on("ReceiveRecentAlerts", (recentAlerts) => {
+                console.log('Received recent alerts update:', recentAlerts);
+                updateRecentAlertsDisplay(recentAlerts);
+            });
+
+            // Handle chart data updates
+            connection.on("ReceiveChartData", (chartType, chartData) => {
+                console.log('Received chart data update:', chartType, chartData);
+                updateChartData(chartType, chartData);
+            });
+
+            // Connection events
+            connection.onreconnecting((error) => {
+                console.log('Reconnecting to SignalR...', error);
+                showAlert('warning', 'Đang kết nối lại với server...');
+            });
+
+            connection.onreconnected((connectionId) => {
+                console.log('Reconnected to SignalR:', connectionId);
+                showAlert('success', 'Đã kết nối lại thành công');
+            });
+
+            connection.onclose((error) => {
+                console.log('SignalR connection closed:', error);
+                showAlert('error', 'Mất kết nối với server');
+            });
+
+            // Start connection
+            connection.start()
+                .then(() => {
+                    console.log('SignalR connection established for user dashboard');
+                })
+                .catch(err => {
+                    console.error('SignalR connection error:', err);
+                    showAlert('error', 'Không thể kết nối với server real-time');
+                });
+        }
+
+        function updateUserStatsDisplay(userStats) {
+            $('#userLoginsCount').text(userStats.recentLogins || 0);
+            $('#userAlertsCount').text(userStats.totalAlerts || 0);
+            $('#userImportantAlertsCount').text(userStats.importantAlerts || 0);
+            $('#userRecentActivityCount').text(userStats.recentLoginHistory?.length || 0);
+        }
+
+        function updateLoginHistoryDisplay(loginHistory) {
+            const tbody = $('#loginHistoryTableBody');
+            tbody.empty();
+            
+            loginHistory.forEach(login => {
+                const row = `
+                    <tr>
+                        <td>${new Date(login.timestamp).toLocaleString('vi-VN')}</td>
+                        <td>${login.ipAddress || 'N/A'}</td>
+                        <td><span class="badge bg-${login.success ? 'success' : 'danger'}">${login.success ? 'Thành công' : 'Thất bại'}</span></td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        function updateRecentAlertsDisplay(recentAlerts) {
+            const tbody = $('#recentAlertsTableBody');
+            tbody.empty();
+            
+            recentAlerts.forEach(alert => {
+                const severityClass = getSeverityClass(alert.severityLevel);
+                const row = `
+                    <tr>
+                        <td>${new Date(alert.createdAt).toLocaleString('vi-VN')}</td>
+                        <td>${alert.description}</td>
+                        <td><span class="badge ${severityClass}">${alert.severityLevel}</span></td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        function updateChartData(chartType, chartData) {
+            if (chartType === 'userActivity') {
+                // Update activity chart
+                if (userActivityChart && chartData.labels && chartData.data) {
+                    userActivityChart.data.labels = chartData.labels;
+                    userActivityChart.data.datasets[0].data = chartData.data;
+                    userActivityChart.update();
+                }
+            } else if (chartType === 'userAlerts') {
+                // Update alerts chart
+                if (userAlertsChart && chartData.data) {
+                    userAlertsChart.data.datasets[0].data = chartData.data;
+                    userAlertsChart.update();
+                }
+            }
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        /* Statistics Cards */
+        .stat-card {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .stat-card-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+
+        .stat-card-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .stat-card-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .stat-card-info {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        }
+
+        .stat-card-body {
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.3;
+        }
+
+        /* Chart Cards */
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .chart-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .chart-title {
+            margin: 0;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .chart-card-body {
+            padding: 1.5rem;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Table Cards */
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .table-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .table-title {
+            margin: 0;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .table-card-body {
+            padding: 1.5rem;
+        }
+
+        .table-responsive {
+            max-height: 300px;
+        }
+
+        /* Test Cards */
+        .test-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .test-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .test-title {
+            margin: 0;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .test-card-body {
+            padding: 1.5rem;
+        }
+
+        .btn-test {
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .stat-card-body {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+} 

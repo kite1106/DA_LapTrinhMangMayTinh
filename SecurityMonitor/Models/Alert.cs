@@ -24,7 +24,7 @@ public class Alert
     public virtual AlertType AlertType { get; set; } = null!;
     public virtual SeverityLevel SeverityLevel { get; set; } = null!;
     public virtual AlertStatus Status { get; set; } = null!;
-    public virtual Log? Log { get; set; }
+    public virtual LogEntry? Log { get; set; }
     public virtual ApplicationUser? AssignedTo { get; set; }
     public virtual ApplicationUser? ResolvedBy { get; set; }
 }

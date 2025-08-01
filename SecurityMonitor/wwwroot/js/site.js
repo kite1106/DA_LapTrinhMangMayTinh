@@ -12,35 +12,34 @@ const initializeSignalR = () => {
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
-    // Handle login alerts
+    // Handle login alerts - Chỉ sử dụng hệ thống thông báo góc trái
     alertConnection.on("ReceiveLoginAlert", (alert) => {
-        // Play alert sound
-        const audio = new Audio('/sounds/alert.mp3');
-        audio.play();
+        // Luôn sử dụng hệ thống thông báo cảnh báo ở góc trái
+        if (window.showAlertNotification) {
+            window.showAlertNotification(alert);
+        }
 
-        // Show alert notification
-        toastr.warning(alert.description, alert.title, {
-            timeOut: 0,  // Không tự động ẩn
-            extendedTimeOut: 0,
-            closeButton: true,
-            tapToDismiss: false
-        });
-
-        // If on alerts page, update the alerts table
+        // If on alerts page, SignalR will handle real-time updates
         if (window.location.pathname.includes('/alerts')) {
-            // Reload the alerts table if it exists
-            if ($.fn.DataTable.isDataTable('#alertsTable')) {
-                $('#alertsTable').DataTable().ajax.reload();
-            }
+            console.log('Alert received, SignalR will handle real-time updates');
         }
     });
 
-    accountConnection.on("ReceiveAlert", (alert) => {
-        // Existing alert handling code
+    // Handle general alerts - Chỉ sử dụng hệ thống thông báo góc trái
+    alertConnection.on("ReceiveAlert", (alert) => {
+        // Luôn sử dụng hệ thống thông báo cảnh báo ở góc trái
+        if (window.showAlertNotification) {
+            window.showAlertNotification(alert);
+        }
+
+        // Update dashboard if on alerts page - SignalR will handle real-time updates
+        if (window.location.pathname.includes('/alerts')) {
+            console.log('General alert received, SignalR will handle real-time updates');
+        }
     });
 
     // Lắng nghe sự kiện cập nhật trạng thái user
-    connection.on("UserStatusUpdated", (userName, isLocked, userId) => {
+    accountConnection.on("UserStatusUpdated", (userName, isLocked, userId) => {
         const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
         if (!currentUser || userName !== currentUser) return;
         
@@ -54,19 +53,42 @@ const initializeSignalR = () => {
         }
     });
 
+    // Lắng nghe sự kiện tài khoản bị block
+    accountConnection.on("UserBlocked", (userName, reason, userId) => {
+        const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
+        if (!currentUser || userName !== currentUser) return;
+        
+        toastr.error(`Tài khoản của bạn đã bị khóa. Lý do: ${reason}`, 'Thông báo');
+        
+        // Logout ngay lập tức
+        $.post('/Login/Logout', {}, function() {
+            window.location.href = '/Login/Index?message=account_locked';
+        });
+    });
+
+    // Lắng nghe sự kiện logout bắt buộc (ngay lập tức)
+    accountConnection.on("ForceLogout", (message, reason) => {
+        toastr.error(`${message}. Lý do: ${reason}`, 'Tài khoản bị khóa');
+        
+        // Logout ngay lập tức
+        $.post('/Login/Logout', {}, function() {
+            window.location.href = '/Login/Index?message=account_locked';
+        });
+    });
+
     // Lắng nghe sự kiện tài khoản bị hạn chế
-    connection.on("UserRestricted", (userName, reason, userId) => {
+    accountConnection.on("UserRestricted", (userName, reason, userId) => {
         const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
         if (!currentUser || userName !== currentUser) return;
         
         toastr.warning(`Tài khoản của bạn đã bị hạn chế. Lý do: ${reason}`, 'Thông báo');
-        setTimeout(() => {
-            window.location.href = '/Alerts/Index';
-        }, 3000);
+        
+        // Chuyển hướng ngay lập tức
+        window.location.href = '/User/Index?message=account_restricted';
     });
 
     // Lắng nghe sự kiện tài khoản được bỏ hạn chế
-    connection.on("UserUnrestricted", (userName, userId) => {
+    accountConnection.on("UserUnrestricted", (userName, userId) => {
         const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
         if (!currentUser || userName !== currentUser) return;
         
@@ -77,7 +99,12 @@ const initializeSignalR = () => {
     Promise.all([
         accountConnection.start(),
         alertConnection.start()
-    ]).catch(err => console.error('SignalR Connection Error:', err));
+    ]).then(() => {
+        console.log('SignalR connections established successfully');
+    }).catch(err => {
+        console.error('SignalR Connection Error:', err);
+        toastr.error('Không thể kết nối với server real-time', 'Lỗi kết nối');
+    });
 
     return { accountConnection, alertConnection };
 };
