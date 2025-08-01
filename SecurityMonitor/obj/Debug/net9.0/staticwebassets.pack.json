@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alert-notifications.css",
+      "PackagePath": "staticwebassets\\css\\alert-notifications.css"
+    },
+    {
       "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alerts.css",
       "PackagePath": "staticwebassets\\css\\alerts.css"
     },
@@ -19,6 +23,10 @@
     {
       "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\images\\logohutech.png",
       "PackagePath": "staticwebassets\\images\\logohutech.png"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert-notifications.js",
+      "PackagePath": "staticwebassets\\js\\alert-notifications.js"
     },
     {
       "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert.js",

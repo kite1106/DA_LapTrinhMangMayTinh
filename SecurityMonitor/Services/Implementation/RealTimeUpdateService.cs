@@ -211,23 +211,23 @@ public class RealTimeUpdateService : IRealTimeUpdateService, IDisposable
         {
             var securityMetrics = new
             {
-                sensitiveEndpoints = new
-                {
-                    totalAccessAttempts = await _context.Logs
-                        .CountAsync(l => l.Message.Contains("/admin") || l.Message.Contains("/api")),
-                    unauthorizedAttempts = await _context.Logs
-                        .CountAsync(l => l.WasSuccessful == false && (l.Message.Contains("/admin") || l.Message.Contains("/api"))),
-                    blockedAttempts = await _context.Logs
-                        .CountAsync(l => l.WasSuccessful == false && l.Message.Contains("403"))
-                },
-                anomalies = new
-                {
-                    highRequestRateIPs = await _context.Logs
-                        .GroupBy(l => l.IpAddress)
-                        .Where(g => g.Count() > 100)
-                        .CountAsync(),
-                    scanningAttempts = await _context.Logs
-                        .CountAsync(l => l.Message.Contains("scan") || l.Message.Contains("probe")),
+                                 sensitiveEndpoints = new
+                 {
+                     totalAccessAttempts = await _context.LogEntries
+                         .CountAsync(l => l.Message.Contains("/admin") || l.Message.Contains("/api")),
+                     unauthorizedAttempts = await _context.LogEntries
+                         .CountAsync(l => l.WasSuccessful == false && (l.Message.Contains("/admin") || l.Message.Contains("/api"))),
+                     blockedAttempts = await _context.LogEntries
+                         .CountAsync(l => l.WasSuccessful == false && l.Message.Contains("403"))
+                 },
+                 anomalies = new
+                 {
+                     highRequestRateIPs = await _context.LogEntries
+                         .GroupBy(l => l.IpAddress)
+                         .Where(g => g.Count() > 100)
+                         .CountAsync(),
+                     scanningAttempts = await _context.LogEntries
+                         .CountAsync(l => l.Message.Contains("scan") || l.Message.Contains("probe")),
                     potentialDDoSAlerts = await _context.Alerts
                         .CountAsync(a => a.AlertTypeId == 1) // Assuming DDoS is type 1
                 },

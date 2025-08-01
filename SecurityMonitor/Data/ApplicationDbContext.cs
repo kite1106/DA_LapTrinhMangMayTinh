@@ -22,7 +22,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<SeverityLevel> SeverityLevels { get; set; } = null!;
     public DbSet<AlertStatus> AlertStatuses { get; set; } = null!;
     public DbSet<LogSource> LogSources { get; set; } = null!;
-            public DbSet<LogEntry> Logs { get; set; } = null!;
+    public DbSet<LogEntry> Logs { get; set; } = null!;
     public DbSet<Alert> Alerts { get; set; } = null!;
     public DbSet<AuditLog> AuditLogs { get; set; } = null!;
     public DbSet<AccountRestriction> AccountRestrictions { get; set; } = null!;

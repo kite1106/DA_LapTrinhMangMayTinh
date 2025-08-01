@@ -33,31 +33,49 @@ namespace SecurityMonitor.Hubs
             }
         }
 
+        public async Task SendUserBlocked(string userId, string userName, string reason)
+        {
+            try
+            {
+                // Gửi thông báo cho tất cả clients
+                await Clients.All.SendAsync("UserBlocked", userName, reason, userId);
+                
+                // Gửi thông báo logout ngay lập tức cho user bị block
+                await Clients.User(userId).SendAsync("ForceLogout", "Tài khoản của bạn đã bị khóa", reason);
+                
+                _logger.LogWarning("User blocked notification sent for {UserName} (ID: {UserId}). Reason: {Reason}", 
+                    userName, userId, reason);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending user blocked notification for {UserName}", userName);
+                throw;
+            }
+        }
+
         public async Task SendUserRestricted(string userId, string userName, string reason)
         {
             try
             {
+                // Gửi thông báo cho tất cả clients
                 await Clients.All.SendAsync("UserRestricted", userName, reason, userId);
-                _logger.LogInformation("User restriction notification sent for {UserName} (ID: {UserId}). Reason: {Reason}", 
+                
+                // Gửi thông báo hạn chế cho user cụ thể
+                await Clients.User(userId).SendAsync("UserRestricted", userName, reason, userId);
+                
+                _logger.LogWarning("User restricted notification sent for {UserName} (ID: {UserId}). Reason: {Reason}", 
                     userName, userId, reason);
-
-                // Log the restriction event
-                var restrictionEvent = new AccountRestrictionEvent
-                {
-                    UserId = userId,
-                    UserName = userName,
-                    RestrictionReason = reason,
-                    Timestamp = DateTimeOffset.UtcNow
-                };
-                _context.AccountRestrictionEvents.Add(restrictionEvent);
-                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending user restriction notification for {UserName}", userName);
+                _logger.LogError(ex, "Error sending user restricted notification for {UserName}", userName);
                 throw;
             }
         }
+
+
+
+
 
         public async Task SendUserUnrestricted(string userId, string userName)
         {

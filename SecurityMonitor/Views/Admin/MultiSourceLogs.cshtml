@@ -1,0 +1,333 @@
+@model List<SecurityMonitor.DTOs.Logs.MyLogDto>
+@{
+    ViewData["Title"] = "Multi-Source Logs";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="fas fa-server me-2"></i>
+                        Multi-Source Log Analysis
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Log Source Filter -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label">Log Source</label>
+                            <select id="logSourceFilter" class="form-select">
+                                <option value="">All Sources</option>
+                                <option value="Web Server">Web Server</option>
+                                <option value="Apache Server">Apache Server</option>
+                                <option value="Nginx Server">Nginx Server</option>
+                                <option value="Windows Event Log">Windows Event Log</option>
+                                <option value="Linux Syslog">Linux Syslog</option>
+                                <option value="MySQL Server">MySQL Server</option>
+                                <option value="Firewall">Firewall</option>
+                                <option value="Custom Application">Custom Application</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Date Range</label>
+                            <input type="date" id="startDate" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">To</label>
+                            <input type="date" id="endDate" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">&nbsp;</label>
+                            <button id="filterBtn" class="btn btn-primary d-block">
+                                <i class="fas fa-filter me-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Log Upload Section -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-upload me-2"></i>
+                                        Upload Log Files
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Log Type</label>
+                                            <select id="logType" class="form-select">
+                                                <option value="apache">Apache Access Log</option>
+                                                <option value="nginx">Nginx Error Log</option>
+                                                <option value="windows">Windows Event Log</option>
+                                                <option value="syslog">Linux Syslog</option>
+                                                <option value="mysql">MySQL Error Log</option>
+                                                <option value="firewall">Firewall Log</option>
+                                                <option value="custom">Custom App JSON</option>
+                                                <option value="generic">Generic Log</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Source IP</label>
+                                            <input type="text" id="sourceIp" class="form-control" placeholder="192.168.1.100" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Log Content</label>
+                                            <textarea id="logContent" class="form-control" rows="3" placeholder="Paste your log content here..."></textarea>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">&nbsp;</label>
+                                            <button id="uploadBtn" class="btn btn-success d-block">
+                                                <i class="fas fa-upload me-2"></i>Upload
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Log Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title">Total Logs</h6>
+                                            <h3 id="totalLogs">0</h3>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-file-alt fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title">Errors</h6>
+                                            <h3 id="errorLogs">0</h3>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title">Alerts</h6>
+                                            <h3 id="alertLogs">0</h3>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-bell fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title">Sources</h6>
+                                            <h3 id="sourceCount">0</h3>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-server fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Log Table -->
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="logsTable">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Source</th>
+                                    <th>IP Address</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var log in Model)
+                                {
+                                    <tr>
+                                        <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                        <td>
+                                            <span class="badge bg-info">@log.LogSourceName</span>
+                                        </td>
+                                        <td>@log.IpAddress</td>
+                                        <td>@log.Message</td>
+                                        <td>
+                                            @if (log.WasSuccessful)
+                                            {
+                                                <span class="badge bg-success">Success</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Error</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewLogDetails('@log.Timestamp', '@log.LogSourceName')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Filter functionality
+            $('#filterBtn').click(function() {
+                applyFilters();
+            });
+
+            // Upload functionality
+            $('#uploadBtn').click(function() {
+                uploadLog();
+            });
+
+            // Initialize statistics
+            updateStatistics();
+        });
+
+        function applyFilters() {
+            const source = $('#logSourceFilter').val();
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+
+            // Show loading
+            $('#logsTable tbody').html('<tr><td colspan="6" class="text-center">Loading...</td></tr>');
+
+            // Make AJAX call to filter logs
+            $.ajax({
+                url: '/api/logs/filter',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    source: source,
+                    startDate: startDate,
+                    endDate: endDate
+                }),
+                success: function(data) {
+                    updateLogTable(data);
+                    updateStatistics();
+                },
+                error: function(xhr) {
+                    toastr.error('Error filtering logs: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function uploadLog() {
+            const logType = $('#logType').val();
+            const sourceIp = $('#sourceIp').val();
+            const logContent = $('#logContent').val();
+
+            if (!logContent.trim()) {
+                toastr.warning('Please enter log content');
+                return;
+            }
+
+            // Show loading
+            $('#uploadBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Uploading...');
+
+            $.ajax({
+                url: `/api/logingestion/${logType}`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    logContent: logContent,
+                    sourceIp: sourceIp
+                }),
+                success: function(data) {
+                    toastr.success('Log uploaded successfully!');
+                    $('#logContent').val('');
+                    refreshLogs();
+                },
+                error: function(xhr) {
+                    toastr.error('Error uploading log: ' + xhr.responseText);
+                },
+                complete: function() {
+                    $('#uploadBtn').prop('disabled', false).html('<i class="fas fa-upload me-2"></i>Upload');
+                }
+            });
+        }
+
+        function updateLogTable(logs) {
+            const tbody = $('#logsTable tbody');
+            tbody.empty();
+
+            logs.forEach(log => {
+                const row = `
+                    <tr>
+                        <td>${new Date(log.timestamp).toLocaleString()}</td>
+                        <td><span class="badge bg-info">${log.logSourceName}</span></td>
+                        <td>${log.ipAddress || 'N/A'}</td>
+                        <td>${log.message}</td>
+                        <td>
+                            ${log.wasSuccessful ? 
+                                '<span class="badge bg-success">Success</span>' : 
+                                '<span class="badge bg-danger">Error</span>'
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewLogDetails('${log.timestamp}', '${log.logSourceName}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        function updateStatistics() {
+            // Update statistics (simplified)
+            $('#totalLogs').text($('#logsTable tbody tr').length);
+            $('#errorLogs').text($('#logsTable tbody tr .badge.bg-danger').length);
+            $('#alertLogs').text(Math.floor(Math.random() * 10)); // Placeholder
+            $('#sourceCount').text($('#logSourceFilter option').length - 1);
+        }
+
+        function refreshLogs() {
+            // Refresh the page to show new logs
+            location.reload();
+        }
+
+        function viewLogDetails(timestamp, source) {
+            // Show log details in modal
+            toastr.info(`Viewing log from ${source} at ${timestamp}`);
+        }
+    </script>
+} 

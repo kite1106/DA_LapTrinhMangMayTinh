@@ -98,11 +98,11 @@ public static class SeedData
             context.SaveChanges();
 
             // Thêm Logs mẫu
-            if (!context.Logs.Any())
-            {
-                var winServer = context.LogSources.First(ls => ls.Name == "Windows Server 2022");
-                var ubuntuServer = context.LogSources.First(ls => ls.Name == "Ubuntu Server");
-                var dbServer = context.LogSources.First(ls => ls.Name == "Database Server");
+                    if (!context.LogEntries.Any())
+        {
+            var winServer = context.LogSources.First(ls => ls.Name == "Windows Server 2022");
+            var ubuntuServer = context.LogSources.First(ls => ls.Name == "Ubuntu Server");
+            var dbServer = context.LogSources.First(ls => ls.Name == "Database Server");
 
                 // Lấy LogLevelType mặc định
                 var infoLevel = context.LogLevelTypes.First(lt => lt.Name == "Information");

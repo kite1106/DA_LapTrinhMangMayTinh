@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
     <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/alert-notifications.css" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -130,20 +131,45 @@
         </script>
     }
     <script src="~/js/realtime-monitor.js" asp-append-version="true"></script>
+    <script src="~/js/alert-notifications.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
 
-    <!-- Configure Toastr -->
+    <!-- Configure Toastr - Chỉ sử dụng cho thông báo không phải cảnh báo -->
     <script>
         toastr.options = {
             "closeButton": true,
             "progressBar": true,
             "positionClass": "toast-top-right",
-            "timeOut": "0",
-            "extendedTimeOut": "0",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
             "newestOnTop": true,
-            "preventDuplicates": true
+            "preventDuplicates": true,
+            "showDuration": "300",
+            "hideDuration": "300",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
         };
+        
+        // Tắt toastr cho cảnh báo để sử dụng hệ thống mới
+        const originalToastr = window.toastr;
+        window.toastr = function(type, message, title, options) {
+            // Chỉ hiển thị toastr cho các thông báo không phải cảnh báo
+            if (message && !message.toLowerCase().includes('cảnh báo') && 
+                !message.toLowerCase().includes('alert') && 
+                !message.toLowerCase().includes('security') &&
+                !message.toLowerCase().includes('tấn công') &&
+                !message.toLowerCase().includes('attack')) {
+                return originalToastr.apply(this, arguments);
+            }
+        };
+        
+        // Copy các method của toastr
+        Object.keys(originalToastr).forEach(key => {
+            window.toastr[key] = originalToastr[key];
+        });
     </script>
 
     @RenderSection("Scripts", required: false)

@@ -1,141 +1,803 @@
-@*
-    Layout dành cho khu vực Admin
-    Đảm bảo các thư viện CSS/JS được nạp đầy đủ (Bootstrap, jQuery, FontAwesome, Toastr, DataTables)
-*@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Security Monitor (Admin)</title>
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - Security Monitor Admin</title>
     
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-
-    <!-- DataTables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Toastr -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     
-    @RenderSection("Styles", required: false)
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #ecf0f1;
+            --dark-bg: #2c3e50;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-sidebar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-sidebar .nav-link {
+            color: #bdc3c7;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 4px 8px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-sidebar .nav-link:hover,
+        .admin-sidebar .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .admin-sidebar .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .admin-header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .admin-content {
+            padding: 30px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--accent-color), #2980b9);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            border: none;
+            padding: 20px;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .stats-card.success {
+            background: linear-gradient(135deg, var(--success-color), #2ecc71);
+        }
+
+        /* Hiệu ứng nhấp nháy cho trang admin khi có cảnh báo mới */
+        .admin-page-flash {
+            animation: adminPageFlash 1.5s ease-in-out;
+        }
+
+        @@keyframes adminPageFlash {
+            0% { 
+                background-color: rgba(255, 193, 7, 0.05); 
+            }
+            25% { 
+                background-color: rgba(255, 193, 7, 0.15); 
+            }
+            50% { 
+                background-color: rgba(255, 193, 7, 0.25); 
+            }
+            75% { 
+                background-color: rgba(255, 193, 7, 0.15); 
+            }
+            100% { 
+                background-color: transparent; 
+            }
+        }
+
+        /* Hiệu ứng pulse cho sidebar khi có cảnh báo */
+        .sidebar-alert-pulse {
+            animation: sidebarPulse 2s ease-in-out infinite;
+        }
+
+        @@keyframes sidebarPulse {
+            0% { 
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            }
+            50% { 
+                background: linear-gradient(135deg, #f39c12, #e67e22);
+            }
+            100% { 
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            }
+        }
+
+        /* Hiệu ứng highlight cho header */
+        .header-alert-highlight {
+            animation: headerHighlight 3s ease-in-out;
+        }
+
+        @@keyframes headerHighlight {
+            0% { 
+                background-color: rgba(255, 193, 7, 0.1); 
+                box-shadow: 0 2px 20px rgba(255, 193, 7, 0.3);
+            }
+            50% { 
+                background-color: rgba(255, 193, 7, 0.2); 
+                box-shadow: 0 2px 25px rgba(255, 193, 7, 0.4);
+            }
+            100% { 
+                background-color: white; 
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+        }
+
+        /* Hiệu ứng pulse cho card */
+        .card-alert-pulse {
+            animation: cardPulse 2s ease-in-out;
+        }
+
+        @@keyframes cardPulse {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            }
+            50% { 
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(255, 193, 7, 0.3);
+            }
+            100% { 
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            }
+        }
+
+        /* Hiệu ứng đặc biệt cho trang Alerts */
+        .alerts-page-flash {
+            animation: alertsPageFlash 2s ease-in-out;
+        }
+
+        @@keyframes alertsPageFlash {
+            0% { 
+                background-color: rgba(255, 193, 7, 0.05); 
+            }
+            50% { 
+                background-color: rgba(255, 193, 7, 0.15); 
+            }
+            100% { 
+                background-color: transparent; 
+            }
+        }
+
+        /* Hiệu ứng đặc biệt cho trang Logs */
+        .logs-page-flash {
+            animation: logsPageFlash 2s ease-in-out;
+        }
+
+        @@keyframes logsPageFlash {
+            0% { 
+                background-color: rgba(52, 152, 219, 0.05); 
+            }
+            50% { 
+                background-color: rgba(52, 152, 219, 0.15); 
+            }
+            100% { 
+                background-color: transparent; 
+            }
+        }
+
+        /* Hiệu ứng pulse cho stats card */
+        .stats-alert-pulse {
+            animation: statsPulse 3s ease-in-out;
+        }
+
+        @@keyframes statsPulse {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 12px 35px rgba(255, 193, 7, 0.4);
+            }
+            100% { 
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            }
+        }
+
+        /* Hiệu ứng đổi màu cho link Cảnh Báo trong sidebar */
+        .nav-link-alert-flash {
+            animation: alertLinkFlash 4s ease-in-out;
+        }
+
+        @@keyframes alertLinkFlash {
+            0% { 
+                background-color: var(--accent-color);
+                color: white;
+                transform: translateX(5px);
+            }
+            25% { 
+                background-color: #f39c12;
+                color: white;
+                transform: translateX(5px) scale(1.05);
+                box-shadow: 0 0 15px rgba(243, 156, 18, 0.5);
+            }
+            50% { 
+                background-color: #e67e22;
+                color: white;
+                transform: translateX(5px) scale(1.1);
+                box-shadow: 0 0 20px rgba(230, 126, 34, 0.6);
+            }
+            75% { 
+                background-color: #f39c12;
+                color: white;
+                transform: translateX(5px) scale(1.05);
+                box-shadow: 0 0 15px rgba(243, 156, 18, 0.5);
+            }
+            100% { 
+                background-color: var(--accent-color);
+                color: white;
+                transform: translateX(5px);
+            }
+        }
+
+        /* Hiệu ứng nhấp nháy cho tất cả trang admin */
+        .admin-page-flash {
+            animation: adminPageFlash 1.5s ease-in-out;
+        }
+
+        @@keyframes adminPageFlash {
+            0% { 
+                background-color: rgba(255, 193, 7, 0.05); 
+            }
+            25% { 
+                background-color: rgba(255, 193, 7, 0.15); 
+            }
+            50% { 
+                background-color: rgba(255, 193, 7, 0.25); 
+            }
+            75% { 
+                background-color: rgba(255, 193, 7, 0.15); 
+            }
+            100% { 
+                background-color: transparent; 
+            }
+        }
+
+        /* Hiệu ứng đặc biệt cho trang User Management */
+        .user-management-flash {
+            animation: userManagementFlash 2s ease-in-out;
+        }
+
+        @@keyframes userManagementFlash {
+            0% { 
+                background-color: rgba(52, 152, 219, 0.05); 
+            }
+            50% { 
+                background-color: rgba(52, 152, 219, 0.15); 
+            }
+            100% { 
+                background-color: transparent; 
+            }
+        }
+
+        /* Hiệu ứng đặc biệt cho trang Blocked IPs */
+        .blocked-ips-flash {
+            animation: blockedIpsFlash 2s ease-in-out;
+        }
+
+        @@keyframes blockedIpsFlash {
+            0% { 
+                background-color: rgba(231, 76, 60, 0.05); 
+            }
+            50% { 
+                background-color: rgba(231, 76, 60, 0.15); 
+            }
+            100% { 
+                background-color: transparent; 
+            }
+        }
+
+        .stats-card.warning {
+            background: linear-gradient(135deg, var(--warning-color), #f1c40f);
+        }
+
+        .stats-card.danger {
+            background: linear-gradient(135deg, var(--danger-color), #c0392b);
+        }
+
+        .stats-card.info {
+            background: linear-gradient(135deg, var(--accent-color), #3498db);
+        }
+
+        .btn-modern {
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .table-modern {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .table-modern thead th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 15px;
+        }
+
+        .alert-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .alert-badge.critical {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .alert-badge.high {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .alert-badge.medium {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .alert-badge.low {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background-color: var(--success-color);
+        }
+
+        .status-inactive {
+            background-color: #95a5a6;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        .real-time-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+        }
+
+        .user-dropdown {
+            border-radius: 25px;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, var(--accent-color), #2980b9);
+            color: white;
+            border: none;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div class="d-flex">
-        <!-- Sidebar -->
-        <div class="bg-dark text-white" style="width: 250px; min-height: 100vh;">
-            <div class="p-3">
-                <h5 class="text-white">Security Monitor</h5>
-                <hr />
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Admin" asp-action="Index">
-                            <i class="fas fa-chart-line"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Alerts" asp-action="Index">
-                            <i class="fas fa-bell"></i> Alerts
-                            <span class="badge bg-danger alert-count">0</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="IPBlocking" asp-action="Index">
-                            <i class="fas fa-ban"></i> Chặn IP
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="UserAdmin" asp-action="Index">
-                            <i class="fas fa-users"></i> Quản lý người dùng
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Logs" asp-action="Index">
-                            <i class="fas fa-list"></i> Nhật ký hệ thống
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Audit" asp-action="Index">
-                            <i class="fas fa-history"></i> Nhật ký hoạt động
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Test" asp-action="Index">
-                            <i class="fas fa-vial"></i> Test Cảnh Báo
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-controller="Admin" asp-action="SematextIntegration">
-                            <i class="fas fa-cloud"></i> Tích hợp Sematext
-                        </a>
-                    </li>
-                </ul>
-                <hr />
-                <div class="text-center">
-                    <partial name="_LoginPartial" />
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="admin-sidebar">
+                    <div class="p-4">
+                        <h4 class="text-white mb-4">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Security Monitor
+                        </h4>
+                        
+                        <nav class="nav flex-column">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
+                               asp-controller="Admin" asp-action="Index">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Alerts" ? "active" : "")" 
+                               asp-controller="Admin" asp-action="Alerts">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Cảnh Báo
+                            </a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Logs" ? "active" : "")" 
+                               asp-controller="Admin" asp-action="Logs">
+                                <i class="fas fa-file-alt"></i>
+                                Quản Lý Logs
+                            </a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "UserAdmin" ? "active" : "")" 
+                               asp-controller="UserAdmin" asp-action="Index">
+                                <i class="fas fa-users"></i>
+                                Quản Lý Người Dùng
+                            </a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="BlockedIPs">
+                                <i class="fas fa-ban"></i>
+                                IP Bị Chặn
+                            </a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="SecurityMetrics">
+                                <i class="fas fa-chart-line"></i>
+                                Security Metrics
+                            </a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="MultiSourceLogs">
+                                <i class="fas fa-list-alt"></i>
+                                Multi-Source Logs
+                            </a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="LogAnalysis">
+                                <i class="fas fa-search"></i>
+                                Log Analysis
+                            </a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="SematextIntegration">
+                                <i class="fas fa-plug"></i>
+                                Sematext Integration
+                            </a>
+                        </nav>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Main content -->
-        <div class="flex-grow-1">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                <div class="container-fluid">
-                    <h4 class="mb-0">@ViewData["Title"]</h4>
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 px-0">
+                <!-- Header -->
+                <div class="admin-header">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h2 class="mb-0 text-dark">
+                                    <i class="fas fa-cog me-2"></i>
+                                    @ViewData["Title"]
+                                </h2>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <div class="me-3">
+                                        <span class="status-indicator status-active real-time-indicator"></span>
+                                        <small class="text-muted">Real-time</small>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn user-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-user me-2"></i>
+                                            Admin
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
+                                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </nav>
 
-            <div class="container-fluid p-4">
-                @RenderBody()
+                <!-- Content -->
+                <div class="admin-content">
+                    @RenderBody()
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/datatables/js/dataTables.bootstrap5.min.js"></script>
-    <script src="~/lib/toastr/toastr.min.js"></script>
-
-    <!-- SignalR -->
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-
-    <!-- Init script -->
-    <script src="~/js/init.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     
-    <!-- Custom site script -->
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Toastr configuration
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+
+        // Global functions
+        function showLoading(element) {
+            $(element).html('<span class="loading-spinner"></span> Loading...');
+        }
+
+        function hideLoading(element, originalText) {
+            $(element).html(originalText);
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('vi-VN');
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // SignalR connection for security actions
+        let securityHub = null;
+
+        $(document).ready(function() {
+            setupSecuritySignalR();
+        });
+
+        function setupSecuritySignalR() {
+            securityHub = new signalR.HubConnectionBuilder()
+                .withUrl("/alertHub")
+                .withAutomaticReconnect()
+                .build();
+
+            // Handle Force Logout
+            securityHub.on("ForceLogout", function(message) {
+                toastr.error(message || "Tài khoản của bạn đã bị chặn. Vui lòng liên hệ admin.");
+                
+                // Show modal with logout message
+                showLogoutModal(message || "Tài khoản của bạn đã bị chặn do vi phạm bảo mật.");
+                
+                // Force logout after 3 seconds
+                setTimeout(function() {
+                    window.location.href = "/Identity/Account/Logout";
+                }, 3000);
+            });
+
+            // Handle Redirect to User Dashboard
+            securityHub.on("RedirectToUserDashboard", function(message) {
+                toastr.warning(message || "Tài khoản của bạn đã bị hạn chế.");
+                
+                // Redirect to user dashboard
+                setTimeout(function() {
+                    window.location.href = "/User/Dashboard";
+                }, 2000);
+            });
+
+            // Handle IP Block
+            securityHub.on("BlockIP", function(ipAddress, reason) {
+                toastr.error(`IP ${ipAddress} đã bị chặn: ${reason}`);
+                
+                // If current user's IP matches, show warning
+                if (getCurrentUserIP() === ipAddress) {
+                    showLogoutModal("IP của bạn đã bị chặn do vi phạm bảo mật.");
+                    setTimeout(function() {
+                        window.location.href = "/Identity/Account/Logout";
+                    }, 3000);
+                }
+            });
+
+            // Handle New Alert - Flash all admin pages
+            securityHub.on("ReceiveNewAlert", function(alert) {
+                console.log("🚨 Cảnh báo mới nhận được:", alert);
+                flashAdminPage();
+            });
+
+            securityHub.start().then(function() {
+                console.log("Security SignalR Connected");
+            }).catch(function(err) {
+                console.error("Security SignalR Connection Error: ", err);
+            });
+        }
+
+        function showLogoutModal(message) {
+            const modalHtml = `
+                <div class="modal fade" id="securityLogoutModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Cảnh Báo Bảo Mật
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-ban me-2"></i>
+                                    <strong>${message}</strong>
+                                </div>
+                                <p class="text-muted">
+                                    Bạn sẽ được đăng xuất trong vài giây...
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='/Identity/Account/Logout'">
+                                    <i class="fas fa-sign-out-alt me-2"></i>
+                                    Đăng Xuất Ngay
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            $("#securityLogoutModal").remove();
+            
+            // Add new modal
+            $("body").append(modalHtml);
+            
+            // Show modal
+            $("#securityLogoutModal").modal("show");
+        }
+
+        function getCurrentUserIP() {
+            // This would need to be implemented based on your IP detection method
+            // For now, return a placeholder
+            return "127.0.0.1";
+        }
+
+        // Hiệu ứng nhấp nháy cho tất cả trang admin khi có cảnh báo mới
+        function flashAdminPage() {
+            console.log("⚡ Kích hoạt hiệu ứng nhấp nháy trang admin");
+            
+            // 1. Nhấp nháy toàn bộ trang
+            $('body').addClass('admin-page-flash');
+            setTimeout(() => {
+                $('body').removeClass('admin-page-flash');
+            }, 1500);
+
+            // 2. Pulse sidebar
+            $('.admin-sidebar').addClass('sidebar-alert-pulse');
+            setTimeout(() => {
+                $('.admin-sidebar').removeClass('sidebar-alert-pulse');
+            }, 4000);
+
+            // 3. Highlight header
+            $('.admin-header').addClass('header-alert-highlight');
+            setTimeout(() => {
+                $('.admin-header').removeClass('header-alert-highlight');
+            }, 3000);
+
+            // 4. Pulse các card chính
+            $('.card').each(function(index) {
+                setTimeout(() => {
+                    $(this).addClass('card-alert-pulse');
+                    setTimeout(() => {
+                        $(this).removeClass('card-alert-pulse');
+                    }, 2000);
+                }, index * 200); // Stagger effect
+            });
+
+            // 5. Hiệu ứng đặc biệt cho link "Cảnh Báo" trong sidebar
+            $('.nav-link').each(function() {
+                const linkText = $(this).text().trim();
+                if (linkText === 'Cảnh Báo') {
+                    $(this).addClass('nav-link-alert-flash');
+                    setTimeout(() => {
+                        $(this).removeClass('nav-link-alert-flash');
+                    }, 4000);
+                }
+            });
+
+            // 6. Hiệu ứng đặc biệt cho trang Alerts
+            if (window.location.pathname.includes('/Admin/Alerts')) {
+                // Thêm hiệu ứng đặc biệt cho trang Alerts
+                $('.container-fluid').addClass('alerts-page-flash');
+                setTimeout(() => {
+                    $('.container-fluid').removeClass('alerts-page-flash');
+                }, 2000);
+            }
+
+            // 7. Hiệu ứng đặc biệt cho trang Logs
+            if (window.location.pathname.includes('/Admin/Logs')) {
+                // Thêm hiệu ứng đặc biệt cho trang Logs
+                $('.container-fluid').addClass('logs-page-flash');
+                setTimeout(() => {
+                    $('.container-fluid').removeClass('logs-page-flash');
+                }, 2000);
+            }
+
+            // 8. Hiệu ứng đặc biệt cho Dashboard
+            if (window.location.pathname.includes('/Admin') && !window.location.pathname.includes('/Alerts') && !window.location.pathname.includes('/Logs')) {
+                // Thêm hiệu ứng đặc biệt cho Dashboard
+                $('.stats-card').addClass('stats-alert-pulse');
+                setTimeout(() => {
+                    $('.stats-card').removeClass('stats-alert-pulse');
+                }, 3000);
+            }
+
+            // 9. Hiệu ứng đặc biệt cho trang User Management
+            if (window.location.pathname.includes('/UserAdmin')) {
+                $('.container-fluid').addClass('user-management-flash');
+                setTimeout(() => {
+                    $('.container-fluid').removeClass('user-management-flash');
+                }, 2000);
+            }
+
+            // 10. Hiệu ứng đặc biệt cho trang Blocked IPs
+            if (window.location.pathname.includes('/Admin/BlockedIPs')) {
+                $('.container-fluid').addClass('blocked-ips-flash');
+                setTimeout(() => {
+                    $('.container-fluid').removeClass('blocked-ips-flash');
+                }, 2000);
+            }
+        }
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
-
-    <!-- Alert Sound -->
-    <audio id="alertSound" preload="auto">
-        <source src="~/sounds/alert.mp3" type="audio/mp3">
-    </audio>
-
-    <!-- Alerts Container -->
-    <div id="alertsContainer" style="display:none;">
-        <!-- Alerts will be inserted here -->
-    </div>
-
-    <!-- SignalR Connection Status -->
-    <div id="signalRStatus" class="position-fixed bottom-0 end-0 p-3">
-        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <strong class="me-auto">SignalR Status</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body">
-                <span id="connectionStatus">Đang kết nối...</span>
-            </div>
-        </div>
-    </div>
 </body>
 </html>

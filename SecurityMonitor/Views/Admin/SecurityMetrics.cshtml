@@ -2,193 +2,178 @@
 
 @{
     ViewData["Title"] = "Security Metrics";
+    Layout = "_AdminLayout";
 }
 
 <div class="container-fluid">
-    <h2>Security Metrics</h2>
-    <p class="text-muted">Monitoring window: @Model.TimeWindow | Last updated: @Model.SystemStats.LastUpdateTime.ToString("yyyy-MM-dd HH:mm:ss UTC")</p>
+    <!-- Header Stats -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card info">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" id="totalThreats">0</h3>
+                        <p class="mb-0">Tổng Threats</p>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-shield-alt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card danger">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" id="criticalAlerts">0</h3>
+                        <p class="mb-0">Cảnh Báo Nghiêm Trọng</p>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card warning">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" id="suspiciousIPs">0</h3>
+                        <p class="mb-0">IP Đáng Ngờ</p>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-user-secret fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card success">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" id="blockedAttempts">0</h3>
+                        <p class="mb-0">Lần Chặn Thành Công</p>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="row">
-        <!-- System Stats Card -->
-        <div class="col-md-6 mb-4">
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">System Statistics</h5>
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Hoạt Động Bảo Mật Theo Thời Gian
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="securityTimelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Phân Bố Loại Threats
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="threatTypesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Metrics -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-globe me-2"></i>
+                        Top IP Đáng Ngờ
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="suspiciousIPsList">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-shield me-2"></i>
+                        Hoạt Động Người Dùng
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="userActivityList">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Health -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-heartbeat me-2"></i>
+                        Tình Trạng Hệ Thống
+                    </h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6">
-                            <h6>Total Requests</h6>
-                            <p class="h3">@Model.SystemStats.TotalRequests</p>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <div class="progress-circle" data-percent="85">
+                                    <span class="progress-circle-text">85%</span>
+                                </div>
+                                <h6 class="mt-2">System Health</h6>
+                            </div>
                         </div>
-                        <div class="col-6">
-                            <h6>Error Count</h6>
-                            <p class="h3 @(Model.SystemStats.ErrorCount > 0 ? "text-danger" : "")">
-                                @Model.SystemStats.ErrorCount
-                            </p>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <div class="progress-circle" data-percent="92">
+                                    <span class="progress-circle-text">92%</span>
+                                </div>
+                                <h6 class="mt-2">Network Security</h6>
+                            </div>
                         </div>
-                        <div class="col-6 mt-3">
-                            <h6>Unique Users</h6>
-                            <p class="h3">@Model.SystemStats.UniqueUsers</p>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <div class="progress-circle" data-percent="78">
+                                    <span class="progress-circle-text">78%</span>
+                                </div>
+                                <h6 class="mt-2">Data Protection</h6>
+                            </div>
                         </div>
-                        <div class="col-6 mt-3">
-                            <h6>Max Consecutive Errors</h6>
-                            <p class="h3 @(Model.SystemStats.MaxConsecutiveErrors > 3 ? "text-danger" : "")">
-                                @Model.SystemStats.MaxConsecutiveErrors
-                            </p>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <div class="progress-circle" data-percent="95">
+                                    <span class="progress-circle-text">95%</span>
+                                </div>
+                                <h6 class="mt-2">Access Control</h6>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Anomalies Card -->
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Detected Anomalies</h5>
-                </div>
-                <div class="card-body">
-                    @if (!Model.Anomalies.Any())
-                    {
-                        <p class="text-success">No anomalies detected</p>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Type</th>
-                                        <th>Severity</th>
-                                        <th>Description</th>
-                                        <th>Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var anomaly in Model.Anomalies)
-                                    {
-                                        <tr class="@(anomaly.Severity == "High" ? "table-danger" : "table-warning")">
-                                            <td>@anomaly.Type</td>
-                                            <td>@anomaly.Severity</td>
-                                            <td>@anomaly.Description</td>
-                                            <td>@anomaly.Timestamp.ToString("HH:mm:ss")</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Endpoint Metrics Card -->
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Endpoint Access Metrics</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Endpoint</th>
-                                    <th>Access Count</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var endpoint in Model.EndpointMetrics.OrderByDescending(e => e.Value))
-                                {
-                                    <tr>
-                                        <td>@endpoint.Key</td>
-                                        <td>@endpoint.Value</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Alerts Card -->
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Recent Security Alerts</h5>
-                </div>
-                <div class="card-body">
-                    @if (!Model.SecurityAlerts.Any())
-                    {
-                        <p class="text-success">No recent security alerts</p>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Time</th>
-                                        <th>Level</th>
-                                        <th>Source</th>
-                                        <th>Message</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var alert in Model.SecurityAlerts)
-                                    {
-                                        <tr class="@(alert.Level == "Error" ? "table-danger" : "table-warning")">
-                                            <td>@alert.Timestamp.ToString("HH:mm:ss")</td>
-                                            <td>@alert.Level</td>
-                                            <td>@alert.Source</td>
-                                            <td>@alert.Message</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- User Behavior Metrics Card -->
-    <div class="row">
-        <div class="col-12 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">User Behavior Metrics</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>User ID</th>
-                                    <th>Request Count</th>
-                                    <th>Unique Endpoints</th>
-                                    <th>Error Count</th>
-                                    <th>Last Activity</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var user in Model.UserBehaviorMetrics.OrderByDescending(u => u.RequestCount))
-                                {
-                                    <tr class="@(user.ErrorCount > 5 ? "table-warning" : "")">
-                                        <td>@user.UserId</td>
-                                        <td>@user.RequestCount</td>
-                                        <td>@user.UniqueEndpoints</td>
-                                        <td>@user.ErrorCount</td>
-                                        <td>@user.LastActivity.ToString("HH:mm:ss")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -196,58 +181,186 @@
     </div>
 </div>
 
+<style>
+    .progress-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: conic-gradient(#3498db 0deg 306deg, #ecf0f1 306deg 360deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .progress-circle-text {
+        font-weight: bold;
+        font-size: 14px;
+        color: #2c3e50;
+    }
+
+    .metric-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    .metric-item:last-child {
+        border-bottom: none;
+    }
+
+    .metric-label {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .metric-value {
+        font-weight: bold;
+        color: #3498db;
+    }
+</style>
+
 @section Scripts {
     <script>
-        // Initialize SignalR for real-time security metrics updates
-        const securityMetricsConnection = new signalR.HubConnectionBuilder()
-            .withUrl("/alertHub")
-            .withAutomaticReconnect()
-            .configureLogging(signalR.LogLevel.Information)
-            .build();
-
-        // Handle security metrics updates
-        securityMetricsConnection.on("ReceiveSecurityMetrics", (securityMetrics) => {
-            console.log('Received security metrics update:', securityMetrics);
-            updateSecurityMetricsDisplay(securityMetrics);
+        $(document).ready(function() {
+            initializeCharts();
+            loadSecurityMetrics();
+            startAutoRefresh();
         });
 
-        // Connection events
-        securityMetricsConnection.onreconnecting((error) => {
-            console.log('Security metrics reconnecting...', error);
-        });
-
-        securityMetricsConnection.onreconnected((connectionId) => {
-            console.log('Security metrics reconnected:', connectionId);
-            toastr.success('Kết nối SignalR đã được khôi phục');
-        });
-
-        securityMetricsConnection.onclose((error) => {
-            console.log('Security metrics connection closed:', error);
-            toastr.error('Mất kết nối với server. Vui lòng tải lại trang.');
-        });
-
-        // Start connection
-        securityMetricsConnection.start()
-            .then(() => {
-                console.log('Security metrics SignalR connection established');
-            })
-            .catch(err => {
-                console.error('Security metrics SignalR connection error:', err);
+        function initializeCharts() {
+            // Security Timeline Chart
+            const timelineCtx = document.getElementById('securityTimelineChart').getContext('2d');
+            const timelineChart = new Chart(timelineCtx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                    datasets: [{
+                        label: 'Threats',
+                        data: [5, 12, 8, 25, 32, 18, 15],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Blocked',
+                        data: [3, 8, 5, 18, 25, 12, 10],
+                        borderColor: '#27ae60',
+                        backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
             });
 
-        function updateSecurityMetricsDisplay(securityMetrics) {
-            // Update sensitive endpoints metrics
-            $('#sensitiveEndpointsTotal').text(securityMetrics.sensitiveEndpoints.totalAccessAttempts);
-            $('#sensitiveEndpointsUnauthorized').text(securityMetrics.sensitiveEndpoints.unauthorizedAttempts);
-            $('#sensitiveEndpointsBlocked').text(securityMetrics.sensitiveEndpoints.blockedAttempts);
+            // Threat Types Chart
+            const threatTypesCtx = document.getElementById('threatTypesChart').getContext('2d');
+            const threatTypesChart = new Chart(threatTypesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['DDoS', 'Brute Force', 'SQL Injection', 'Malware', 'Phishing'],
+                    datasets: [{
+                        data: [25, 20, 15, 30, 10],
+                        backgroundColor: [
+                            '#e74c3c',
+                            '#f39c12',
+                            '#9b59b6',
+                            '#2ecc71',
+                            '#3498db'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
 
-            // Update anomalies metrics
-            $('#anomaliesHighRequestRate').text(securityMetrics.anomalies.highRequestRateIPs);
-            $('#anomaliesScanningAttempts').text(securityMetrics.anomalies.scanningAttempts);
-            $('#anomaliesPotentialDDoS').text(securityMetrics.anomalies.potentialDDoSAlerts);
+        function loadSecurityMetrics() {
+            // Simulate loading security metrics
+            setTimeout(() => {
+                $("#totalThreats").text("156");
+                $("#criticalAlerts").text("23");
+                $("#suspiciousIPs").text("8");
+                $("#blockedAttempts").text("142");
 
-            // Update timestamp
-            $('#lastUpdateTime').text(new Date().toLocaleString('vi-VN'));
+                loadSuspiciousIPs();
+                loadUserActivity();
+            }, 1000);
+        }
+
+        function loadSuspiciousIPs() {
+            const suspiciousIPs = [
+                { ip: "203.0.113.1", threats: 45, lastSeen: "2 phút trước" },
+                { ip: "198.51.100.1", threats: 32, lastSeen: "5 phút trước" },
+                { ip: "192.0.2.1", threats: 28, lastSeen: "8 phút trước" },
+                { ip: "10.0.0.1", threats: 15, lastSeen: "12 phút trước" }
+            ];
+
+            const html = suspiciousIPs.map(ip => `
+                <div class="metric-item">
+                    <div>
+                        <div class="metric-label">${ip.ip}</div>
+                        <small class="text-muted">${ip.lastSeen}</small>
+                    </div>
+                    <div class="metric-value">${ip.threats} threats</div>
+                </div>
+            `).join('');
+
+            $("#suspiciousIPsList").html(html);
+        }
+
+        function loadUserActivity() {
+            const activities = [
+                { user: "admin", action: "Login", time: "1 phút trước", status: "Success" },
+                { user: "user1", action: "File Access", time: "3 phút trước", status: "Success" },
+                { user: "unknown", action: "Login Attempt", time: "5 phút trước", status: "Failed" },
+                { user: "system", action: "Backup", time: "8 phút trước", status: "Success" }
+            ];
+
+            const html = activities.map(activity => `
+                <div class="metric-item">
+                    <div>
+                        <div class="metric-label">${activity.user}</div>
+                        <small class="text-muted">${activity.action} - ${activity.time}</small>
+                    </div>
+                    <div class="metric-value">
+                        <span class="badge bg-${activity.status === 'Success' ? 'success' : 'danger'}">
+                            ${activity.status}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+
+            $("#userActivityList").html(html);
+        }
+
+        function startAutoRefresh() {
+            // Refresh metrics every 60 seconds
+            setInterval(function() {
+                loadSecurityMetrics();
+            }, 60000);
         }
     </script>
 }

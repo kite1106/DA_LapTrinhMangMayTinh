@@ -15,7 +15,7 @@ namespace SecurityMonitor.Middleware
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context, UserManager<ApplicationUser> userManager)
+        public async Task InvokeAsync(HttpContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             // Chỉ kiểm tra nếu user đã đăng nhập
             if (context.User.Identity?.IsAuthenticated == true)
@@ -24,37 +24,56 @@ namespace SecurityMonitor.Middleware
                 if (!string.IsNullOrEmpty(userId))
                 {
                     var user = await userManager.FindByIdAsync(userId);
-                    if (user != null && user.IsRestricted)
+                    if (user != null)
                     {
-                        var path = context.Request.Path.Value?.ToLower();
-                        
-                        // Cho phép truy cập một số trang cần thiết
-                        var allowedPaths = new[]
+                        // Kiểm tra nếu user bị locked
+                        if (await userManager.IsLockedOutAsync(user))
                         {
-                            "/user/index",
-                            "/user/logout",
-                            "/login/logout",
-                            "/identity/account/logout",
-                            "/css/",
-                            "/js/",
-                            "/lib/",
-                            "/images/",
-                            "/sounds/",
-                            "/favicon.ico"
-                        };
-
-                        // Kiểm tra xem path hiện tại có được phép không
-                        var isAllowed = allowedPaths.Any(allowedPath => 
-                            path?.StartsWith(allowedPath) == true);
-
-                        if (!isAllowed)
-                        {
-                            _logger.LogWarning("Restricted user {UserName} attempted to access {Path}", 
-                                user.UserName, path);
+                            _logger.LogWarning("Locked user {UserName} attempted to access {Path}", 
+                                user.UserName, context.Request.Path);
                             
-                            // Chuyển hướng về User Dashboard
-                            context.Response.Redirect("/User/Index");
+                            // Logout user
+                            await signInManager.SignOutAsync();
+                            
+                            // Chuyển hướng về trang login với thông báo
+                            context.Response.Redirect("/Login/Index?message=account_locked");
                             return;
+                        }
+                        
+                        // Kiểm tra nếu user bị restricted
+                        if (user.IsRestricted)
+                        {
+                            var path = context.Request.Path.Value?.ToLower();
+                            
+                            // Cho phép truy cập một số trang cần thiết
+                            var allowedPaths = new[]
+                            {
+                                "/user/index",
+                                "/user/logout",
+                                "/login/logout",
+                                "/identity/account/logout",
+                                "/login/index",
+                                "/css/",
+                                "/js/",
+                                "/lib/",
+                                "/images/",
+                                "/sounds/",
+                                "/favicon.ico"
+                            };
+
+                            // Kiểm tra xem path hiện tại có được phép không
+                            var isAllowed = allowedPaths.Any(allowedPath => 
+                                path?.StartsWith(allowedPath) == true);
+
+                            if (!isAllowed)
+                            {
+                                _logger.LogWarning("Restricted user {UserName} attempted to access {Path}", 
+                                    user.UserName, path);
+                                
+                                // Chuyển hướng về User Dashboard với thông báo
+                                context.Response.Redirect("/User/Index?message=account_restricted");
+                                return;
+                            }
                         }
                     }
                 }

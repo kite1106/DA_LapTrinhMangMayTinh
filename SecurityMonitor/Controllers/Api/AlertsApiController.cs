@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SecurityMonitor.Data;
 using SecurityMonitor.DTOs.Alerts;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services.Interfaces;
@@ -32,34 +34,31 @@ namespace SecurityMonitor.Controllers.Api
             return MapToDto(alert);
         }
 
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateAlertStatusDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAlert(int id, [FromBody] AlertUpdateDto updateDto)
         {
             try
             {
                 var alert = await _alertService.GetAlertByIdAsync(id);
                 if (alert == null)
                 {
-                    return NotFound();
+                    return NotFound(new { error = "Alert not found" });
                 }
 
-                // Use the AlertStatusId directly from DTO
-                var statusId = dto.Status;
+                // Update alert properties
+                alert.Title = updateDto.Title ?? alert.Title;
+                alert.Description = updateDto.Description ?? alert.Description;
+                alert.SeverityLevelId = updateDto.SeverityLevelId ?? alert.SeverityLevelId;
+                alert.StatusId = updateDto.StatusId ?? alert.StatusId;
 
-                alert.StatusId = (int)statusId;
-                if (statusId == AlertStatusId.Resolved)
-                {
-                    alert.ResolvedAt = DateTime.UtcNow;
-                    alert.ResolvedById = User.Identity?.Name;
-                }
+                await _alertService.UpdateAlertAsync(alert);
 
-                await _alertService.UpdateAlertAsync(alert.Id, alert);
-                return Ok();
+                return Ok(new { message = "Alert updated successfully" });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating alert status for alert {AlertId}", id);
-                return StatusCode(500, "Có lỗi xảy ra khi cập nhật trạng thái cảnh báo");
+                _logger.LogError(ex, "Error updating alert {Id}", id);
+                return BadRequest(new { error = ex.Message });
             }
         }
 

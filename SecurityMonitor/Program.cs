@@ -143,7 +143,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
 builder.Services.AddHttpClient();
 
-// Register core services
+// Đăng ký các services
 builder.Services.AddScoped<IIPCheckerService, IPCheckerService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ILogService, LogService>();
@@ -151,9 +151,9 @@ builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<IFailedLoginService, FailedLoginService>();
 builder.Services.AddScoped<IIPBlockingService, SecurityMonitor.Services.IPBlocking.IPBlockingService>();
 builder.Services.AddScoped<ILogSourceService, LogSourceService>();
-builder.Services.AddScoped<ILogEventService, LogEventService>();
-// LogSenderService đã được xóa
+
 builder.Services.AddScoped<ILogAnalysisService, LogAnalysisService>();
+
 
 // Add Memory Cache
 builder.Services.AddMemoryCache();
@@ -173,10 +173,17 @@ builder.Services.Configure<AbuseIPDBConfig>(
     builder.Configuration.GetSection("AbuseIPDB"));
 builder.Services.AddScoped<IAbuseIPDBService, SecurityMonitor.Services.Implementation.AbuseIPDBService>();
 
+// Đăng ký LogGenerationControlService
+builder.Services.AddScoped<ILogGenerationControlService, LogGenerationControlService>();
+builder.Services.AddScoped<ILogAnalysisService, LogAnalysisService>();
+
 // Đăng ký cấu hình Sematext đã được xóa
 
 // Background service cho việc kiểm tra IP định kỳ
 builder.Services.AddHostedService<IpCheckerBackgroundService>();
+
+// Đăng ký FakeLogGeneratorService để tạo logs mẫu
+builder.Services.AddHostedService<FakeLogGeneratorService>();
 
 // HTTP Context Accessor cho audit logging
 builder.Services.AddHttpContextAccessor();
@@ -273,9 +280,6 @@ app.UseRouting(); // Routing
 app.UseAuthentication(); // Authentication phải đặt trước Authorization
 app.UseAuthorization(); // Authorization
 app.UseMiddleware<LoginMonitorMiddleware>(); // Login monitoring
-app.UseMiddleware<SensitiveEndpointMiddleware>(); // Endpoint monitoring
-app.UseIdentityLogging(); // Logging Identity actions
-app.UseSimpleRequestLogging(); // Simple request logging for debugging
 app.UseRestrictedUserCheck(); // Kiểm tra user bị hạn chế
 
 // Map routes directly
@@ -295,6 +299,7 @@ app.MapControllerRoute(
 app.MapRazorPages(); // Identity pages
 app.MapHub<AlertHub>("/alertHub"); // SignalR hub for alerts
 app.MapHub<AccountHub>("/accountHub"); // SignalR hub for account status
+app.MapHub<LogHub>("/logHub"); // SignalR hub for logs
 
 // Khởi tạo Roles và Admin user
 using (var scope = app.Services.CreateScope())

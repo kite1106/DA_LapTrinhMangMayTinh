@@ -4,25 +4,14 @@ namespace SecurityMonitor.Services.Interfaces
 {
     public interface ILogAnalysisService
     {
-        // Phân tích log entry
-        Task<LogAnalysis> AnalyzeLogEntryAsync(LogEntry logEntry);
+        /// <summary>
+        /// Phân tích logs gần đây để tìm các pattern đáng ngờ và tạo cảnh báo
+        /// </summary>
+        Task AnalyzeRecentLogsAndCreateAlertsAsync();
         
-        // Phân tích batch logs
-        Task<List<LogAnalysis>> AnalyzeLogEntriesAsync(List<LogEntry> logEntries);
-        
-        // Phân tích pattern
-        Task<List<LogAnalysis>> AnalyzePatternAsync(string pattern, DateTime from, DateTime to);
-        
-        // Phát hiện anomaly
-        Task<List<LogAnalysis>> DetectAnomaliesAsync(DateTime from, DateTime to);
-        
-        // Phân tích threat
-        Task<List<LogAnalysis>> AnalyzeThreatsAsync(DateTime from, DateTime to);
-        
-        // Tạo alert từ phân tích
-        Task<Alert?> CreateAlertFromAnalysisAsync(LogAnalysis analysis);
-        
-        // Lấy thống kê phân tích
-        Task<object> GetAnalysisStatsAsync(DateTime from, DateTime to);
+        /// <summary>
+        /// Kiểm tra xem có nên phân tích logs không (dựa trên thời gian)
+        /// </summary>
+        bool ShouldAnalyzeLogs();
     }
 } 

@@ -9,6 +9,8 @@ namespace SecurityMonitor.Models
         DataLeak = 5,
         SuspiciousIP = 6,
         ReportedIP = 7,
-        BlacklistedIP = 8
+        BlacklistedIP = 8,
+        XSSAttack = 9,
+        DDoSAttack = 10
     }
 }

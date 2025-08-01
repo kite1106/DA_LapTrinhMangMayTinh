@@ -19,26 +19,31 @@ namespace SecurityMonitor.Services.Implementation
         public async Task<IEnumerable<LogEntry>> GetAllLogsAsync()
         {
             return await _context.LogEntries
+                .Include(l => l.LogLevelType)
+                .Include(l => l.LogSource)
                 .OrderByDescending(l => l.Timestamp)
                 .ToListAsync();
         }
 
         public async Task<LogEntry?> GetLogByIdAsync(long id)
         {
-            return await _context.LogEntries.FindAsync(id);
+            return await _context.LogEntries
+                .Include(l => l.LogLevelType)
+                .Include(l => l.LogSource)
+                .FirstOrDefaultAsync(l => l.Id == id);
         }
 
-        public async Task<LogEntry> CreateLogAsync(LogEntry log)
+        public async Task<LogEntry> CreateLogAsync(LogEntry logEntry)
         {
-            log.Timestamp = DateTime.UtcNow;
+            logEntry.Timestamp = DateTime.UtcNow;
             
             // Tự động set LogLevelTypeId mặc định nếu không có
-            if (log.LogLevelTypeId == 0)
+            if (logEntry.LogLevelTypeId == 0)
             {
                 var defaultLevel = await _context.LogLevelTypes.FirstOrDefaultAsync(lt => lt.Name == "Information");
                 if (defaultLevel != null)
                 {
-                    log.LogLevelTypeId = defaultLevel.Id;
+                    logEntry.LogLevelTypeId = defaultLevel.Id;
                 }
                 else
                 {
@@ -51,20 +56,40 @@ namespace SecurityMonitor.Services.Implementation
                     };
                     _context.LogLevelTypes.Add(newLevel);
                     await _context.SaveChangesAsync();
-                    log.LogLevelTypeId = newLevel.Id;
+                    logEntry.LogLevelTypeId = newLevel.Id;
                 }
             }
             
-            _context.LogEntries.Add(log);
+            _context.LogEntries.Add(logEntry);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("Created new log entry with ID: {Id}", log.Id);
-            return log;
+            _logger.LogInformation("Created log entry: {Id}", logEntry.Id);
+            return logEntry;
+        }
+
+        public async Task UpdateLogAsync(LogEntry logEntry)
+        {
+            _context.LogEntries.Update(logEntry);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Updated log entry: {Id}", logEntry.Id);
+        }
+
+        public async Task DeleteLogAsync(long id)
+        {
+            var logEntry = await _context.LogEntries.FindAsync(id);
+            if (logEntry != null)
+            {
+                _context.LogEntries.Remove(logEntry);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Deleted log entry: {Id}", id);
+            }
         }
 
         public async Task<IEnumerable<LogEntry>> GetLogsBySourceAsync(int sourceId)
         {
             return await _context.LogEntries
                 .Where(l => l.LogSourceId == sourceId)
+                .Include(l => l.LogLevelType)
+                .Include(l => l.LogSource)
                 .OrderByDescending(l => l.Timestamp)
                 .ToListAsync();
         }
@@ -99,22 +124,70 @@ namespace SecurityMonitor.Services.Implementation
         public async Task<LogSource?> GetLogSourceByNameAsync(string name)
         {
             return await _context.LogSources
-                .FirstOrDefaultAsync(ls => ls.Name == name);
+                .FirstOrDefaultAsync(s => s.Name == name);
         }
 
         public async Task<LogSource> CreateLogSourceAsync(LogSource source)
         {
+            source.LastSeenAt = DateTime.UtcNow;
             _context.LogSources.Add(source);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("Created new log source: {Name}", source.Name);
+            _logger.LogInformation("Created log source: {Name}", source.Name);
             return source;
         }
 
         public async Task UpdateLogSourceAsync(LogSource source)
         {
+            source.LastSeenAt = DateTime.UtcNow;
             _context.LogSources.Update(source);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Updated log source: {Name}", source.Name);
+        }
+
+        public async Task<IEnumerable<LogEntry>> GetLogsByTimeRangeAsync(DateTime startTime, DateTime endTime)
+        {
+            return await _context.LogEntries
+                .Where(l => l.Timestamp >= startTime && l.Timestamp <= endTime)
+                .Include(l => l.LogLevelType)
+                .Include(l => l.LogSource)
+                .OrderByDescending(l => l.Timestamp)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LogEntry>> GetLogsByLevelAsync(int levelId)
+        {
+            return await _context.LogEntries
+                .Where(l => l.LogLevelTypeId == levelId)
+                .Include(l => l.LogLevelType)
+                .Include(l => l.LogSource)
+                .OrderByDescending(l => l.Timestamp)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetLogCountAsync()
+        {
+            return await _context.LogEntries.CountAsync();
+        }
+
+        public async Task<Dictionary<string, int>> GetLogStatisticsAsync(TimeSpan window)
+        {
+            var cutoffTime = DateTime.UtcNow.Subtract(window);
+            var logs = await _context.LogEntries
+                .Where(l => l.Timestamp >= cutoffTime)
+                .Include(l => l.LogLevelType)
+                .Include(l => l.LogSource)
+                .ToListAsync();
+
+            return new Dictionary<string, int>
+            {
+                ["Total"] = logs.Count,
+                ["Info"] = logs.Count(l => l.LogLevelType?.Name == "Info"),
+                ["Warning"] = logs.Count(l => l.LogLevelType?.Name == "Warning"),
+                ["Error"] = logs.Count(l => l.LogLevelType?.Name == "Error"),
+                ["Critical"] = logs.Count(l => l.LogLevelType?.Name == "Critical"),
+                ["Success"] = logs.Count(l => l.WasSuccessful),
+                ["Failed"] = logs.Count(l => !l.WasSuccessful)
+            };
         }
     }
 }

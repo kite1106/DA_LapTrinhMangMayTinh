@@ -12,18 +12,16 @@ public class AlertsController : Controller
 {
     private readonly IAlertService _alertService;
     private readonly IIPBlockingService _ipBlockingService;
-    private readonly ILogEventService _logEventService;
+
     private readonly ILogger<AlertsController> _logger;
 
     public AlertsController(
         IAlertService alertService,
         IIPBlockingService ipBlockingService,
-        ILogEventService logEventService,
         ILogger<AlertsController> logger)
     {
         _alertService = alertService;
         _ipBlockingService = ipBlockingService;
-        _logEventService = logEventService;
         _logger = logger;
     }
 
@@ -43,7 +41,7 @@ public class AlertsController : Controller
                 {
                     return Unauthorized();
                 }
-                alerts = await _alertService.GetUserAlertsAsync(userId);
+                alerts = await _alertService.GetAllAlertsAsync();
             }
 
             // Thêm ViewBag để báo hiệu có sử dụng SignalR
@@ -82,7 +80,8 @@ public class AlertsController : Controller
             
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("_AlertDetails", MapToDto(alert));
+                // Trả về JSON cho AJAX requests
+                return Json(MapToDto(alert));
             }
             
             return View(MapToDto(alert));
@@ -90,6 +89,10 @@ public class AlertsController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving alert {AlertId}", id);
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { error = "Lỗi khi tải thông tin cảnh báo" });
+            }
             return View("Error");
         }
     }
@@ -188,23 +191,7 @@ public class AlertsController : Controller
         if (alert == null) return NotFound();
 
         // Log việc xử lý alert
-        await _logEventService.RecordSystemEventAsync(
-            "AlertResolution",
-            $"Alert {id} resolved by {userId}",
-            "AlertSystem",
-            alert.SourceIp
-        );
-
-        // Nếu là alert từ IP đáng ngờ, ghi nhận hành động
-        if (alert.SourceIp != null)
-        {
-            await _logEventService.RecordSuspiciousEventAsync(
-                "AlertResolution",
-                $"Alert về IP {alert.SourceIp} đã được xử lý: {resolution}",
-                alert.SourceIp,
-                userId
-            );
-        }
+        _logger.LogInformation("Alert {AlertId} resolved by {UserId}: {Resolution}", id, userId, resolution);
 
         var resolved = await _alertService.ResolveAlertAsync(id, userId, resolution);
         if (resolved == null) return NotFound();

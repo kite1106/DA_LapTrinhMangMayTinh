@@ -1,550 +1,439 @@
+
 using SecurityMonitor.Data;
 using SecurityMonitor.Models;
 using SecurityMonitor.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SecurityMonitor.DTOs.Alerts;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SecurityMonitor.Services.Implementation
 {
     public class LogAnalysisService : ILogAnalysisService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<LogAnalysisService> _logger;
-        private readonly IAlertService _alertService;
+        private DateTime _lastAnalysisTime = DateTime.UtcNow;
+        private readonly TimeSpan _analysisInterval = TimeSpan.FromSeconds(30); // Phân tích mỗi 30 giây
 
         public LogAnalysisService(
-            ApplicationDbContext context,
-            ILogger<LogAnalysisService> logger,
-            IAlertService alertService)
+            IServiceScopeFactory scopeFactory,
+            ILogger<LogAnalysisService> logger)
         {
-            _context = context;
+            _scopeFactory = scopeFactory;
             _logger = logger;
-            _alertService = alertService;
         }
 
-        public async Task<LogAnalysis> AnalyzeLogEntryAsync(LogEntry logEntry)
+        public bool ShouldAnalyzeLogs()
         {
+            // Phân tích logs mỗi 30 giây
+            return DateTime.UtcNow - _lastAnalysisTime >= _analysisInterval;
+        }
+
+        public async Task AnalyzeRecentLogsAndCreateAlertsAsync()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var alertService = scope.ServiceProvider.GetRequiredService<IAlertService>();
+
             try
             {
-                var analysis = new LogAnalysis
+                // Lấy logs trong 5 phút gần đây
+                var recentLogs = await context.LogEntries
+                    .Where(l => l.Timestamp >= DateTime.UtcNow.AddMinutes(-5))
+                    .OrderByDescending(l => l.Timestamp)
+                    .ToListAsync();
+
+                if (!recentLogs.Any())
                 {
-                    LogEntryId = logEntry.Id,
-                    AnalysisType = "SingleLog",
-                    AnalyzedAt = DateTime.UtcNow,
-                    CreatedAt = DateTime.UtcNow
+                    _logger.LogInformation("📊 Không có logs gần đây để phân tích");
+                    return;
+                }
+
+                _logger.LogInformation("🔍 Phân tích {Count} logs gần đây", recentLogs.Count);
+
+                // Phân tích các pattern đáng ngờ
+                await AnalyzeFailedLoginPatterns(recentLogs, alertService);
+                await AnalyzeSuspiciousActivityPatterns(recentLogs, alertService);
+                await AnalyzeErrorRatePatterns(recentLogs, alertService);
+                await AnalyzeUnusualAccessPatterns(recentLogs, alertService);
+                
+                // Phân tích theo từng nguồn logs
+                await AnalyzeApacheLogs(recentLogs, alertService);
+                await AnalyzeNginxLogs(recentLogs, alertService);
+                await AnalyzeWindowsLogs(recentLogs, alertService);
+                await AnalyzeLinuxLogs(recentLogs, alertService);
+                await AnalyzeMySQLLogs(recentLogs, alertService);
+                await AnalyzeCustomAppLogs(recentLogs, alertService);
+                
+                // Phân tích hoạt động user đáng ngờ
+                await AnalyzeUserPasswordChangePatterns(recentLogs, alertService);
+                await AnalyzeUserEmailChangePatterns(recentLogs, alertService);
+
+                _lastAnalysisTime = DateTime.UtcNow;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Lỗi khi phân tích logs");
+            }
+        }
+
+        private async Task AnalyzeFailedLoginPatterns(List<LogEntry> logs, IAlertService alertService)
+        {
+            // Tìm các IP có nhiều lần đăng nhập thất bại
+            var failedLogins = logs.Where(l => 
+                (l.Message.Contains("login") && l.Message.Contains("failed", StringComparison.OrdinalIgnoreCase)) ||
+                (l.Message.Contains("Failed login attempt")) ||
+                (l.Message.Contains("Multiple failed login attempts")) &&
+                !l.WasSuccessful)
+                .GroupBy(l => l.IpAddress)
+                .Where(g => g.Count() >= 2) // Giảm xuống 2 lần thất bại
+                .ToList();
+
+            foreach (var group in failedLogins)
+            {
+                var alert = new Alert
+                {
+                    Title = "Phát hiện tấn công brute force",
+                    Description = $"IP {group.Key} có {group.Count()} lần đăng nhập thất bại trong 5 phút qua",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.BruteForce,
+                    SeverityLevelId = (int)SeverityLevelId.High,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
                 };
 
-                // Phân tích mức độ nghiêm trọng
-                var severityAnalysis = AnalyzeSeverity(logEntry);
-                analysis.RiskLevel = severityAnalysis.RiskLevel;
-                analysis.ConfidenceScore = severityAnalysis.ConfidenceScore;
-
-                // Phân tích pattern
-                var patternAnalysis = await AnalyzePattern(logEntry);
-                analysis.AnalysisResult = patternAnalysis.Result;
-                analysis.IsAnomaly = patternAnalysis.IsAnomaly;
-                analysis.IsThreat = patternAnalysis.IsThreat;
-
-                // Đưa ra khuyến nghị
-                analysis.Recommendations = GenerateRecommendations(logEntry, analysis);
-
-                // Lưu vào database
-                _context.LogAnalyses.Add(analysis);
-                await _context.SaveChangesAsync();
-
-                _logger.LogInformation("Analyzed log entry {LogId}: {Result}", logEntry.Id, analysis.AnalysisResult);
-
-                return analysis;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error analyzing log entry {LogId}", logEntry.Id);
-                throw;
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện brute force từ IP: {IP}", group.Key);
             }
         }
 
-        public async Task<List<LogAnalysis>> AnalyzeLogEntriesAsync(List<LogEntry> logEntries)
+        private async Task AnalyzeSuspiciousActivityPatterns(List<LogEntry> logs, IAlertService alertService)
         {
-            var analyses = new List<LogAnalysis>();
+            // Tìm các hoạt động đáng ngờ
+            var suspiciousLogs = logs.Where(l => 
+                l.Message.Contains("suspicious", StringComparison.OrdinalIgnoreCase) ||
+                l.Message.Contains("unusual", StringComparison.OrdinalIgnoreCase) ||
+                l.Message.Contains("anomaly", StringComparison.OrdinalIgnoreCase) ||
+                l.Message.Contains("Suspicious activity detected") ||
+                l.Message.Contains("Unusual access pattern") ||
+                l.Message.Contains("Anomaly detected"))
+                .GroupBy(l => l.IpAddress)
+                .ToList();
+
+            foreach (var group in suspiciousLogs)
+            {
+                var alert = new Alert
+                {
+                    Title = "Phát hiện hoạt động đáng ngờ",
+                    Description = $"IP {group.Key} có {group.Count()} hoạt động đáng ngờ",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.Medium,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện hoạt động đáng ngờ từ IP: {IP}", group.Key);
+            }
+        }
+
+        private async Task AnalyzeErrorRatePatterns(List<LogEntry> logs, IAlertService alertService)
+        {
+            // Tính tỷ lệ lỗi
+            var totalLogs = logs.Count;
+            var errorLogs = logs.Where(l => l.LogLevelTypeId == 3 || !l.WasSuccessful).Count();
             
-            foreach (var logEntry in logEntries)
+            if (totalLogs > 0 && (double)errorLogs / totalLogs > 0.3) // 30% lỗi trở lên
             {
-                var analysis = await AnalyzeLogEntryAsync(logEntry);
-                analyses.Add(analysis);
-            }
-
-            return analyses;
-        }
-
-        public async Task<List<LogAnalysis>> AnalyzePatternAsync(string pattern, DateTime from, DateTime to)
-        {
-            var logEntries = await _context.LogEntries
-                .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                .Where(l => l.Message.Contains(pattern))
-                .ToListAsync();
-
-            return await AnalyzeLogEntriesAsync(logEntries);
-        }
-
-        public async Task<List<LogAnalysis>> DetectAnomaliesAsync(DateTime from, DateTime to)
-        {
-            var anomalies = new List<LogAnalysis>();
-
-            // Phát hiện login attempts bất thường
-            var loginAnomalies = await DetectLoginAnomaliesAsync(from, to);
-            anomalies.AddRange(loginAnomalies);
-
-            // Phát hiện IP bất thường
-            var ipAnomalies = await DetectIPAnomaliesAsync(from, to);
-            anomalies.AddRange(ipAnomalies);
-
-            // Phát hiện error patterns
-            var errorAnomalies = await DetectErrorAnomaliesAsync(from, to);
-            anomalies.AddRange(errorAnomalies);
-
-            return anomalies;
-        }
-
-        public async Task<List<LogAnalysis>> AnalyzeThreatsAsync(DateTime from, DateTime to)
-        {
-            var threats = new List<LogAnalysis>();
-
-            // Phân tích brute force attacks
-            var bruteForceThreats = await AnalyzeBruteForceThreatsAsync(from, to);
-            threats.AddRange(bruteForceThreats);
-
-            // Phân tích SQL injection attempts
-            var sqlInjectionThreats = await AnalyzeSQLInjectionThreatsAsync(from, to);
-            threats.AddRange(sqlInjectionThreats);
-
-            // Phân tích XSS attempts
-            var xssThreats = await AnalyzeXSSThreatsAsync(from, to);
-            threats.AddRange(xssThreats);
-
-            return threats;
-        }
-
-        public async Task<Alert?> CreateAlertFromAnalysisAsync(LogAnalysis analysis)
-        {
-            try
-            {
-                if (!analysis.IsThreat && !analysis.IsAnomaly)
-                    return null;
-
-                var logEntry = await _context.LogEntries
-                    .Include(l => l.LogSource)
-                    .FirstOrDefaultAsync(l => l.Id == analysis.LogEntryId);
-
-                if (logEntry == null)
-                    return null;
-
-                                        var alert = new Alert
-                        {
-                            Title = $"Security {analysis.AnalysisType} Detected",
-                            Description = analysis.AnalysisResult ?? "Anomaly or threat detected",
-                            Timestamp = DateTime.UtcNow,
-                            AlertTypeId = DetermineAlertType(analysis.AnalysisType),
-                            SeverityLevelId = DetermineSeverityLevel(analysis.RiskLevel),
-                            StatusId = 1, // New
-                            SourceIp = logEntry.IpAddress,
-                            LogId = logEntry.Id
-                        };
-
-                await _alertService.CreateAlertAsync(alert);
-                return alert;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating alert from analysis {AnalysisId}", analysis.Id);
-                return null;
-            }
-        }
-
-        public async Task<object> GetAnalysisStatsAsync(DateTime from, DateTime to)
-        {
-            var analyses = await _context.LogAnalyses
-                .Where(a => a.AnalyzedAt >= from && a.AnalyzedAt <= to)
-                .ToListAsync();
-
-            return new
-            {
-                TotalAnalyses = analyses.Count,
-                Anomalies = analyses.Count(a => a.IsAnomaly),
-                Threats = analyses.Count(a => a.IsThreat),
-                AverageConfidence = analyses.Average(a => a.ConfidenceScore ?? 0),
-                RiskLevels = analyses.GroupBy(a => a.RiskLevel)
-                    .Select(g => new { RiskLevel = g.Key, Count = g.Count() })
-            };
-        }
-
-        #region Private Methods
-
-        private (string RiskLevel, decimal ConfidenceScore) AnalyzeSeverity(LogEntry logEntry)
-        {
-            var riskLevel = "LOW";
-            var confidence = 0.5m;
-
-            // Phân tích dựa trên log level
-            if (logEntry.LogLevelType?.Name?.ToUpper() == "ERROR")
-            {
-                riskLevel = "HIGH";
-                confidence = 0.8m;
-            }
-            else if (logEntry.LogLevelType?.Name?.ToUpper() == "WARN")
-            {
-                riskLevel = "MEDIUM";
-                confidence = 0.6m;
-            }
-
-            // Phân tích dựa trên message content
-            var message = logEntry.Message?.ToLower() ?? "";
-            if (message.Contains("failed") || message.Contains("error") || message.Contains("exception"))
-            {
-                riskLevel = "HIGH";
-                confidence = Math.Max(confidence, 0.7m);
-            }
-
-            if (message.Contains("login") || message.Contains("authentication"))
-            {
-                riskLevel = "MEDIUM";
-                confidence = Math.Max(confidence, 0.6m);
-            }
-
-            return (riskLevel, confidence);
-        }
-
-        private async Task<(string Result, bool IsAnomaly, bool IsThreat)> AnalyzePattern(LogEntry logEntry)
-        {
-            var result = "Normal activity";
-            var isAnomaly = false;
-            var isThreat = false;
-
-            var message = logEntry.Message?.ToLower() ?? "";
-
-            // Phân tích login patterns
-            if (message.Contains("login") || message.Contains("authentication"))
-            {
-                var loginAnalysis = await AnalyzeLoginPattern(logEntry);
-                result = loginAnalysis.Result;
-                isAnomaly = loginAnalysis.IsAnomaly;
-                isThreat = loginAnalysis.IsThreat;
-            }
-
-            // Phân tích error patterns
-            else if (message.Contains("error") || message.Contains("exception"))
-            {
-                var errorAnalysis = await AnalyzeErrorPattern(logEntry);
-                result = errorAnalysis.Result;
-                isAnomaly = errorAnalysis.IsAnomaly;
-                isThreat = errorAnalysis.IsThreat;
-            }
-
-            // Phân tích access patterns
-            else if (message.Contains("access") || message.Contains("request"))
-            {
-                var accessAnalysis = await AnalyzeAccessPattern(logEntry);
-                result = accessAnalysis.Result;
-                isAnomaly = accessAnalysis.IsAnomaly;
-                isThreat = accessAnalysis.IsThreat;
-            }
-
-            return (result, isAnomaly, isThreat);
-        }
-
-        private async Task<(string Result, bool IsAnomaly, bool IsThreat)> AnalyzeLoginPattern(LogEntry logEntry)
-        {
-            var isAnomaly = false;
-            var isThreat = false;
-            var result = "Normal login activity";
-
-            // Kiểm tra failed login attempts
-            if (logEntry.Message?.ToLower().Contains("failed") == true)
-            {
-                // Đếm số lần failed login từ cùng IP
-                var failedCount = await _context.LogEntries
-                    .Where(l => l.IpAddress == logEntry.IpAddress)
-                    .Where(l => l.Message.ToLower().Contains("failed"))
-                    .Where(l => l.Timestamp >= logEntry.Timestamp.AddMinutes(-10))
-                    .CountAsync();
-
-                if (failedCount > 5)
+                var alert = new Alert
                 {
-                    isThreat = true;
-                    result = "Potential brute force attack detected";
-                }
-                else if (failedCount > 3)
-                {
-                    isAnomaly = true;
-                    result = "Multiple failed login attempts";
-                }
-            }
+                    Title = "Tỷ lệ lỗi cao bất thường",
+                    Description = $"Tỷ lệ lỗi: {errorLogs}/{totalLogs} ({((double)errorLogs/totalLogs*100):F1}%)",
+                    SourceIp = "System",
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.High,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
 
-            return (result, isAnomaly, isThreat);
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện tỷ lệ lỗi cao: {ErrorRate}%", ((double)errorLogs/totalLogs*100));
+            }
         }
 
-        private async Task<(string Result, bool IsAnomaly, bool IsThreat)> AnalyzeErrorPattern(LogEntry logEntry)
+        private async Task AnalyzeUnusualAccessPatterns(List<LogEntry> logs, IAlertService alertService)
         {
-            var isAnomaly = false;
-            var isThreat = false;
-            var result = "Normal error activity";
-
-            var message = logEntry.Message?.ToLower() ?? "";
-
-            // Kiểm tra SQL injection attempts
-            if (message.Contains("sql") || message.Contains("injection"))
-            {
-                isThreat = true;
-                result = "Potential SQL injection attempt";
-            }
-
-            // Kiểm tra XSS attempts
-            else if (message.Contains("script") || message.Contains("xss"))
-            {
-                isThreat = true;
-                result = "Potential XSS attempt";
-            }
-
-            // Kiểm tra error frequency
-            else
-            {
-                var errorCount = await _context.LogEntries
-                    .Where(l => l.LogLevelTypeId == logEntry.LogLevelTypeId)
-                    .Where(l => l.Timestamp >= logEntry.Timestamp.AddMinutes(-5))
-                    .CountAsync();
-
-                if (errorCount > 10)
-                {
-                    isAnomaly = true;
-                    result = "High error frequency detected";
-                }
-            }
-
-            return (result, isAnomaly, isThreat);
-        }
-
-        private async Task<(string Result, bool IsAnomaly, bool IsThreat)> AnalyzeAccessPattern(LogEntry logEntry)
-        {
-            var isAnomaly = false;
-            var isThreat = false;
-            var result = "Normal access activity";
-
-            // Kiểm tra access từ IP lạ
-            if (!string.IsNullOrEmpty(logEntry.IpAddress))
-            {
-                var ipAccessCount = await _context.LogEntries
-                    .Where(l => l.IpAddress == logEntry.IpAddress)
-                    .Where(l => l.Timestamp >= logEntry.Timestamp.AddHours(-1))
-                    .CountAsync();
-
-                if (ipAccessCount > 100)
-                {
-                    isAnomaly = true;
-                    result = "High access frequency from IP";
-                }
-            }
-
-            return (result, isAnomaly, isThreat);
-        }
-
-        private async Task<List<LogAnalysis>> DetectLoginAnomaliesAsync(DateTime from, DateTime to)
-        {
-            var anomalies = new List<LogAnalysis>();
-
-            // Tìm IP có nhiều failed login
-            var suspiciousIPs = await _context.LogEntries
-                .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                .Where(l => l.Message.ToLower().Contains("failed"))
+            // Tìm các IP truy cập quá nhiều endpoint khác nhau từ TẤT CẢ nguồn logs
+            var accessPatterns = logs
                 .GroupBy(l => l.IpAddress)
-                .Where(g => g.Count() > 5)
-                .Select(g => g.Key)
-                .ToListAsync();
+                .Where(g => g.Select(l => l.Message).Distinct().Count() > 3) // Giảm xuống 3 endpoint khác nhau
+                .ToList();
 
-            foreach (var ip in suspiciousIPs)
+            foreach (var group in accessPatterns)
             {
-                var logEntries = await _context.LogEntries
-                    .Where(l => l.IpAddress == ip)
-                    .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                    .ToListAsync();
-
-                foreach (var logEntry in logEntries)
+                var uniqueEndpoints = group.Select(l => l.Message).Distinct().Count();
+                var alert = new Alert
                 {
-                    var analysis = await AnalyzeLogEntryAsync(logEntry);
-                    if (analysis.IsAnomaly || analysis.IsThreat)
-                        anomalies.Add(analysis);
-                }
-            }
+                    Title = "Phát hiện truy cập bất thường",
+                    Description = $"IP {group.Key} truy cập {uniqueEndpoints} endpoint khác nhau từ nhiều nguồn trong 5 phút",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.Medium,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
 
-            return anomalies;
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện truy cập bất thường từ IP: {IP}", group.Key);
+            }
         }
 
-        private async Task<List<LogAnalysis>> DetectIPAnomaliesAsync(DateTime from, DateTime to)
+        private async Task AnalyzeApacheLogs(List<LogEntry> logs, IAlertService alertService)
         {
-            var anomalies = new List<LogAnalysis>();
+            // Phân tích Apache logs (LogSourceId = 1)
+            var apacheLogs = logs.Where(l => l.LogSourceId == 1).ToList();
+            
+            if (!apacheLogs.Any()) return;
 
-            // Tìm IP có access frequency cao
-            var highFrequencyIPs = await _context.LogEntries
-                .Where(l => l.Timestamp >= from && l.Timestamp <= to)
+            // Tìm các IP có nhiều request lỗi 4xx/5xx
+            var errorRequests = apacheLogs
+                .Where(l => l.Message.Contains("4") || l.Message.Contains("5"))
                 .GroupBy(l => l.IpAddress)
-                .Where(g => g.Count() > 100)
-                .Select(g => g.Key)
-                .ToListAsync();
+                .Where(g => g.Count() >= 2)
+                .ToList();
 
-            foreach (var ip in highFrequencyIPs)
+            foreach (var group in errorRequests)
             {
-                var logEntries = await _context.LogEntries
-                    .Where(l => l.IpAddress == ip)
-                    .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                    .ToListAsync();
-
-                foreach (var logEntry in logEntries)
+                var alert = new Alert
                 {
-                    var analysis = await AnalyzeLogEntryAsync(logEntry);
-                    if (analysis.IsAnomaly || analysis.IsThreat)
-                        anomalies.Add(analysis);
-                }
-            }
+                    Title = "Phát hiện nhiều request lỗi từ Apache",
+                    Description = $"IP {group.Key} có {group.Count()} request lỗi từ Apache trong 5 phút",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.Medium,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
 
-            return anomalies;
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện nhiều request lỗi Apache từ IP: {IP}", group.Key);
+            }
         }
 
-        private async Task<List<LogAnalysis>> DetectErrorAnomaliesAsync(DateTime from, DateTime to)
+        private async Task AnalyzeNginxLogs(List<LogEntry> logs, IAlertService alertService)
         {
-            var anomalies = new List<LogAnalysis>();
+            // Phân tích Nginx logs (LogSourceId = 2)
+            var nginxLogs = logs.Where(l => l.LogSourceId == 2).ToList();
+            
+            if (!nginxLogs.Any()) return;
 
-            // Tìm error patterns bất thường
-            var errorLogs = await _context.LogEntries
-                .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                .Where(l => l.LogLevelType.Name.ToUpper() == "ERROR")
-                .ToListAsync();
-
-            foreach (var logEntry in errorLogs)
-            {
-                var analysis = await AnalyzeLogEntryAsync(logEntry);
-                if (analysis.IsAnomaly || analysis.IsThreat)
-                    anomalies.Add(analysis);
-            }
-
-            return anomalies;
-        }
-
-        private async Task<List<LogAnalysis>> AnalyzeBruteForceThreatsAsync(DateTime from, DateTime to)
-        {
-            var threats = new List<LogAnalysis>();
-
-            // Tìm brute force patterns
-            var bruteForceIPs = await _context.LogEntries
-                .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                .Where(l => l.Message.ToLower().Contains("failed"))
+            // Tìm các IP có nhiều lỗi nginx
+            var errorLogs = nginxLogs
+                .Where(l => !l.WasSuccessful)
                 .GroupBy(l => l.IpAddress)
-                .Where(g => g.Count() > 10)
-                .Select(g => g.Key)
-                .ToListAsync();
+                .Where(g => g.Count() >= 2)
+                .ToList();
 
-            foreach (var ip in bruteForceIPs)
+            foreach (var group in errorLogs)
             {
-                var logEntries = await _context.LogEntries
-                    .Where(l => l.IpAddress == ip)
-                    .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                    .ToListAsync();
-
-                foreach (var logEntry in logEntries)
+                var alert = new Alert
                 {
-                    var analysis = await AnalyzeLogEntryAsync(logEntry);
-                    if (analysis.IsThreat)
-                        threats.Add(analysis);
-                }
-            }
+                    Title = "Phát hiện nhiều lỗi Nginx",
+                    Description = $"IP {group.Key} có {group.Count()} lỗi Nginx trong 5 phút",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.Medium,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
 
-            return threats;
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện nhiều lỗi Nginx từ IP: {IP}", group.Key);
+            }
         }
 
-        private async Task<List<LogAnalysis>> AnalyzeSQLInjectionThreatsAsync(DateTime from, DateTime to)
+        private async Task AnalyzeWindowsLogs(List<LogEntry> logs, IAlertService alertService)
         {
-            var threats = new List<LogAnalysis>();
+            // Phân tích Windows logs (LogSourceId = 3)
+            var windowsLogs = logs.Where(l => l.LogSourceId == 3).ToList();
+            
+            if (!windowsLogs.Any()) return;
 
-            var sqlInjectionLogs = await _context.LogEntries
-                .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                .Where(l => l.Message.ToLower().Contains("sql") || l.Message.ToLower().Contains("injection"))
-                .ToListAsync();
+            // Tìm các event bảo mật đáng ngờ
+            var securityEvents = windowsLogs
+                .Where(l => l.Message.Contains("Security") && !l.WasSuccessful)
+                .GroupBy(l => l.IpAddress)
+                .Where(g => g.Count() >= 1)
+                .ToList();
 
-            foreach (var logEntry in sqlInjectionLogs)
+            foreach (var group in securityEvents)
             {
-                var analysis = await AnalyzeLogEntryAsync(logEntry);
-                if (analysis.IsThreat)
-                    threats.Add(analysis);
-            }
+                var alert = new Alert
+                {
+                    Title = "Phát hiện event bảo mật Windows",
+                    Description = $"IP {group.Key} có {group.Count()} event bảo mật Windows trong 5 phút",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.High,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
 
-            return threats;
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện event bảo mật Windows từ IP: {IP}", group.Key);
+            }
         }
 
-        private async Task<List<LogAnalysis>> AnalyzeXSSThreatsAsync(DateTime from, DateTime to)
+        private async Task AnalyzeLinuxLogs(List<LogEntry> logs, IAlertService alertService)
         {
-            var threats = new List<LogAnalysis>();
+            // Phân tích Linux logs (LogSourceId = 4)
+            var linuxLogs = logs.Where(l => l.LogSourceId == 4).ToList();
+            
+            if (!linuxLogs.Any()) return;
 
-            var xssLogs = await _context.LogEntries
-                .Where(l => l.Timestamp >= from && l.Timestamp <= to)
-                .Where(l => l.Message.ToLower().Contains("script") || l.Message.ToLower().Contains("xss"))
-                .ToListAsync();
+            // Tìm các lỗi SSH đáng ngờ
+            var sshErrors = linuxLogs
+                .Where(l => l.Message.Contains("sshd") && l.Message.Contains("Failed"))
+                .GroupBy(l => l.IpAddress)
+                .Where(g => g.Count() >= 2)
+                .ToList();
 
-            foreach (var logEntry in xssLogs)
+            foreach (var group in sshErrors)
             {
-                var analysis = await AnalyzeLogEntryAsync(logEntry);
-                if (analysis.IsThreat)
-                    threats.Add(analysis);
-            }
+                var alert = new Alert
+                {
+                    Title = "Phát hiện tấn công SSH",
+                    Description = $"IP {group.Key} có {group.Count()} lần thất bại SSH trong 5 phút",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.BruteForce,
+                    SeverityLevelId = (int)SeverityLevelId.High,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
 
-            return threats;
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện tấn công SSH từ IP: {IP}", group.Key);
+            }
         }
 
-        private string GenerateRecommendations(LogEntry logEntry, LogAnalysis analysis)
+        private async Task AnalyzeMySQLLogs(List<LogEntry> logs, IAlertService alertService)
         {
-            var recommendations = new List<string>();
+            // Phân tích MySQL logs (LogSourceId = 5)
+            var mysqlLogs = logs.Where(l => l.LogSourceId == 5).ToList();
+            
+            if (!mysqlLogs.Any()) return;
 
-            if (analysis.IsThreat)
+            // Tìm các lỗi database đáng ngờ
+            var dbErrors = mysqlLogs
+                .Where(l => !l.WasSuccessful)
+                .GroupBy(l => l.IpAddress)
+                .Where(g => g.Count() >= 2)
+                .ToList();
+
+            foreach (var group in dbErrors)
             {
-                recommendations.Add("Immediate action required");
-                recommendations.Add("Block suspicious IP address");
-                recommendations.Add("Review security logs");
-            }
+                var alert = new Alert
+                {
+                    Title = "Phát hiện nhiều lỗi MySQL",
+                    Description = $"IP {group.Key} có {group.Count()} lỗi MySQL trong 5 phút",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.Medium,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
 
-            if (analysis.IsAnomaly)
-            {
-                recommendations.Add("Monitor activity closely");
-                recommendations.Add("Review access patterns");
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện nhiều lỗi MySQL từ IP: {IP}", group.Key);
             }
-
-            if (analysis.RiskLevel == "HIGH")
-            {
-                recommendations.Add("Escalate to security team");
-                recommendations.Add("Implement additional monitoring");
-            }
-
-            return string.Join("; ", recommendations);
         }
 
-        private int DetermineSeverityLevel(string? riskLevel)
+        private async Task AnalyzeCustomAppLogs(List<LogEntry> logs, IAlertService alertService)
         {
-            return riskLevel?.ToUpper() switch
+            // Phân tích Custom App logs (LogSourceId = 1 nhưng có pattern khác)
+            var customAppLogs = logs.Where(l => l.LogSourceId == 1 && l.UserId != "Apache").ToList();
+            
+            if (!customAppLogs.Any()) return;
+
+            // Tìm các hoạt động đáng ngờ từ custom app
+            var suspiciousActions = customAppLogs
+                .Where(l => l.Message.Contains("FAILED") || !l.WasSuccessful)
+                .GroupBy(l => l.IpAddress)
+                .Where(g => g.Count() >= 2)
+                .ToList();
+
+            foreach (var group in suspiciousActions)
             {
-                "HIGH" => 1, // Critical
-                "MEDIUM" => 2, // High
-                "LOW" => 3, // Medium
-                _ => 4 // Low
-            };
+                var alert = new Alert
+                {
+                    Title = "Phát hiện hoạt động đáng ngờ từ Custom App",
+                    Description = $"IP {group.Key} có {group.Count()} hoạt động thất bại từ Custom App trong 5 phút",
+                    SourceIp = group.Key,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.Medium,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện hoạt động đáng ngờ từ Custom App từ IP: {IP}", group.Key);
+            }
         }
 
-        private int DetermineAlertType(string? analysisType)
+        private async Task AnalyzeUserPasswordChangePatterns(List<LogEntry> logs, IAlertService alertService)
         {
-            return analysisType?.ToUpper() switch
+            // Phân tích user đổi password nhiều lần
+            var passwordChangeLogs = logs
+                .Where(l => l.Message.Contains("changed password") && !string.IsNullOrEmpty(l.UserId))
+                .GroupBy(l => l.UserId)
+                .Where(g => g.Count() >= 3) // 3 lần đổi password trong 5 phút
+                .ToList();
+
+            foreach (var group in passwordChangeLogs)
             {
-                "BRUTE_FORCE" => 1, // Security
-                "SQL_INJECTION" => 1, // Security
-                "XSS" => 1, // Security
-                "ANOMALY" => 2, // System
-                _ => 3 // General
-            };
+                var alert = new Alert
+                {
+                    Title = "Phát hiện đổi password nhiều lần",
+                    Description = $"User {group.Key} đã đổi password {group.Count()} lần trong 5 phút qua",
+                    SourceIp = group.First().IpAddress,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.High,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện user đổi password nhiều lần: {UserId}", group.Key);
+            }
         }
 
-        #endregion
+        private async Task AnalyzeUserEmailChangePatterns(List<LogEntry> logs, IAlertService alertService)
+        {
+            // Phân tích user đổi email nhiều lần
+            var emailChangeLogs = logs
+                .Where(l => l.Message.Contains("requested email change") && !string.IsNullOrEmpty(l.UserId))
+                .GroupBy(l => l.UserId)
+                .Where(g => g.Count() >= 2) // 2 lần đổi email trong 5 phút
+                .ToList();
+
+            foreach (var group in emailChangeLogs)
+            {
+                var alert = new Alert
+                {
+                    Title = "Phát hiện đổi email nhiều lần",
+                    Description = $"User {group.Key} đã yêu cầu đổi email {group.Count()} lần trong 5 phút qua",
+                    SourceIp = group.First().IpAddress,
+                    AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                    SeverityLevelId = (int)SeverityLevelId.High,
+                    StatusId = (int)AlertStatusId.New,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await alertService.CreateAlertAsync(alert);
+                _logger.LogWarning("🚨 Phát hiện user đổi email nhiều lần: {UserId}", group.Key);
+            }
+        }
     }
 } 

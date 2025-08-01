@@ -1504,4 +1504,6 @@ C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\ref\SecurityMonitor.d
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\se5xsyxoi7-b5njbf53e0.gz
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\98sl4c83ik-wr9zvhhh8c.gz
 C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\5ie4swdhdc-drdes5agp4.gz
-C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\y56j80b9qy-napcapw3rz.gz
+C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\nj0jp199j0-mrjb6khaff.gz
+C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\y56j80b9qy-0df0idrhht.gz
+C:\DA_LapTrinhMangMayTinh\SecurityMonitor\obj\Debug\net9.0\compressed\zd8vad3z2a-w0ml7p17l2.gz

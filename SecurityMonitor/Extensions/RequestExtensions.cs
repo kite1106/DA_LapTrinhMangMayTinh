@@ -60,5 +60,10 @@ namespace SecurityMonitor.Extensions
             var remoteIp = context.GetRealIpAddress();
             return remoteIp == "127.0.0.1" || remoteIp == "::1";
         }
+
+        public static string GetClientIpAddress(this HttpRequest request)
+        {
+            return request.HttpContext.GetRealIpAddress();
+        }
     }
 }

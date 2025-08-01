@@ -73,7 +73,9 @@ public record UpdateAlertStatusDto(
     [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     AlertStatusId Status,
 
-    string? AssignTo
+    string? AssignTo,
+    
+    string? Resolution
 );
 
 /// <summary>
@@ -83,4 +85,15 @@ public record ResolveAlertDto(
     [Required(ErrorMessage = "Cách giải quyết là bắt buộc")]
     [MinLength(10, ErrorMessage = "Cách giải quyết phải có ít nhất 10 ký tự")]
     string Resolution
+);
+
+/// <summary>
+/// DTO cho xử lý cảnh báo (process action)
+/// </summary>
+public record ProcessAlertDto(
+    [Required(ErrorMessage = "Hành động là bắt buộc")]
+    string Action,
+
+    [Required(ErrorMessage = "Lý do là bắt buộc")]
+    string Reason
 );

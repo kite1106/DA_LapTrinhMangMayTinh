@@ -7,6 +7,17 @@
     Layout = "_UserLayout";
 }
 
+<!-- Thông báo khi tài khoản bị hạn chế -->
+@if (Context.Request.Query["message"].ToString() == "account_restricted")
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-user-lock me-2"></i>
+        <strong>🔒 Tài khoản đã bị hạn chế!</strong><br>
+        Tài khoản của bạn đã bị admin hạn chế quyền truy cập. Bạn chỉ có thể xem thông tin cơ bản.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
 <!-- Test Buttons Section - Đưa lên trên -->
 <div class="test-section mb-4">
     <div class="row">
