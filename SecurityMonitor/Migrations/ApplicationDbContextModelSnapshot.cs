@@ -205,6 +205,42 @@ namespace SecurityMonitor.Migrations
                     b.ToTable("AccountRestrictions");
                 });
 
+            modelBuilder.Entity("SecurityMonitor.Models.AccountRestrictionEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RestrictionReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Timestamp");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AccountRestrictionEvents");
+                });
+
             modelBuilder.Entity("SecurityMonitor.Models.Alert", b =>
                 {
                     b.Property<int>("Id")
@@ -270,6 +306,99 @@ namespace SecurityMonitor.Migrations
                     b.HasIndex("Timestamp");
 
                     b.ToTable("Alerts");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.AlertCondition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AlertRuleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Field")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Operator")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlertRuleId");
+
+                    b.ToTable("AlertConditions");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.AlertRule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AlertMessage")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Condition")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RuleType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("SeverityId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeverityId");
+
+                    b.ToTable("AlertRules");
                 });
 
             modelBuilder.Entity("SecurityMonitor.Models.AlertStatus", b =>
@@ -347,6 +476,9 @@ namespace SecurityMonitor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRestricted")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastLoginIP")
@@ -495,7 +627,89 @@ namespace SecurityMonitor.Migrations
                     b.ToTable("BlockedIPs");
                 });
 
-            modelBuilder.Entity("SecurityMonitor.Models.Log", b =>
+            modelBuilder.Entity("SecurityMonitor.Models.LogAnalysis", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnalysisResult")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("AnalysisType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("AnalyzedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("ConfidenceScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAnomaly")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsThreat")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("LogEntryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Recommendations")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("RiskLevel")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LogEntryId");
+
+                    b.ToTable("LogAnalyses");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogComponent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Version")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogComponents");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogEntry", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -503,40 +717,192 @@ namespace SecurityMonitor.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("EventType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Details")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("IpAddress")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
+
+                    b.Property<int?>("LogComponentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LogEventTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LogLevelTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LogSeverityId")
+                        .HasColumnType("int");
 
                     b.Property<int>("LogSourceId")
                         .HasColumnType("int");
 
                     b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime?>("ProcessedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("RawData")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("SessionId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("WasSuccessful")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IpAddress");
+
+                    b.HasIndex("LogComponentId");
+
+                    b.HasIndex("LogEventTypeId");
+
+                    b.HasIndex("LogLevelTypeId");
+
+                    b.HasIndex("LogSeverityId");
+
                     b.HasIndex("LogSourceId");
 
                     b.HasIndex("Timestamp");
 
-                    b.ToTable("Logs");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LogEntry");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogEntryTag", b =>
+                {
+                    b.Property<long>("LogEntryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("LogTagId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("LogEntryId", "LogTagId");
+
+                    b.HasIndex("LogTagId");
+
+                    b.ToTable("LogEntryTags");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogEventType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogEventTypes");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogLevelType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogLevelTypes");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogSeverity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogSeverities");
                 });
 
             modelBuilder.Entity("SecurityMonitor.Models.LogSource", b =>
@@ -569,6 +935,38 @@ namespace SecurityMonitor.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LogSources");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogTags");
                 });
 
             modelBuilder.Entity("SecurityMonitor.Models.SeverityLevel", b =>
@@ -664,6 +1062,17 @@ namespace SecurityMonitor.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SecurityMonitor.Models.AccountRestrictionEvent", b =>
+                {
+                    b.HasOne("SecurityMonitor.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SecurityMonitor.Models.Alert", b =>
                 {
                     b.HasOne("SecurityMonitor.Models.AlertType", "AlertType")
@@ -677,7 +1086,7 @@ namespace SecurityMonitor.Migrations
                         .HasForeignKey("AssignedToId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("SecurityMonitor.Models.Log", "Log")
+                    b.HasOne("SecurityMonitor.Models.LogEntry", "Log")
                         .WithMany("Alerts")
                         .HasForeignKey("LogId");
 
@@ -711,6 +1120,28 @@ namespace SecurityMonitor.Migrations
                     b.Navigation("Status");
                 });
 
+            modelBuilder.Entity("SecurityMonitor.Models.AlertCondition", b =>
+                {
+                    b.HasOne("SecurityMonitor.Models.AlertRule", "AlertRule")
+                        .WithMany("AlertConditions")
+                        .HasForeignKey("AlertRuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AlertRule");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.AlertRule", b =>
+                {
+                    b.HasOne("SecurityMonitor.Models.LogSeverity", "Severity")
+                        .WithMany()
+                        .HasForeignKey("SeverityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Severity");
+                });
+
             modelBuilder.Entity("SecurityMonitor.Models.AuditLog", b =>
                 {
                     b.HasOne("SecurityMonitor.Models.ApplicationUser", "User")
@@ -720,15 +1151,76 @@ namespace SecurityMonitor.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SecurityMonitor.Models.Log", b =>
+            modelBuilder.Entity("SecurityMonitor.Models.LogAnalysis", b =>
                 {
+                    b.HasOne("SecurityMonitor.Models.LogEntry", "LogEntry")
+                        .WithMany("LogAnalyses")
+                        .HasForeignKey("LogEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LogEntry");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogEntry", b =>
+                {
+                    b.HasOne("SecurityMonitor.Models.LogComponent", "LogComponent")
+                        .WithMany("LogEntries")
+                        .HasForeignKey("LogComponentId");
+
+                    b.HasOne("SecurityMonitor.Models.LogEventType", "LogEventType")
+                        .WithMany("LogEntries")
+                        .HasForeignKey("LogEventTypeId");
+
+                    b.HasOne("SecurityMonitor.Models.LogLevelType", "LogLevelType")
+                        .WithMany("LogEntries")
+                        .HasForeignKey("LogLevelTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SecurityMonitor.Models.LogSeverity", "LogSeverity")
+                        .WithMany("LogEntries")
+                        .HasForeignKey("LogSeverityId");
+
                     b.HasOne("SecurityMonitor.Models.LogSource", "LogSource")
                         .WithMany("Logs")
                         .HasForeignKey("LogSourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("LogComponent");
+
+                    b.Navigation("LogEventType");
+
+                    b.Navigation("LogLevelType");
+
+                    b.Navigation("LogSeverity");
+
                     b.Navigation("LogSource");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogEntryTag", b =>
+                {
+                    b.HasOne("SecurityMonitor.Models.LogEntry", "LogEntry")
+                        .WithMany("LogEntryTags")
+                        .HasForeignKey("LogEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SecurityMonitor.Models.LogTag", "LogTag")
+                        .WithMany("LogEntryTags")
+                        .HasForeignKey("LogTagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LogEntry");
+
+                    b.Navigation("LogTag");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.AlertRule", b =>
+                {
+                    b.Navigation("AlertConditions");
                 });
 
             modelBuilder.Entity("SecurityMonitor.Models.AlertStatus", b =>
@@ -750,14 +1242,43 @@ namespace SecurityMonitor.Migrations
                     b.Navigation("ResolvedAlerts");
                 });
 
-            modelBuilder.Entity("SecurityMonitor.Models.Log", b =>
+            modelBuilder.Entity("SecurityMonitor.Models.LogComponent", b =>
+                {
+                    b.Navigation("LogEntries");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogEntry", b =>
                 {
                     b.Navigation("Alerts");
+
+                    b.Navigation("LogAnalyses");
+
+                    b.Navigation("LogEntryTags");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogEventType", b =>
+                {
+                    b.Navigation("LogEntries");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogLevelType", b =>
+                {
+                    b.Navigation("LogEntries");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogSeverity", b =>
+                {
+                    b.Navigation("LogEntries");
                 });
 
             modelBuilder.Entity("SecurityMonitor.Models.LogSource", b =>
                 {
                     b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("SecurityMonitor.Models.LogTag", b =>
+                {
+                    b.Navigation("LogEntryTags");
                 });
 
             modelBuilder.Entity("SecurityMonitor.Models.SeverityLevel", b =>

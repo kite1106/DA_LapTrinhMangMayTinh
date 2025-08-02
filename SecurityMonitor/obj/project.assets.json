@@ -8288,11 +8288,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\SecurityMonitor.csproj",
+      "projectUniqueName": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\SecurityMonitor.csproj",
       "projectName": "SecurityMonitor",
-      "projectPath": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\SecurityMonitor.csproj",
+      "projectPath": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\SecurityMonitor.csproj",
       "packagesPath": "C:\\Users\\KIET\\.nuget\\packages\\",
-      "outputPath": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\",
+      "outputPath": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

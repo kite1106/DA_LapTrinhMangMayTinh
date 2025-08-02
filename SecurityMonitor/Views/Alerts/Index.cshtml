@@ -134,8 +134,8 @@
                             <tr class="@(alert.SeverityLevel == "Critical" ? "table-danger" : alert.SeverityLevel == "High" ? "table-warning" : "")">
                                 <td>
                                     <div class="d-flex flex-column">
-                                        <span>@alert.Timestamp.ToString("HH:mm:ss")</span>
-                                        <small class="text-muted">@alert.Timestamp.ToString("dd/MM/yyyy")</small>
+                                        <span>@alert.Timestamp.AddHours(7).ToString("HH:mm:ss")</span>
+                                        <small class="text-muted">@alert.Timestamp.AddHours(7).ToString("dd/MM/yyyy")</small>
                                     </div>
                                 </td>
                                 <td>
@@ -170,13 +170,7 @@
                                                 data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="@alert.Id">
                                             <i class="bi bi-eye text-secondary"></i>
                                         </button>
-                                        @if (alert.Status == "New")
-                                        {
-                                            <button class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Bắt đầu xử lý"
-                                                    onclick="updateStatus(@alert.Id, 'InProgress')">
-                                                <i class="bi bi-play-fill"></i>
-                                            </button>
-                                        }
+                    
                                         @if (alert.Status != "Resolved")
                                         {
                                             <button class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Đánh dấu đã xử lý"
@@ -284,26 +278,50 @@
 </div>
 
 @section Styles {
-    <link href="~/lib/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="~/lib/toastr/toastr.min.css" rel="stylesheet" />
     <style>
         .table th { white-space: nowrap; }
-        .alert-new { animation: highlight 2s; }
+        .alert-new { 
+            animation: highlight 2s ease-in-out;
+            animation-iteration-count: 3;
+        }
         @@keyframes highlight {
-            0% { background-color: #fff3cd; }
+            0% { background-color: transparent; }
+            50% { background-color: #fff3cd; }
             100% { background-color: transparent; }
+        }
+        #alertsTable tbody tr {
+            transition: all 0.3s ease;
+        }
+        #alertsTable tbody tr:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .badge {
+            font-size: 0.85em;
+            padding: 0.4em 0.8em;
         }
     </style>
 }
 
 @section Scripts {
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/datatables/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script>
         let currentAlertId = null;
         let currentAlertData = null;
+        let alertsTable = null;
+
+        // Cấu hình toastr
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "0",
+            "extendedTimeOut": "0",
+        };
 
         $(document).ready(function() {
             // Handle IP blocking
@@ -339,10 +357,12 @@
                 }
             });
 
-            // Initialize DataTable
-            const alertsTable = $('#alertsTable').DataTable({
-                order: [[0, 'desc']],
+            // Initialize DataTable đơn giản
+            alertsTable = $('#alertsTable').DataTable({
+                order: [[0, 'desc']], // Sắp xếp mới nhất lên trên
                 pageLength: 25,
+                responsive: true,
+                autoWidth: false,
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json'
                 }
@@ -351,43 +371,271 @@
             // Initialize SignalR
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/alertHub")
+                .withAutomaticReconnect()
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
-            // Handle new alerts
+            // Connection state events
+            connection.onreconnecting((error) => {
+                console.log('Reconnecting to SignalR hub...', error);
+            });
+
+            connection.onreconnected((connectionId) => {
+                console.log('Reconnected to SignalR hub.', connectionId);
+                toastr.success('Kết nối SignalR đã được khôi phục');
+            });
+
+            connection.onclose((error) => {
+                console.log('SignalR connection closed.', error);
+                toastr.error('Mất kết nối với server. Vui lòng tải lại trang.');
+            });
+
+            // Update alert counts
+            function updateAlertCounts() {
+                $.get('/api/alerts/counts', function(data) {
+                    $('.critical-count').text(data.critical);
+                    $('.high-count').text(data.high);
+                    $('.inprogress-count').text(data.inProgress);
+                    $('.resolved-count').text(data.resolved);
+                });
+            }
+
+            // Handle login alerts (from LoginMonitorMiddleware)
+            connection.on("ReceiveLoginAlert", (alert) => {
+                console.log('Received login alert:', alert);
+
+                try {
+                    // Play alert sound
+                    const audio = new Audio('/sounds/alert.mp3');
+                    audio.play().catch(e => console.log('Error playing sound:', e));
+
+                    // Format data for DataTable
+                    const timestamp = new Date(alert.timestamp);
+                    const rowData = {
+                        id: alert.id,
+                        timestamp: `<div class="d-flex flex-column">
+                            <span>${timestamp.toLocaleTimeString()}</span>
+                            <small class="text-muted">${timestamp.toLocaleDateString()}</small>
+                        </div>`,
+                        title: `<div class="d-flex align-items-center">
+                            ${alert.severity === 'High' ? 
+                                '<i class="fas fa-exclamation-triangle text-danger me-2"></i>' : 
+                                '<i class="fas fa-exclamation-circle text-warning me-2"></i>'}
+                            ${alert.title}
+                        </div>`,
+                        severity: `<span class="badge ${alert.severity === 'High' ? 'bg-danger' : 'bg-warning text-dark'}">
+                            ${alert.severity}
+                        </span>`,
+                        sourceIp: `<code>${alert.ip}</code>`,
+                        status: '<span class="badge bg-info">New</span>',
+                        actions: `<div class="btn-group">
+                            <button class="btn btn-sm btn-light" title="Xem chi tiết" 
+                                    data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="${alert.id}">
+                                <i class="bi bi-eye text-secondary"></i>
+                            </button>
+                            <button class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Đánh dấu đã xử lý"
+                                    onclick="resolveAlert(${alert.id})">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Chặn IP nguồn" 
+                                    onclick="blockIP('${alert.ip}', '${alert.title}')">
+                                <i class="bi bi-shield-fill-x"></i>
+                            </button>
+                            <a href="https://www.abuseipdb.com/check/${alert.ip}" target="_blank"
+                               class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="Kiểm tra IP trên AbuseIPDB">
+                                <i class="bi bi-search"></i>
+                            </a>
+                        </div>`
+                    };
+
+                    // Add row to DataTable immediately
+                    const row = alertsTable.row.add(rowData).draw(false).node();
+                    $(row).addClass('alert-new');
+                    setTimeout(() => $(row).removeClass('alert-new'), 5000);
+
+                    // Show notification với timeout 5 giây và tránh trùng lặp
+                    toastr.warning(alert.description, alert.title, {
+                        timeOut: 5000,
+                        extendedTimeOut: 2000,
+                        closeButton: true,
+                        tapToDismiss: true,
+                        newestOnTop: true,
+                        preventDuplicates: true,
+                        onclick: function() {
+                            $('html, body').animate({
+                                scrollTop: $("#alertsTable").offset().top
+                            }, 500);
+                        }
+                    });
+
+                    // Add new row to DataTable
+                    if (alertsTable) {
+                        location.reload();
+
+                        // Highlight new row
+                        $(row).addClass('alert-new');
+                        
+                        // Scroll to the new row
+                        $('html, body').animate({
+                            scrollTop: $(row).offset().top - 100
+                        }, 500);
+
+                        // Remove highlight after 5 seconds
+                        setTimeout(() => $(row).removeClass('alert-new'), 5000);
+
+                        // Update summary counts
+                        updateAlertCounts();
+                    }
+                } catch (error) {
+                    console.error('Error handling login alert:', error);
+                    toastr.error('Có lỗi khi xử lý cảnh báo mới');
+                }
+            });
+
+            // Track recent alerts to prevent duplicates
+            let recentAlerts = new Set();
+            let alertElements = new Map();
+
+            // Handle regular alerts
             connection.on("ReceiveAlert", (alert) => {
-                // Add new row to DataTable
-                const row = alertsTable.row.add([
-                    `<div class="d-flex flex-column">
-                        <span>${new Date(alert.timestamp).toLocaleTimeString()}</span>
-                        <small class="text-muted">${new Date(alert.timestamp).toLocaleDateString()}</small>
-                     </div>`,
-                    alert.title,
-                    `<span class="badge ${alert.severityLevel === 'Critical' ? 'bg-danger' : 'bg-warning text-dark'}">
-                        ${alert.severityLevel}
-                     </span>`,
-                    alert.sourceIp,
-                    alert.targetIp,
-                    `<span class="badge bg-info">New</span>`,
-                    `<div class="btn-group">
-                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="${alert.id}">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary" onclick="updateStatus(${alert.id}, 2)">
-                            <i class="bi bi-play"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success" onclick="updateStatus(${alert.id}, 3)">
-                            <i class="bi bi-check"></i>
-                        </button>
-                     </div>`
-                ]).draw(false).node();
+                try {
+                    // Tạo key duy nhất cho alert
+                    const alertKey = `${alert.sourceIp}-${alert.type}-${alert.severityLevel}`;
+                    
+                    // Kiểm tra xem alert này đã tồn tại chưa
+                    if (recentAlerts.has(alertKey)) {
+                        // Nếu đã tồn tại, chỉ highlight lại element cũ
+                        const existingElement = alertElements.get(alertKey);
+                        if (existingElement) {
+                            // Highlight effect
+                            existingElement.style.backgroundColor = '#fff3cd';
+                            existingElement.style.border = '2px solid #ffc107';
+                            existingElement.style.transform = 'scale(1.02)';
+                            
+                            // Reset sau 2 giây
+                            setTimeout(() => {
+                                existingElement.style.backgroundColor = '';
+                                existingElement.style.border = '';
+                                existingElement.style.transform = '';
+                            }, 2000);
+                        }
+                        return; // Không tạo alert mới
+                    }
+                    
+                    // Thêm vào tracking
+                    recentAlerts.add(alertKey);
+                    
+                    // Play alert sound
+                    const audio = new Audio('/sounds/alert.mp3');
+                    audio.play().catch(e => console.log('Error playing sound:', e));
 
-                $(row).addClass('alert-new');
-                setTimeout(() => $(row).removeClass('alert-new'), 5000);
+                    // Tạo HTML cho hàng mới
+                    const timestamp = new Date(alert.timestamp);
+                    const tr = document.createElement('tr');
+                    tr.classList.add('alert-new'); // Chỉ thêm hiệu ứng highlight
+                    
+                    tr.innerHTML = `
+                        <td>
+                            <div class="d-flex flex-column">
+                                <span>${timestamp.toLocaleTimeString()}</span>
+                                <small class="text-muted">${timestamp.toLocaleDateString()}</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                ${alert.severityLevel === 'Critical' ? 
+                                    '<i class="bi bi-exclamation-diamond-fill text-danger me-2"></i>' : 
+                                    '<i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>'}
+                                <span>${alert.title}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge ${alert.severityLevel === 'Critical' ? 'bg-danger' : 'bg-warning text-dark'}">
+                                ${alert.severityLevel}
+                            </span>
+                        </td>
+                        <td><code>${alert.sourceIp}</code></td>
+                        <td><span class="badge bg-info">New</span></td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-light" title="Xem chi tiết" 
+                                        data-bs-toggle="modal" data-bs-target="#alertDetails" data-alert-id="${alert.id}">
+                                    <i class="bi bi-eye text-secondary"></i>
+                                </button>
+                              
+                                <button class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Đánh dấu đã xử lý"
+                                        onclick="resolveAlert(${alert.id})">
+                                    <i class="bi bi-check-lg"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Chặn IP nguồn" 
+                                        onclick="blockIP('${alert.sourceIp}', '${alert.title}')">
+                                    <i class="bi bi-shield-fill-x"></i>
+                                </button>
+                                <a href="https://www.abuseipdb.com/check/${alert.sourceIp}" target="_blank"
+                                   class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="Kiểm tra IP trên AbuseIPDB">
+                                    <i class="bi bi-search"></i>
+                                </a>
+                            </div>
+                        </td>
+                    `;
 
-                // Show notification
-                if (alert.severityLevel === 'Critical') {
-                    toastr.error(`Cảnh báo mới: ${alert.title}`, 'Cảnh báo nghiêm trọng');
+                    // Thêm vào đầu bảng
+                    const tbody = document.querySelector('#alertsTable tbody');
+                    tbody.insertBefore(tr, tbody.firstChild);
+                    
+                    // Hiệu ứng highlight
+                    tr.classList.add('alert-new');
+                    setTimeout(() => tr.classList.remove('alert-new'), 5000);
+
+                    // Lưu reference đến element
+                    alertElements.set(alertKey, tr);
+
+                    // Show notification với timeout 5 giây và tránh trùng lặp
+                    let toastElement;
+                    if (alert.severityLevel === 'Critical') {
+                        toastElement = toastr.error(`Cảnh báo mới: ${alert.title}`, 'Cảnh báo nghiêm trọng', {
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            closeButton: true,
+                            tapToDismiss: true,
+                            newestOnTop: true,
+                            preventDuplicates: true,
+                            onclick: function() {
+                                $('html, body').animate({
+                                    scrollTop: $("#alertsTable").offset().top
+                                }, 500);
+                            }
+                        });
+                    } else {
+                        toastElement = toastr.warning(`Cảnh báo mới: ${alert.title}`, 'Cảnh báo mới', {
+                            timeOut: 5000,
+                            extendedTimeOut: 2000,
+                            closeButton: true,
+                            tapToDismiss: true,
+                            newestOnTop: true,
+                            preventDuplicates: true,
+                            onclick: function() {
+                                $('html, body').animate({
+                                    scrollTop: $("#alertsTable").offset().top
+                                }, 500);
+                            }
+                        });
+                    }
+
+                    // Lưu reference đến toast element
+                    if (toastElement) {
+                        alertElements.set(alertKey + '-toast', toastElement);
+                    }
+                    
+                    // Xóa khỏi tracking sau 10 giây
+                    setTimeout(() => {
+                        recentAlerts.delete(alertKey);
+                        alertElements.delete(alertKey);
+                        alertElements.delete(alertKey + '-toast');
+                    }, 10000);
+                } catch (error) {
+                    console.error('Error handling regular alert:', error);
+                    toastr.error('Có lỗi khi xử lý cảnh báo mới');
                 }
             });
 
@@ -442,7 +690,15 @@
             });
 
             // Start SignalR connection
-            connection.start().catch(err => console.error(err));
+            connection.start()
+                .then(() => {
+                    console.log('Connected to SignalR hub');
+                    toastr.success('Đã kết nối với server');
+                })
+                .catch(err => {
+                    console.error('Error connecting to SignalR:', err);
+                    toastr.error('Không thể kết nối với server. Vui lòng tải lại trang.');
+                });
 
             // Handle alert details modal
             $('#alertDetails').on('show.bs.modal', function (event) {

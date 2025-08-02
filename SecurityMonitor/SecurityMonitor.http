@@ -1,6 +1,0 @@
-@SecurityMonitor_HostAddress = http://localhost:5098
-
-GET {{SecurityMonitor_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

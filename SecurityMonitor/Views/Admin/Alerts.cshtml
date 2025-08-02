@@ -1,0 +1,976 @@
+@model IEnumerable<SecurityMonitor.Models.Alert>
+@{
+    ViewData["Title"] = "Quản Lý Cảnh Báo";
+    Layout = "_AdminLayout";
+}
+
+<style>
+    .new-alert {
+        animation: highlightNew 3s ease-in-out;
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+    }
+
+    @@keyframes highlightNew {
+        0% { background-color: #fff3cd; transform: translateX(-10px); }
+        50% { background-color: #fff3cd; transform: translateX(0); }
+        100% { background-color: transparent; transform: translateX(0); }
+    }
+
+    .alert-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .alert-badge.suspiciousip { background-color: #e3f2fd; color: #1976d2; }
+    .alert-badge.ddos { background-color: #ffebee; color: #d32f2f; }
+    .alert-badge.bruteforce { background-color: #fff3e0; color: #f57c00; }
+    .alert-badge.sqlinjection { background-color: #f3e5f5; color: #7b1fa2; }
+    .alert-badge.malware { background-color: #e8f5e8; color: #388e3c; }
+    .alert-badge.unknown { background-color: #f5f5f5; color: #616161; }
+
+    .alert-badge.critical { background-color: #ffebee; color: #d32f2f; }
+    .alert-badge.high { background-color: #fff3e0; color: #f57c00; }
+    .alert-badge.medium { background-color: #fff8e1; color: #f57c00; }
+    .alert-badge.low { background-color: #e8f5e8; color: #388e3c; }
+
+    /* Process Alert Modal Styles */
+    .process-action-option {
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .process-action-option:hover {
+        border-color: #007bff;
+        background-color: #f8f9fa;
+    }
+
+    .process-action-option input[type="radio"]:checked + label {
+        color: #007bff;
+        font-weight: 600;
+    }
+
+    .process-action-option input[type="radio"]:checked ~ .process-action-option {
+        border-color: #007bff;
+        background-color: #e3f2fd;
+    }
+
+    .form-check-input:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .form-check-label i {
+        width: 20px;
+        text-align: center;
+    }
+
+    .nav-tabs .nav-link {
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .nav-tabs .nav-link.active {
+        border-bottom: 2px solid #007bff;
+        color: #007bff;
+        background: none;
+    }
+
+    .tab-content {
+        padding-top: 1rem;
+    }
+
+    /* Hiệu ứng highlight cho cảnh báo mới */
+    .new-alert-highlight {
+        animation: highlightNewAlert 5s ease-in-out;
+        background-color: #fff3cd !important;
+        border-left: 4px solid #ffc107 !important;
+        box-shadow: 0 0 10px rgba(255, 193, 7, 0.3) !important;
+    }
+
+    @@keyframes highlightNewAlert {
+        0% { 
+            background-color: #fff3cd; 
+            transform: translateX(-10px); 
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+        }
+        50% { 
+            background-color: #fff3cd; 
+            transform: translateX(0); 
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+        }
+        100% { 
+            background-color: transparent; 
+            transform: translateX(0); 
+            box-shadow: none;
+        }
+    }
+
+    /* Hiệu ứng nhấp nháy cho trang */
+    .page-flash {
+        animation: pageFlash 1s ease-in-out;
+    }
+
+    @@keyframes pageFlash {
+        0% { 
+            background-color: rgba(255, 193, 7, 0.1); 
+        }
+        50% { 
+            background-color: rgba(255, 193, 7, 0.2); 
+        }
+        100% { 
+            background-color: transparent; 
+        }
+    }
+
+    /* Hiệu ứng pulse cho tab cảnh báo */
+    .alert-tab-pulse {
+        animation: tabPulse 2s ease-in-out infinite;
+    }
+
+    @@keyframes tabPulse {
+        0% { 
+            background-color: rgba(255, 193, 7, 0.1); 
+        }
+        50% { 
+            background-color: rgba(255, 193, 7, 0.3); 
+        }
+        100% { 
+            background-color: transparent; 
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Quản Lý Cảnh Báo
+                    </h5>
+                    <div>
+                        <button class="btn btn-modern btn-info" onclick="refreshAlerts()">
+                            <i class="fas fa-sync-alt me-2"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="alertsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button" role="tab">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                Cảnh Báo Hoạt Động
+                                <span class="badge bg-warning ms-2" id="activeCount">@Model.Count(a => a.Status?.Name != "Resolved")</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="resolved-tab" data-bs-toggle="tab" data-bs-target="#resolved" type="button" role="tab">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Đã Xử Lý
+                                <span class="badge bg-success ms-2" id="resolvedCount">@Model.Count(a => a.Status?.Name == "Resolved")</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="alertsTabContent">
+                        <!-- Active Alerts Tab -->
+                        <div class="tab-pane fade show active" id="active" role="tabpanel">
+                            <!-- Filters -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-3 mb-3">
+                                                    <label class="form-label">Loại Cảnh Báo</label>
+                                                    <select class="form-select" id="alertTypeFilter">
+                                                        <option value="">Tất cả</option>
+                                                        <option value="SuspiciousIP">Suspicious IP</option>
+                                                        <option value="DDoS">DDoS</option>
+                                                        <option value="BruteForce">Brute Force</option>
+                                                        <option value="SQLInjection">SQL Injection</option>
+                                                        <option value="Malware">Malware</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <label class="form-label">Mức Độ</label>
+                                                    <select class="form-select" id="severityFilter">
+                                                        <option value="">Tất cả</option>
+                                                        <option value="Critical">Critical</option>
+                                                        <option value="High">High</option>
+                                                        <option value="Medium">Medium</option>
+                                                        <option value="Low">Low</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <label class="form-label">Trạng Thái</label>
+                                                    <select class="form-select" id="statusFilter">
+                                                        <option value="">Tất cả</option>
+                                                        <option value="New">Mới</option>
+                                                        <option value="InProgress">Đang xử lý</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <label class="form-label">Tìm Kiếm</label>
+                                                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Active Alerts Table -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">
+                                                <i class="fas fa-list me-2"></i>
+                                                Danh Sách Cảnh Báo Hoạt Động
+                                            </h5>
+                                            <span class="badge bg-warning" id="activeAlertsCount">@Model.Count(a => a.Status?.Name != "Resolved") Cảnh Báo</span>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-modern table-hover" id="activeAlertsTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Thời Gian</th>
+                                                            <th>Loại</th>
+                                                            <th>Mức Độ</th>
+                                                            <th>IP Nguồn</th>
+                                                            <th>Tiêu Đề</th>
+                                                            <th>Trạng Thái</th>
+                                                            <th>Thao Tác</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="activeAlertsTableBody">
+                                                        @foreach (var alert in Model.Where(a => a.Status?.Name != "Resolved"))
+                                                        {
+                                                            <tr data-alert-id="@alert.Id">
+                                                                <td>@alert.Timestamp.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                                                <td>
+                                                                    <span class="alert-badge @(alert.AlertType?.Name?.ToLower() ?? "unknown")">
+                                                                        @(alert.AlertType?.Name ?? "Unknown")
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="alert-badge @(alert.SeverityLevel?.Name?.ToLower() ?? "medium")">
+                                                                        @(alert.SeverityLevel?.Name ?? "Medium")
+                                                                    </span>
+                                                                </td>
+                                                                <td><code>@alert.SourceIp</code></td>
+                                                                <td>@alert.Title</td>
+                                                                <td>
+                                                                    <span class="badge bg-@(alert.Status?.Name == "New" ? "warning" : 
+                                                                       alert.Status?.Name == "InProgress" ? "info" : "secondary")">
+                                                                        @(alert.Status?.Name ?? "Unknown")
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="btn-group btn-group-sm">
+                                                                        <button class="btn btn-outline-primary" onclick="viewAlert(@alert.Id)" title="Xem chi tiết">
+                                                                            <i class="fas fa-eye"></i>
+                                                                        </button>
+                                                                        <button class="btn btn-outline-info" onclick="processAlert(@alert.Id)" title="Xử lý cảnh báo">
+                                                                            <i class="fas fa-cogs"></i>
+                                                                        </button>
+                                                                        <button class="btn btn-outline-success" onclick="resolveAlert(@alert.Id)" title="Đánh dấu đã xử lý">
+                                                                            <i class="fas fa-check"></i>
+                                                                        </button>
+                                                                        <button class="btn btn-outline-danger" onclick="deleteAlert(@alert.Id)" title="Xóa">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resolved Alerts Tab -->
+                        <div class="tab-pane fade" id="resolved" role="tabpanel">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                Cảnh Báo Đã Xử Lý
+                                            </h5>
+                                            <span class="badge bg-success" id="resolvedAlertsCount">@Model.Count(a => a.Status?.Name == "Resolved") Cảnh Báo</span>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-modern table-hover" id="resolvedAlertsTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Thời Gian</th>
+                                                            <th>Loại</th>
+                                                            <th>Mức Độ</th>
+                                                            <th>IP Nguồn</th>
+                                                            <th>Tiêu Đề</th>
+                                                            <th>Ngày Xử Lý</th>
+                                                            <th>Người Xử Lý</th>
+                                                            <th>Thao Tác</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="resolvedAlertsTableBody">
+                                                        @foreach (var alert in Model.Where(a => a.Status?.Name == "Resolved"))
+                                                        {
+                                                            <tr data-alert-id="@alert.Id">
+                                                                <td>@alert.Timestamp.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                                                <td>
+                                                                    <span class="alert-badge @(alert.AlertType?.Name?.ToLower() ?? "unknown")">
+                                                                        @(alert.AlertType?.Name ?? "Unknown")
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="alert-badge @(alert.SeverityLevel?.Name?.ToLower() ?? "medium")">
+                                                                        @(alert.SeverityLevel?.Name ?? "Medium")
+                                                                    </span>
+                                                                </td>
+                                                                <td><code>@alert.SourceIp</code></td>
+                                                                <td>@alert.Title</td>
+                                                                <td>
+                                                                    @if (alert.ResolvedAt.HasValue)
+                                                                    {
+                                                                        <span class="text-success">@alert.ResolvedAt.Value.ToString("dd/MM/yyyy HH:mm:ss")</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span class="text-muted">N/A</span>
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @if (!string.IsNullOrEmpty(alert.ResolvedBy?.UserName))
+                                                                    {
+                                                                        <span class="text-info">@alert.ResolvedBy.UserName</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span class="text-muted">N/A</span>
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    <div class="btn-group btn-group-sm">
+                                                                        <button class="btn btn-outline-primary" onclick="viewAlert(@alert.Id)" title="Xem chi tiết">
+                                                                            <i class="fas fa-eye"></i>
+                                                                        </button>
+                                                                        <button class="btn btn-outline-warning" onclick="reopenAlert(@alert.Id)" title="Mở lại">
+                                                                            <i class="fas fa-redo"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Detail Modal -->
+<div class="modal fade" id="alertDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi Tiết Cảnh Báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="alertDetailContent">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="updateAlertStatus()">Cập Nhật</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Process Alert Modal -->
+<div class="modal fade" id="processAlertModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xử Lý Cảnh Báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Thông tin cảnh báo:</strong>
+                    <div id="processAlertInfo"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Chọn hành động xử lý:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="processAction" id="blockIp" value="blockIp" checked>
+                        <label class="form-check-label" for="blockIp">
+                            <i class="fas fa-ban text-danger me-2"></i>
+                            <strong>Chặn IP</strong> - Chặn tất cả kết nối từ IP này
+                        </label>
+                    </div>
+                    <div class="form-check" id="accountActions" style="display: none;">
+                        <input class="form-check-input" type="radio" name="processAction" id="blockAccount" value="blockAccount">
+                        <label class="form-check-label" for="blockAccount">
+                            <i class="fas fa-user-slash text-danger me-2"></i>
+                            <strong>Chặn tài khoản</strong> - Vô hiệu hóa tài khoản liên quan
+                        </label>
+                    </div>
+                    <div class="form-check" id="accountActions2" style="display: none;">
+                        <input class="form-check-input" type="radio" name="processAction" id="restrictAccount" value="restrictAccount">
+                        <label class="form-check-label" for="restrictAccount">
+                            <i class="fas fa-user-lock text-warning me-2"></i>
+                            <strong>Hạn chế tài khoản</strong> - Giới hạn quyền truy cập
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="processReason" class="form-label">Lý do xử lý:</label>
+                    <textarea class="form-control" id="processReason" rows="3" placeholder="Nhập lý do xử lý..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" onclick="executeProcessAction()">
+                    <i class="fas fa-cogs me-2"></i>Thực Hiện
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+    <script>
+        let currentAlertId = null;
+        let alertHub = null;
+
+        $(document).ready(function() {
+            setupFilters();
+            setupSearch();
+            setupSignalR();
+            setupTabs();
+        });
+
+        function setupTabs() {
+            $('#alertsTabs button').on('click', function() {
+                updateTabCounts();
+            });
+        }
+
+        function updateTabCounts() {
+            const activeCount = $('#activeAlertsTableBody tr').length;
+            const resolvedCount = $('#resolvedAlertsTableBody tr').length;
+            
+            $('#activeCount').text(activeCount);
+            $('#resolvedCount').text(resolvedCount);
+            $('#activeAlertsCount').text(activeCount + ' Cảnh Báo');
+            $('#resolvedAlertsCount').text(resolvedCount + ' Cảnh Báo');
+        }
+
+        function setupSignalR() {
+            alertHub = new signalR.HubConnectionBuilder()
+                .withUrl("/alertHub")
+                .withAutomaticReconnect()
+                .build();
+
+            alertHub.on("ReceiveNewAlert", function(alert) {
+                addNewAlertToTable(alert);
+                updateTabCounts();
+                showNewAlertNotification(alert);
+            });
+
+            alertHub.on("ReceiveAlertUpdate", function(alert) {
+                updateAlertInTable(alert);
+            });
+
+            alertHub.on("ReceiveAlertDelete", function(alertId) {
+                removeAlertFromTable(alertId);
+                updateTabCounts();
+            });
+
+            alertHub.start().then(function() {
+                console.log("SignalR Connected to AlertHub");
+                alertHub.invoke("JoinAlertGroup");
+            }).catch(function(err) {
+                console.error("SignalR Connection Error: ", err);
+            });
+        }
+
+        function addNewAlertToTable(alert) {
+            const newRow = `
+                <tr data-alert-id="${alert.id}" class="new-alert">
+                    <td>${formatDateTime(alert.timestamp)}</td>
+                    <td>
+                        <span class="alert-badge ${alert.alertType?.toLowerCase() || 'unknown'}">
+                            ${alert.alertType || 'Unknown'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="alert-badge ${alert.severityLevel?.toLowerCase() || 'medium'}">
+                            ${alert.severityLevel || 'Medium'}
+                        </span>
+                    </td>
+                    <td><code>${alert.sourceIp}</code></td>
+                    <td>${alert.title}</td>
+                    <td>
+                        <span class="badge bg-warning">New</span>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="viewAlert(${alert.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-outline-info" onclick="processAlert(${alert.id})" title="Xử lý cảnh báo">
+                                <i class="fas fa-cogs"></i>
+                            </button>
+                            <button class="btn btn-outline-success" onclick="resolveAlert(${alert.id})" title="Đánh dấu đã xử lý">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="deleteAlert(${alert.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            $("#activeAlertsTableBody").prepend(newRow);
+            
+            setTimeout(() => {
+                $(`tr[data-alert-id="${alert.id}"]`).removeClass("new-alert");
+            }, 3000);
+        }
+
+        function updateAlertInTable(alert) {
+            const row = $(`tr[data-alert-id="${alert.id}"]`);
+            if (row.length > 0) {
+                row.find("td:eq(1) span").text(alert.alertType || 'Unknown');
+                row.find("td:eq(2) span").text(alert.severityLevel || 'Medium');
+                row.find("td:eq(4)").text(alert.title);
+                row.find("td:eq(5) span").text(alert.status || 'Unknown');
+            }
+        }
+
+        function removeAlertFromTable(alertId) {
+            $(`tr[data-alert-id="${alertId}"]`).fadeOut();
+        }
+
+        function showNewAlertNotification(alert) {
+            // Bỏ thông báo toastr, chỉ highlight và nhấp nháy trang
+            highlightNewAlert(alert);
+            flashPage();
+        }
+
+        function highlightNewAlert(alert) {
+            // Highlight cảnh báo mới
+            const alertRow = $(`tr[data-alert-id="${alert.id}"]`);
+            if (alertRow.length > 0) {
+                alertRow.addClass('new-alert-highlight');
+                setTimeout(() => {
+                    alertRow.removeClass('new-alert-highlight');
+                }, 5000);
+            }
+        }
+
+        function flashPage() {
+            // Hiệu ứng nhấp nháy cho toàn bộ trang
+            $('body').addClass('page-flash');
+            setTimeout(() => {
+                $('body').removeClass('page-flash');
+            }, 1000);
+
+            // Hiệu ứng pulse cho tab cảnh báo
+            $('#active-tab').addClass('alert-tab-pulse');
+            setTimeout(() => {
+                $('#active-tab').removeClass('alert-tab-pulse');
+            }, 3000);
+        }
+
+        function setupFilters() {
+            $("#alertTypeFilter, #severityFilter, #statusFilter").change(function() {
+                filterAlerts();
+            });
+        }
+
+        function setupSearch() {
+            $("#searchInput").on("input", function() {
+                filterAlerts();
+            });
+        }
+
+        function filterAlerts() {
+            const alertType = $("#alertTypeFilter").val();
+            const severity = $("#severityFilter").val();
+            const status = $("#statusFilter").val();
+            const search = $("#searchInput").val().toLowerCase();
+
+            $("#activeAlertsTableBody tr").each(function() {
+                const row = $(this);
+                const type = row.find("td:eq(1)").text().trim();
+                const sev = row.find("td:eq(2)").text().trim();
+                const stat = row.find("td:eq(5)").text().trim();
+                const title = row.find("td:eq(4)").text().toLowerCase();
+                const ip = row.find("td:eq(3)").text().toLowerCase();
+
+                let show = true;
+
+                if (alertType && type !== alertType) show = false;
+                if (severity && sev !== severity) show = false;
+                if (status && stat !== status) show = false;
+                if (search && !title.includes(search) && !ip.includes(search)) show = false;
+
+                row.toggle(show);
+            });
+
+            updateTabCounts();
+        }
+
+        function refreshAlerts() {
+            const button = $("button[onclick='refreshAlerts()']");
+            const originalText = button.html();
+            
+            showLoading(button);
+            location.reload();
+        }
+
+        function viewAlert(alertId) {
+            currentAlertId = alertId;
+            
+            $.get(`/Alerts/Details/${alertId}`, function(alert) {
+                const content = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Thông Tin Cơ Bản</h6>
+                            <table class="table table-sm">
+                                <tr><td><strong>ID:</strong></td><td>${alert.id}</td></tr>
+                                <tr><td><strong>Tiêu đề:</strong></td><td>${alert.title}</td></tr>
+                                <tr><td><strong>Loại:</strong></td><td>${alert.alertType}</td></tr>
+                                <tr><td><strong>Mức độ:</strong></td><td>${alert.severityLevel}</td></tr>
+                                <tr><td><strong>IP nguồn:</strong></td><td><code>${alert.sourceIp}</code></td></tr>
+                                <tr><td><strong>Thời gian:</strong></td><td>${formatDateTime(alert.timestamp)}</td></tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Mô Tả</h6>
+                            <p>${alert.description}</p>
+                            <h6>Trạng Thái</h6>
+                            <select class="form-select" id="alertStatus">
+                                <option value="New" ${alert.status === 'New' ? 'selected' : ''}>Mới</option>
+                                <option value="InProgress" ${alert.status === 'InProgress' ? 'selected' : ''}>Đang xử lý</option>
+                                <option value="Resolved" ${alert.status === 'Resolved' ? 'selected' : ''}>Đã giải quyết</option>
+                                <option value="Closed" ${alert.status === 'Closed' ? 'selected' : ''}>Đã đóng</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+                
+                $("#alertDetailContent").html(content);
+                $("#alertDetailModal").modal("show");
+            }).fail(function() {
+                toastr.error('Lỗi khi tải thông tin cảnh báo');
+            });
+        }
+
+        function processAlert(alertId) {
+            console.log("🔧 Xử lý cảnh báo ID:", alertId);
+            currentAlertId = alertId;
+            
+            // Hiển thị loading
+            $("#processAlertInfo").html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Đang tải thông tin...</div>');
+            $('#processAlertModal').modal('show');
+            
+            $.get(`/api/admin/alertDetails/${alertId}`)
+                .done(function(response) {
+                    console.log("📡 Response từ API:", response);
+                    const alert = response.alert;
+                    const hasAssociatedAccount = response.hasAssociatedAccount;
+                    const associatedUser = response.associatedUser;
+                    
+                    // Hiển thị thông tin cảnh báo
+                    $("#processAlertInfo").html(`
+                        <strong>Tiêu đề:</strong> ${alert.title}<br>
+                        <strong>IP nguồn:</strong> <code>${alert.sourceIp}</code><br>
+                        <strong>Mức độ:</strong> ${alert.severityLevel}<br>
+                        <strong>Loại:</strong> ${alert.alertType}
+                        ${hasAssociatedAccount ? `<br><strong>Tài khoản liên quan:</strong> ${associatedUser}` : ''}
+                    `);
+                    
+                    // Hiển thị các tùy chọn xử lý dựa trên việc có tài khoản liên quan hay không
+                    if (hasAssociatedAccount) {
+                        console.log("👤 Có tài khoản liên quan, hiển thị tất cả tùy chọn");
+                        // Có tài khoản liên quan: hiển thị tất cả tùy chọn
+                        $("#accountActions, #accountActions2").show();
+                        $("#blockIp").prop('checked', false);
+                        $("#blockAccount").prop('checked', true);
+                    } else {
+                        console.log("🌐 Không có tài khoản liên quan, chỉ hiển thị Block IP");
+                        // Không có tài khoản liên quan: chỉ hiển thị Block IP
+                        $("#accountActions, #accountActions2").hide();
+                        $("#blockIp").prop('checked', true);
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error("❌ Lỗi khi tải thông tin cảnh báo:", error);
+                    console.error("Status:", status);
+                    console.error("Response:", xhr.responseText);
+                    toastr.error('Lỗi khi tải thông tin cảnh báo: ' + error);
+                    $('#processAlertModal').modal('hide');
+                });
+        }
+
+        function executeProcessAction() {
+            const action = $('input[name="processAction"]:checked').val();
+            const reason = $("#processReason").val();
+            
+            console.log("🚀 Thực hiện hành động:", action);
+            console.log("📝 Lý do:", reason);
+            console.log("🆔 Alert ID:", currentAlertId);
+            
+            if (!reason.trim()) {
+                toastr.warning('Vui lòng nhập lý do xử lý');
+                return;
+            }
+            
+            // Hiển thị loading
+            const button = $('button[onclick="executeProcessAction()"]');
+            const originalText = button.html();
+            button.html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+            button.prop('disabled', true);
+            
+            let apiUrl;
+            switch(action) {
+                case 'blockIp':
+                    apiUrl = `/api/admin/blockIPFromAlert/${currentAlertId}`;
+                    break;
+                case 'blockAccount':
+                    apiUrl = `/api/admin/lockAccountFromAlert/${currentAlertId}`;
+                    break;
+                case 'restrictAccount':
+                    apiUrl = `/api/admin/restrictAccountFromAlert/${currentAlertId}`;
+                    break;
+                default:
+                    toastr.error('Hành động không hợp lệ');
+                    button.html(originalText);
+                    button.prop('disabled', false);
+                    return;
+            }
+            
+            console.log("🌐 Gọi API:", apiUrl);
+            
+            $.ajax({
+                url: apiUrl,
+                type: 'POST',
+                data: JSON.stringify({ reason: reason }),
+                contentType: 'application/json',
+                success: function(response) {
+                    console.log("✅ Response thành công:", response);
+                    let successMessage;
+                    switch(action) {
+                        case 'blockIp':
+                            successMessage = 'Đã block IP thành công';
+                            break;
+                        case 'blockAccount':
+                            successMessage = 'Đã khóa tài khoản thành công';
+                            break;
+                        case 'restrictAccount':
+                            successMessage = 'Đã hạn chế tài khoản thành công';
+                            break;
+                    }
+                    
+                    toastr.success(successMessage);
+                    $('#processAlertModal').modal('hide');
+                    
+                    // Tự động resolve alert sau khi xử lý
+                    resolveAlert(currentAlertId);
+                },
+                error: function(xhr, status, error) {
+                    console.error("❌ Lỗi khi xử lý cảnh báo:", error);
+                    console.error("Status:", status);
+                    console.error("Response:", xhr.responseText);
+                    const errorMessage = xhr.responseJSON?.error || 'Lỗi khi xử lý cảnh báo';
+                    toastr.error(errorMessage);
+                    button.html(originalText);
+                    button.prop('disabled', false);
+                }
+            });
+        }
+
+        function resolveAlert(alertId) {
+            if (confirm("Bạn có chắc muốn đánh dấu cảnh báo này đã được xử lý?")) {
+                $.ajax({
+                    url: `/api/alerts/${alertId}/status`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ status: 'Resolved' }),
+                    success: function() {
+                        toastr.success("Đã đánh dấu cảnh báo đã xử lý");
+                        location.reload();
+                    },
+                    error: function() {
+                        toastr.error("Có lỗi xảy ra khi cập nhật trạng thái");
+                    }
+                });
+            }
+        }
+
+        function reopenAlert(alertId) {
+            if (confirm("Bạn có chắc muốn mở lại cảnh báo này?")) {
+                $.ajax({
+                    url: `/api/alerts/${alertId}/status`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ status: 'New' }),
+                    success: function() {
+                        toastr.success("Đã mở lại cảnh báo");
+                        location.reload();
+                    },
+                    error: function() {
+                        toastr.error("Có lỗi xảy ra khi mở lại cảnh báo");
+                    }
+                });
+            }
+        }
+
+        function resolveAlert(alertId) {
+            if (confirm("Bạn có chắc muốn đánh dấu cảnh báo này đã được xử lý?")) {
+                $.ajax({
+                    url: `/api/alerts/${alertId}/status`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ status: 'Resolved' }),
+                    success: function() {
+                        toastr.success("Đã đánh dấu cảnh báo đã xử lý");
+                        location.reload();
+                    },
+                    error: function() {
+                        toastr.error("Có lỗi xảy ra khi cập nhật trạng thái");
+                    }
+                });
+            }
+        }
+
+        function reopenAlert(alertId) {
+            if (confirm("Bạn có chắc muốn mở lại cảnh báo này?")) {
+                $.ajax({
+                    url: `/api/alerts/${alertId}/status`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ status: 'New' }),
+                    success: function() {
+                        toastr.success("Đã mở lại cảnh báo");
+                        location.reload();
+                    },
+                    error: function() {
+                        toastr.error("Có lỗi xảy ra khi mở lại cảnh báo");
+                    }
+                });
+            }
+        }
+
+        function deleteAlert(alertId) {
+            if (confirm("Bạn có chắc muốn xóa cảnh báo này?")) {
+                $.ajax({
+                    url: `/api/alerts/${alertId}`,
+                    type: "DELETE",
+                    success: function() {
+                        toastr.success("Đã xóa cảnh báo thành công");
+                        $(`tr[data-alert-id="${alertId}"]`).fadeOut();
+                        updateTabCounts();
+                        
+                        if (alertHub) {
+                            alertHub.invoke("NotifyAlertDelete", alertId);
+                        }
+                    },
+                    error: function() {
+                        toastr.error("Có lỗi xảy ra khi xóa cảnh báo");
+                    }
+                });
+            }
+        }
+
+        function updateAlertStatus() {
+            if (!currentAlertId) return;
+
+            const newStatus = $("#alertStatus").val();
+            
+            $.ajax({
+                url: `/api/alerts/${currentAlertId}/status`,
+                type: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    status: newStatus
+                }),
+                success: function() {
+                    toastr.success("Đã cập nhật trạng thái thành công");
+                    $("#alertDetailModal").modal("hide");
+                    
+                    if (alertHub) {
+                        alertHub.invoke("NotifyAlertUpdate", currentAlertId, newStatus);
+                    }
+                },
+                error: function() {
+                    toastr.error("Có lỗi xảy ra khi cập nhật trạng thái");
+                }
+            });
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('vi-VN');
+        }
+
+
+
+        // Auto-refresh every 30 seconds
+        setInterval(function() {
+            updateTabCounts();
+        }, 30000);
+    </script>
+} 

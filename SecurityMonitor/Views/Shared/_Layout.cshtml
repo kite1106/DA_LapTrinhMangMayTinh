@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
     <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/alert-notifications.css" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     @* ✅ Xác định returnUrl theo role trước *@
@@ -31,12 +33,13 @@
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Alerts" asp-action="Index">
+                    <a class="nav-link" asp-controller="User" asp-action="Index">
                         <i class="bi bi-exclamation-triangle"></i> Cảnh báo
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Logs" asp-action="Index">
+                    <a class="nav-link" asp-controller="Logs" a
+                    sp-action="Index">
                         <i class="bi bi-journal-text"></i> Logs
                     </a>
                 </li>
@@ -121,17 +124,52 @@
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/lib/chartjs/chart.umd.min.js"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <script>
+            window.currentUserName = "@User.Identity.Name";
+        </script>
+    }
+    <script src="~/js/realtime-monitor.js" asp-append-version="true"></script>
+    <script src="~/js/alert-notifications.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
 
-    <!-- Configure Toastr -->
+    <!-- Configure Toastr - Chỉ sử dụng cho thông báo không phải cảnh báo -->
     <script>
         toastr.options = {
             "closeButton": true,
             "progressBar": true,
-            "positionClass": "toast-bottom-right",
-            "timeOut": "5000"
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "newestOnTop": true,
+            "preventDuplicates": true,
+            "showDuration": "300",
+            "hideDuration": "300",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
         };
+        
+        // Tắt toastr cho cảnh báo để sử dụng hệ thống mới
+        const originalToastr = window.toastr;
+        window.toastr = function(type, message, title, options) {
+            // Chỉ hiển thị toastr cho các thông báo không phải cảnh báo
+            if (message && !message.toLowerCase().includes('cảnh báo') && 
+                !message.toLowerCase().includes('alert') && 
+                !message.toLowerCase().includes('security') &&
+                !message.toLowerCase().includes('tấn công') &&
+                !message.toLowerCase().includes('attack')) {
+                return originalToastr.apply(this, arguments);
+            }
+        };
+        
+        // Copy các method của toastr
+        Object.keys(originalToastr).forEach(key => {
+            window.toastr[key] = originalToastr[key];
+        });
     </script>
 
     @RenderSection("Scripts", required: false)

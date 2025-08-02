@@ -1,0 +1,505 @@
+@model IEnumerable<SecurityMonitor.Models.LogEntry>
+@{
+    ViewData["Title"] = "Quản Lý Logs";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-file-alt text-primary"></i>
+            Quản Lý Logs
+        </h1>
+        <div class="d-flex align-items-center">
+
+            <button class="btn btn-primary me-2" onclick="generateTestLog()">
+                <i class="fas fa-plus"></i> Tạo Test Log
+            </button>
+            <button class="btn btn-warning me-2" onclick="generateBulkLogs()">
+                <i class="fas fa-layer-group"></i> Sinh Nhiều Logs
+            </button>
+            <button class="btn btn-danger" onclick="clearAllLogs()">
+                <i class="fas fa-trash"></i> Xóa Tất Cả
+            </button>
+        </div>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-list"></i> Danh Sách Logs
+            </h6>
+            <div class="d-flex">
+                <input type="text" class="form-control me-2" id="searchInput" placeholder="Tìm kiếm logs...">
+                <select class="form-control me-2" id="levelFilter">
+                    <option value="">Tất cả levels</option>
+                    <option value="1">Info</option>
+                    <option value="2">Warning</option>
+                    <option value="3">Error</option>
+                </select>
+                <select class="form-control me-2" id="sourceFilter">
+                    <option value="">Tất cả sources</option>
+                    <option value="1">System</option>
+                    <option value="2">Network</option>
+                    <option value="3">Application</option>
+                    <option value="4">Database</option>
+                    <option value="5">Security</option>
+                </select>
+                <select class="form-control" id="pageSizeSelect" onchange="changePageSize(this.value)">
+                    <option value="10" selected="@(ViewBag.PageSize == 10)">10/trang</option>
+                    <option value="20" selected="@(ViewBag.PageSize == 20)">20/trang</option>
+                    <option value="50" selected="@(ViewBag.PageSize == 50)">50/trang</option>
+                    <option value="100" selected="@(ViewBag.PageSize == 100)">100/trang</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="logsTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Thời Gian</th>
+                            <th>Level</th>
+                            <th>Source</th>
+                            <th>IP Address</th>
+                            <th>User</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model)
+                        {
+                            <tr data-log-id="@log.Id">
+                                <td>@log.Id</td>
+                                <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>
+                                    <span class="badge @(log.LogLevelTypeId == 1 ? "bg-info" : log.LogLevelTypeId == 2 ? "bg-warning" : "bg-danger")">
+                                        @(log.LogLevelTypeId == 1 ? "Info" : log.LogLevelTypeId == 2 ? "Warning" : "Error")
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        @(log.LogSourceId == 1 ? "System" : log.LogSourceId == 2 ? "Network" : log.LogSourceId == 3 ? "Application" : log.LogSourceId == 4 ? "Database" : "Security")
+                                    </span>
+                                </td>
+                                <td>@log.IpAddress</td>
+                                <td>@log.UserId</td>
+                                <td>@log.Message</td>
+                                <td>
+                                    <span class="badge @(log.WasSuccessful ? "bg-success" : "bg-danger")">
+                                        @(log.WasSuccessful ? "Success" : "Failed")
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning" onclick="createAlertFromLog(@log.Id)" title="Tạo cảnh báo">
+                                        <i class="fas fa-bell"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteLog(@log.Id)" title="Xóa log">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-muted">
+                        Hiển thị @(((ViewBag.CurrentPage - 1) * ViewBag.PageSize) + 1) - 
+                        @Math.Min(ViewBag.CurrentPage * ViewBag.PageSize, ViewBag.TotalCount) 
+                        của @ViewBag.TotalCount logs
+                    </div>
+                    <nav aria-label="Logs pagination">
+                        <ul class="pagination mb-0">
+                            @if (ViewBag.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Logs", new { page = ViewBag.CurrentPage - 1, pageSize = ViewBag.PageSize })">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+
+                            @{
+                                var startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                                var endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+                            }
+
+                            @if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Logs", new { page = 1, pageSize = ViewBag.PageSize })">1</a>
+                                </li>
+                                @if (startPage > 2)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                            }
+
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Logs", new { page = i, pageSize = ViewBag.PageSize })">@i</a>
+                                </li>
+                            }
+
+                            @if (endPage < ViewBag.TotalPages)
+                            {
+                                @if (endPage < ViewBag.TotalPages - 1)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Logs", new { page = ViewBag.TotalPages, pageSize = ViewBag.PageSize })">@ViewBag.TotalPages</a>
+                                </li>
+                            }
+
+                            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Logs", new { page = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize })">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        let alertHub, logHub;
+
+        $(document).ready(function() {
+            setupSignalR();
+            setupLogFilters();
+        });
+
+        function setupSignalR() {
+            // Alert Hub
+            alertHub = new signalR.HubConnectionBuilder()
+                .withUrl("/alertHub")
+                .build();
+
+            alertHub.start().then(function() {
+                console.log("AlertHub connected");
+                alertHub.invoke("JoinAlertGroup");
+            }).catch(function(err) {
+                console.error("AlertHub connection error: ", err);
+            });
+
+            alertHub.on("ReceiveNewAlert", function(alert) {
+                showNewAlertNotification(alert);
+            });
+
+            // Log Hub
+            logHub = new signalR.HubConnectionBuilder()
+                .withUrl("/logHub")
+                .build();
+
+            logHub.start().then(function() {
+                console.log("LogHub connected");
+                logHub.invoke("JoinLogGroup");
+            }).catch(function(err) {
+                console.error("LogHub connection error: ", err);
+            });
+
+            // Xóa duplicate event listeners - chỉ dùng logConnection
+            // logHub.on("ReceiveNewLog", function(log) {
+            //     addNewLogToTable(log);
+            // });
+
+            // logHub.on("ReceiveLogUpdate", function(logId, action) {
+            //     handleLogUpdate(logId, action);
+            // });
+        }
+
+
+
+        function setupLogFilters() {
+            $('#searchInput, #levelFilter, #sourceFilter').on('change keyup', function() {
+                filterLogs();
+            });
+        }
+
+        function filterLogs() {
+            const searchTerm = $('#searchInput').val().toLowerCase();
+            const levelFilter = $('#levelFilter').val();
+            const sourceFilter = $('#sourceFilter').val();
+
+            $('#logsTable tbody tr').each(function() {
+                const row = $(this);
+                const message = row.find('td:eq(6)').text().toLowerCase();
+                const level = row.find('td:eq(2) .badge').text();
+                const source = row.find('td:eq(3) .badge').text();
+
+                let show = true;
+
+                // Search filter
+                if (searchTerm && !message.includes(searchTerm)) {
+                    show = false;
+                }
+
+                // Level filter
+                if (levelFilter) {
+                    const levelValue = level === 'Info' ? '1' : level === 'Warning' ? '2' : '3';
+                    if (levelValue !== levelFilter) {
+                        show = false;
+                    }
+                }
+
+                // Source filter
+                if (sourceFilter) {
+                    const sourceValue = source === 'System' ? '1' : source === 'Network' ? '2' : source === 'Application' ? '3' : source === 'Database' ? '4' : '5';
+                    if (sourceValue !== sourceFilter) {
+                        show = false;
+                    }
+                }
+
+                row.toggle(show);
+            });
+        }
+
+
+
+        function generateTestLog() {
+            $.post('/api/admin/generateTestLog')
+                .done(function() {
+                    toastr.success('Test log generated successfully');
+                    // Không reload trang, logs sẽ được thêm real-time
+                })
+                .fail(function() {
+                    toastr.error('Failed to generate test log');
+                });
+        }
+
+        function generateBulkLogs() {
+            $.post('/api/admin/generateBulkLogs')
+                .done(function() {
+                    toastr.success('Bulk logs generated successfully');
+                    // Không reload trang, logs sẽ được thêm real-time
+                })
+                .fail(function() {
+                    toastr.error('Failed to generate bulk logs');
+                });
+        }
+
+        function clearAllLogs() {
+            if (confirm('Bạn có chắc muốn xóa tất cả logs?')) {
+                $.post('/api/admin/clearAllLogs')
+                    .done(function() {
+                        toastr.success('All logs cleared successfully');
+                        // Xóa tất cả rows trong bảng
+                        $('#logsTable tbody').empty();
+                        updateLogCount();
+                    })
+                    .fail(function() {
+                        toastr.error('Failed to clear logs');
+                    });
+            }
+        }
+
+        function deleteLog(logId) {
+            if (confirm('Bạn có chắc muốn xóa log này?')) {
+                $.ajax({
+                    url: `/api/logs/${logId}`,
+                    type: 'DELETE',
+                    success: function() {
+                        toastr.success('Log deleted successfully');
+                        $(`tr[data-log-id="${logId}"]`).remove();
+                    },
+                    error: function() {
+                        toastr.error('Failed to delete log');
+                    }
+                });
+            }
+        }
+
+        function createAlertFromLog(logId) {
+            $.post(`/api/admin/createAlertFromLog/${logId}`)
+                .done(function() {
+                    toastr.success('Alert created from log successfully');
+                })
+                .fail(function() {
+                    toastr.error('Failed to create alert from log');
+                });
+        }
+
+        function showNewAlertNotification(alert) {
+            toastr.warning(`🚨 Cảnh báo mới: ${alert.title}`, {
+                timeOut: 0,
+                extendedTimeOut: 0,
+                closeButton: true,
+                progressBar: true
+            });
+        }
+
+        function changePageSize(pageSize) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('pageSize', pageSize);
+            currentUrl.searchParams.set('page', '1'); // Reset về trang đầu
+            window.location.href = currentUrl.toString();
+        }
+
+        // Track processed log IDs to avoid duplicates
+        let processedLogIds = new Set();
+        
+        function addNewLogToTable(log) {
+            // Kiểm tra xem log này đã được xử lý chưa
+            if (processedLogIds.has(log.id)) {
+                console.log(`⚠️ Log ID ${log.id} đã được xử lý, bỏ qua`);
+                return;
+            }
+            
+            // Thêm ID vào set đã xử lý
+            processedLogIds.add(log.id);
+            
+            // Giới hạn set để tránh memory leak (giữ 1000 IDs gần nhất)
+            if (processedLogIds.size > 1000) {
+                const firstKey = processedLogIds.values().next().value;
+                processedLogIds.delete(firstKey);
+            }
+            
+            // Tạo row mới cho log
+            const newRow = `
+                <tr data-log-id="${log.id}" class="new-log-row">
+                    <td>${log.id}</td>
+                    <td>${new Date(log.timestamp).toLocaleString()}</td>
+                    <td>
+                        <span class="badge ${log.logLevelTypeId == 1 ? 'bg-info' : log.logLevelTypeId == 2 ? 'bg-warning' : 'bg-danger'}">
+                            ${log.logLevelTypeId == 1 ? 'Info' : log.logLevelTypeId == 2 ? 'Warning' : 'Error'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">
+                            ${log.logSourceId == 1 ? 'System' : log.logSourceId == 2 ? 'Network' : log.logSourceId == 3 ? 'Application' : log.logSourceId == 4 ? 'Database' : 'Security'}
+                        </span>
+                    </td>
+                    <td>${log.ipAddress}</td>
+                    <td>${log.userId}</td>
+                    <td>${log.message}</td>
+                    <td>
+                        <span class="badge ${log.wasSuccessful ? 'bg-success' : 'bg-danger'}">
+                            ${log.wasSuccessful ? 'Success' : 'Failed'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="createAlertFromLog(${log.id})" title="Tạo cảnh báo">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteLog(${log.id})" title="Xóa log">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            
+            // Thêm vào đầu bảng
+            $('#logsTable tbody').prepend(newRow);
+            
+            // Highlight row mới
+            $('.new-log-row').addClass('table-success');
+            setTimeout(() => {
+                $('.new-log-row').removeClass('table-success new-log-row');
+            }, 3000);
+            
+            // Cập nhật số lượng logs
+            updateLogCount();
+            
+            console.log(`✅ Đã thêm log mới: ID ${log.id}`);
+        }
+
+        function handleLogUpdate(logId, action) {
+            const row = $(`tr[data-log-id="${logId}"]`);
+            
+            if (action === 'deleted') {
+                row.fadeOut(500, function() {
+                    $(this).remove();
+                    updateLogCount();
+                });
+                toastr.warning('🗑️ Log đã được xóa');
+            } else if (action === 'updated') {
+                row.addClass('table-warning');
+                setTimeout(() => {
+                    row.removeClass('table-warning');
+                }, 2000);
+                toastr.info('✏️ Log đã được cập nhật');
+            }
+        }
+
+        function updateLogCount() {
+            const count = $('#logsTable tbody tr').length;
+            console.log(`📊 Tổng số logs: ${count}`);
+        }
+
+        // SignalR connection cho logs real-time
+        let logConnection;
+        
+        function initializeLogConnection() {
+            logConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/logHub")
+                .withAutomaticReconnect()
+                .build();
+
+            logConnection.on("ReceiveNewLog", function(log) {
+                console.log("📝 Nhận log mới:", log);
+                addNewLogToTable(log);
+            });
+
+            logConnection.on("ReceiveLogUpdate", function(logId, action) {
+                console.log("📝 Cập nhật log:", logId, action);
+                handleLogUpdate(logId, action);
+            });
+
+            logConnection.start()
+                .then(function() {
+                    console.log("✅ Kết nối LogHub thành công");
+                    logConnection.invoke("JoinLogGroup");
+                })
+                .catch(function(err) {
+                    console.error("❌ Lỗi kết nối LogHub:", err);
+                });
+        }
+
+        function updateLogInTable(log) {
+            const row = $(`tr[data-log-id="${log.id}"]`);
+            if (row.length > 0) {
+                row.find('td:eq(1)').text(new Date(log.timestamp).toLocaleString());
+                row.find('td:eq(2) span').text(log.logLevelTypeId == 1 ? 'Info' : log.logLevelTypeId == 2 ? 'Warning' : 'Error');
+                row.find('td:eq(3) span').text(log.logSourceId == 1 ? 'System' : log.logSourceId == 2 ? 'Network' : log.logSourceId == 3 ? 'Application' : log.logSourceId == 4 ? 'Database' : 'Security');
+                row.find('td:eq(4)').text(log.ipAddress);
+                row.find('td:eq(5)').text(log.userId);
+                row.find('td:eq(6)').text(log.message);
+                row.find('td:eq(7) span').text(log.wasSuccessful ? 'Success' : 'Failed');
+            }
+        }
+
+        // Khởi tạo SignalR connection khi trang load
+        $(document).ready(function() {
+            initializeLogConnection();
+        });
+
+    </script>
+} 

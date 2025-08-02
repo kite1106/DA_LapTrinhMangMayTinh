@@ -1,0 +1,29 @@
+@model IEnumerable<SecurityMonitor.Models.Alert>
+
+<div class="alerts-section mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>
+            Cảnh báo Bảo mật
+            <span id="alertCountBadge" class="badge bg-danger">@Model.Count()</span>
+        </h4>
+    </div>
+
+    <div id="alertsContainer">
+        @foreach (var alert in Model.OrderByDescending(a => a.Timestamp))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" data-alert-id="@alert.Id">
+                <h5>@alert.Title</h5>
+                <p>@alert.Description</p>
+                <hr>
+                <p class="mb-0">
+                    <small>
+                        IP Nguồn: @alert.SourceIp<br>
+                        Thời gian: @alert.Timestamp.ToString("dd/MM/yyyy HH:mm:ss")<br>
+                        Mức độ: <span class="badge bg-danger">@alert.SeverityLevel.Name</span>
+                    </small>
+                </p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+    </div>
+</div>

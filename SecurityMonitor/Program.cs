@@ -11,6 +11,7 @@ using SecurityMonitor.Services;
 using SecurityMonitor.Services.Interfaces;
 using SecurityMonitor.Services.Implementation;
 using SecurityMonitor.Middleware;
+// using SecurityMonitor.Models.Configuration; // Đã xóa SematextConfig
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -50,14 +51,8 @@ builder.Services.AddCors(options =>
     {
         builder.SetIsOriginAllowed(origin => 
             {
-                // Chỉ cho phép các domain cụ thể
-                var allowedOrigins = new[] 
-                { 
-                    "https://localhost:5101",
-                    "http://localhost:5100",
-                    // Thêm domain của ngrok nếu cần
-                };
-                return allowedOrigins.Contains(origin);
+                // Cho phép tất cả origin vì đang trong môi trường phát triển
+                return true;
             })
             .AllowCredentials()
             .WithMethods("GET", "POST", "PUT", "DELETE") // Chỉ cho phép các methods cần thiết
@@ -148,27 +143,47 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
 builder.Services.AddHttpClient();
 
-// Register core services
+// Đăng ký các services
 builder.Services.AddScoped<IIPCheckerService, IPCheckerService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IFailedLoginService, FailedLoginService>();
 builder.Services.AddScoped<IIPBlockingService, SecurityMonitor.Services.IPBlocking.IPBlockingService>();
 builder.Services.AddScoped<ILogSourceService, LogSourceService>();
-builder.Services.AddScoped<ILogEventService, LogEventService>();
+
+builder.Services.AddScoped<ILogAnalysisService, LogAnalysisService>();
+
+
+// Add Memory Cache
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IUserCacheService, UserCacheManager>();
 
 // Register background services
 builder.Services.AddSingleton<LoginMonitorService>();
 builder.Services.AddHostedService<LoginMonitorService>();
 builder.Services.AddSingleton<IIpCheckCache, IpCheckCache>();
 
+// Register real-time update service
+builder.Services.AddScoped<IRealTimeUpdateService, RealTimeUpdateService>();
+builder.Services.AddHostedService<RealTimeUpdateBackgroundService>();
+
 // Đăng ký cấu hình và IP intelligence services
 builder.Services.Configure<AbuseIPDBConfig>(
     builder.Configuration.GetSection("AbuseIPDB"));
 builder.Services.AddScoped<IAbuseIPDBService, SecurityMonitor.Services.Implementation.AbuseIPDBService>();
 
+// Đăng ký LogGenerationControlService
+builder.Services.AddScoped<ILogGenerationControlService, LogGenerationControlService>();
+builder.Services.AddScoped<ILogAnalysisService, LogAnalysisService>();
+
+// Đăng ký cấu hình Sematext đã được xóa
+
 // Background service cho việc kiểm tra IP định kỳ
 builder.Services.AddHostedService<IpCheckerBackgroundService>();
+
+// Đăng ký FakeLogGeneratorService để tạo logs mẫu
+builder.Services.AddHostedService<FakeLogGeneratorService>();
 
 // HTTP Context Accessor cho audit logging
 builder.Services.AddHttpContextAccessor();
@@ -265,14 +280,26 @@ app.UseRouting(); // Routing
 app.UseAuthentication(); // Authentication phải đặt trước Authorization
 app.UseAuthorization(); // Authorization
 app.UseMiddleware<LoginMonitorMiddleware>(); // Login monitoring
-app.UseMiddleware<SensitiveEndpointMiddleware>(); // Endpoint monitoring
+app.UseRestrictedUserCheck(); // Kiểm tra user bị hạn chế
 
 // Map routes directly
 app.MapControllerRoute(
+    name: "accountManagement",
+    pattern: "AccountManagement/{action=Index}/{id?}",
+    defaults: new { controller = "AccountManagement" });
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Alerts}/{action=Index}/{id?}");
+    pattern: "{controller}/{action=Index}/{id?}",
+    defaults: new { controller = "Alerts" });
 app.MapRazorPages(); // Identity pages
-app.MapHub<AlertHub>("/alertHub"); // SignalR hub
+app.MapHub<AlertHub>("/alertHub"); // SignalR hub for alerts
+app.MapHub<AccountHub>("/accountHub"); // SignalR hub for account status
+app.MapHub<LogHub>("/logHub"); // SignalR hub for logs
 
 // Khởi tạo Roles và Admin user
 using (var scope = app.Services.CreateScope())

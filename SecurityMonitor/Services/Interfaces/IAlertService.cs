@@ -4,12 +4,13 @@ namespace SecurityMonitor.Services.Interfaces
 {
     public interface IAlertService
     {
-        Task<IEnumerable<Alert>> GetAllAlertsAsync();
-        Task<IEnumerable<Alert>> GetUserAlertsAsync(string userId);
-        Task<Alert?> GetAlertByIdAsync(int id);
         Task<Alert> CreateAlertAsync(Alert alert);
-        Task<Alert?> UpdateAlertAsync(int id, Alert alert);
-        Task<bool> DeleteAlertAsync(int id);
+        Task<Alert?> GetAlertByIdAsync(int id);
+        Task UpdateAlertAsync(Alert alert);
+        Task DeleteAlertAsync(int id);
+        Task<int> GetAlertCountAsync();
+        Task<IEnumerable<Alert>> GetRecentAlertsAsync(TimeSpan duration);
+        Task<IEnumerable<Alert>> GetAllAlertsAsync();
         Task<bool> GetRecentAlertByIpAsync(string ip, TimeSpan timeWindow);
 Task<bool> AlertExistsAsync(string ip, AlertTypeId alertTypeId);
 

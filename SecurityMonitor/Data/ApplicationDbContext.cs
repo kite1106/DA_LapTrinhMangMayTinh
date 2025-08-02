@@ -22,11 +22,24 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<SeverityLevel> SeverityLevels { get; set; } = null!;
     public DbSet<AlertStatus> AlertStatuses { get; set; } = null!;
     public DbSet<LogSource> LogSources { get; set; } = null!;
-    public DbSet<Log> Logs { get; set; } = null!;
+    public DbSet<LogEntry> Logs { get; set; } = null!;
     public DbSet<Alert> Alerts { get; set; } = null!;
     public DbSet<AuditLog> AuditLogs { get; set; } = null!;
     public DbSet<AccountRestriction> AccountRestrictions { get; set; } = null!;
+    public DbSet<AccountRestrictionEvent> AccountRestrictionEvents { get; set; } = null!;
     public DbSet<BlockedIP> BlockedIPs { get; set; } = null!;
+    
+    // New Log Analysis entities (3NF compliant)
+    public DbSet<LogEntry> LogEntries { get; set; } = null!;
+    public DbSet<LogLevelType> LogLevelTypes { get; set; } = null!;
+    public DbSet<LogComponent> LogComponents { get; set; } = null!;
+    public DbSet<LogEventType> LogEventTypes { get; set; } = null!;
+    public DbSet<LogSeverity> LogSeverities { get; set; } = null!;
+    public DbSet<LogTag> LogTags { get; set; } = null!;
+    public DbSet<LogEntryTag> LogEntryTags { get; set; } = null!;
+    public DbSet<LogAnalysis> LogAnalyses { get; set; } = null!;
+    public DbSet<AlertRule> AlertRules { get; set; } = null!;
+    public DbSet<AlertCondition> AlertConditions { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -45,8 +58,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(ar => ar.RestrictedBy)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // User activities
-      
+        // Account restriction events
+        builder.Entity<AccountRestrictionEvent>()
+            .HasOne(are => are.User)
+            .WithMany()
+            .HasForeignKey(are => are.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+            
+        builder.Entity<AccountRestrictionEvent>()
+            .HasIndex(are => are.Timestamp);
 
         // Quan hệ cảnh báo với người dùng được giao
         builder.Entity<Alert>()
@@ -63,7 +83,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.SetNull); // ✅ An toàn khi xóa người dùng
 
         // Index cho các trường thời gian
-        builder.Entity<Log>()
+
+        builder.Entity<LogEntry>()
             .HasIndex(l => l.Timestamp);
 
         builder.Entity<Alert>()
@@ -78,5 +99,34 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<Alert>()
             .HasIndex(a => a.SeverityLevelId);
+
+        // Index cho Log Analysis
+        builder.Entity<LogEntry>()
+            .HasIndex(l => l.LogLevelTypeId);
+
+        builder.Entity<LogEntry>()
+            .HasIndex(l => l.LogSeverityId);
+
+        builder.Entity<LogEntry>()
+            .HasIndex(l => l.IpAddress);
+
+        builder.Entity<LogEntry>()
+            .HasIndex(l => l.UserId);
+
+        // Many-to-Many relationship for LogEntry and LogTag
+        builder.Entity<LogEntryTag>()
+            .HasKey(let => new { let.LogEntryId, let.LogTagId });
+
+        builder.Entity<LogEntryTag>()
+            .HasOne(let => let.LogEntry)
+            .WithMany(le => le.LogEntryTags)
+            .HasForeignKey(let => let.LogEntryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<LogEntryTag>()
+            .HasOne(let => let.LogTag)
+            .WithMany(lt => lt.LogEntryTags)
+            .HasForeignKey(let => let.LogTagId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

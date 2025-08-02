@@ -64,13 +64,12 @@ public class LoginMonitorService : BackgroundService
             }
 
             // Tạo log cho lần đăng nhập thất bại
-            await logService.CreateLogAsync(new Log
+            await logService.CreateLogAsync(new LogEntry
             {
                 Timestamp = now,
                 LogSourceId = authServer.Id,
-                EventType = "Security",
-                Message = $"Failed login attempt for user '{username ?? "unknown"}'",
-                RawData = $"Failed login attempt from IP {ipAddress}",
+                Message = $"Failed login attempt for user '{username ?? "unknown"}' from IP {ipAddress}",
+                Details = $"Failed login attempt from IP {ipAddress}",
                 IpAddress = ipAddress,
                 ProcessedAt = now
             });

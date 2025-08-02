@@ -1,0 +1,94 @@
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/alertHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("ReceiveLoginAlert", function (alert) {
+            // Tạo thông báo mới
+            const notification = createNotification(alert);
+            
+            // Thêm vào container
+            const container = document.getElementById("alertsContainer");
+            if (container) {
+                container.insertBefore(notification, container.firstChild);
+            }
+
+            // Phát âm thanh thông báo (nếu có)
+            const audio = document.getElementById("alertSound");
+            if (audio) {
+                audio.play();
+            }
+
+            // Hiển thị toast notification
+            showToast(alert);
+        });
+
+        function createNotification(alert) {
+            const div = document.createElement("div");
+            div.className = `alert alert-danger alert-dismissible fade show`;
+            div.innerHTML = `
+                <strong>${alert.title}</strong>
+                <p>${alert.description}</p>
+                <p class="mb-0">
+                    <small>
+                        Email: ${alert.email}<br>
+                        IP: ${alert.ip}<br>
+                        Số lần thất bại: ${alert.failedAttempts}<br>
+                        Mức độ: <span class="badge bg-${getSeverityClass(alert.severity)}">${alert.severity}</span><br>
+                        Thời gian: ${new Date(alert.timestamp).toLocaleString()}
+                    </small>
+                </p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            return div;
+        }
+
+        function showToast(alert) {
+            const toast = document.createElement("div");
+            toast.className = "toast";
+            toast.setAttribute("role", "alert");
+            toast.setAttribute("data-bs-delay", "5000"); // Hiển thị trong 5 giây
+            toast.innerHTML = `
+                <div class="toast-header bg-danger text-white">
+                    <strong class="me-auto">Cảnh báo Đăng nhập</strong>
+                    <small>${new Date(alert.timestamp).toLocaleTimeString()}</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    ${alert.message}
+                </div>
+            `;
+            
+            const container = document.getElementById("toastContainer");
+            if (container) {
+                container.appendChild(toast);
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+            }
+        }
+
+        // Kết nối đến SignalR hub
+        function getSeverityClass(severity) {
+            switch (severity.toLowerCase()) {
+                case 'high':
+                    return 'danger';
+                case 'medium':
+                    return 'warning';
+                case 'low':
+                    return 'info';
+                default:
+                    return 'secondary';
+            }
+        }
+
+        connection.start().catch(function (err) {
+            console.error(err.toString());
+        });
+    </script>
+
+    <!-- Thêm âm thanh thông báo -->
+    <audio id="alertSound" src="~/sounds/alert.mp3" preload="auto"></audio>
+}

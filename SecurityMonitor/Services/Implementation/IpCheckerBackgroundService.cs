@@ -31,7 +31,7 @@ namespace SecurityMonitor.Services.Implementation
             _requestCountResetTime = DateTime.UtcNow;
         }
 
-        private IEnumerable<string> GetSuspiciousIPs(IEnumerable<Log> logs, int maxIPs = 5)
+        private IEnumerable<string> GetSuspiciousIPs(IEnumerable<LogEntry> logs, int maxIPs = 5)
         {
             return logs
                 .Where(l => !string.IsNullOrEmpty(l.IpAddress))
@@ -40,8 +40,8 @@ namespace SecurityMonitor.Services.Implementation
                 {
                     IP = g.Key,
                     Count = g.Count(),
-                    ErrorCount = g.Count(l => l.EventType?.Contains("error", StringComparison.OrdinalIgnoreCase) ?? false),
-                    LoginFailures = g.Count(l => (l.EventType?.Contains("login", StringComparison.OrdinalIgnoreCase) ?? false)
+                    ErrorCount = g.Count(l => l.LogEventType?.Name?.Contains("error", StringComparison.OrdinalIgnoreCase) ?? false),
+                    LoginFailures = g.Count(l => (l.LogEventType?.Name?.Contains("login", StringComparison.OrdinalIgnoreCase) ?? false)
                         && (l.Message?.Contains("failed", StringComparison.OrdinalIgnoreCase) ?? false)),
                     SuspiciousUrls = g.Count(l => (l.Message?.Contains("admin", StringComparison.OrdinalIgnoreCase) ?? false)
                         || (l.Message?.Contains("wp-", StringComparison.OrdinalIgnoreCase) ?? false)

@@ -1,32 +1,112 @@
-﻿// Initialize SignalR connection
+﻿// Initialize SignalR connections
 const initializeSignalR = () => {
-    const connection = new signalR.HubConnectionBuilder()
+    // Account Hub connection
+    const accountConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/accountHub")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    // Alert Hub connection
+    const alertConnection = new signalR.HubConnectionBuilder()
         .withUrl("/alertHub")
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
-    connection.on("ReceiveAlert", (alert) => {
-        // Update counts if on dashboard
-        const alertCountElement = document.getElementById('activeAlerts');
-        if (alertCountElement) {
-            const currentCount = parseInt(alertCountElement.innerText);
-            alertCountElement.innerText = currentCount + 1;
+    // Handle login alerts - Chỉ sử dụng hệ thống thông báo góc trái
+    alertConnection.on("ReceiveLoginAlert", (alert) => {
+        // Luôn sử dụng hệ thống thông báo cảnh báo ở góc trái
+        if (window.showAlertNotification) {
+            window.showAlertNotification(alert);
         }
 
-        // Show notification
-        if (alert.severity === 'Critical') {
-            toastr.error(alert.message, 'Cảnh báo nghiêm trọng', {
-                timeOut: 0,
-                extendedTimeOut: 0,
-                closeButton: true
-            });
-        } else if (alert.severity === 'High') {
-            toastr.warning(alert.message, 'Cảnh báo mức độ cao');
+        // If on alerts page, SignalR will handle real-time updates
+        if (window.location.pathname.includes('/alerts')) {
+            console.log('Alert received, SignalR will handle real-time updates');
         }
     });
 
-    connection.start().catch(err => console.error('SignalR Connection Error:', err));
-    return connection;
+    // Handle general alerts - Chỉ sử dụng hệ thống thông báo góc trái
+    alertConnection.on("ReceiveAlert", (alert) => {
+        // Luôn sử dụng hệ thống thông báo cảnh báo ở góc trái
+        if (window.showAlertNotification) {
+            window.showAlertNotification(alert);
+        }
+
+        // Update dashboard if on alerts page - SignalR will handle real-time updates
+        if (window.location.pathname.includes('/alerts')) {
+            console.log('General alert received, SignalR will handle real-time updates');
+        }
+    });
+
+    // Lắng nghe sự kiện cập nhật trạng thái user
+    accountConnection.on("UserStatusUpdated", (userName, isLocked, userId) => {
+        const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
+        if (!currentUser || userName !== currentUser) return;
+        
+        if (isLocked) {
+            toastr.error('Tài khoản của bạn đã bị khóa. Bạn sẽ được đăng xuất sau 3 giây.', 'Thông báo');
+            setTimeout(() => {
+                $.post('/Login/Logout', {}, function() {
+                    window.location.href = '/Login/Index';
+                });
+            }, 3000);
+        }
+    });
+
+    // Lắng nghe sự kiện tài khoản bị block
+    accountConnection.on("UserBlocked", (userName, reason, userId) => {
+        const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
+        if (!currentUser || userName !== currentUser) return;
+        
+        toastr.error(`Tài khoản của bạn đã bị khóa. Lý do: ${reason}`, 'Thông báo');
+        
+        // Logout ngay lập tức
+        $.post('/Login/Logout', {}, function() {
+            window.location.href = '/Login/Index?message=account_locked';
+        });
+    });
+
+    // Lắng nghe sự kiện logout bắt buộc (ngay lập tức)
+    accountConnection.on("ForceLogout", (message, reason) => {
+        toastr.error(`${message}. Lý do: ${reason}`, 'Tài khoản bị khóa');
+        
+        // Logout ngay lập tức
+        $.post('/Login/Logout', {}, function() {
+            window.location.href = '/Login/Index?message=account_locked';
+        });
+    });
+
+    // Lắng nghe sự kiện tài khoản bị hạn chế
+    accountConnection.on("UserRestricted", (userName, reason, userId) => {
+        const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
+        if (!currentUser || userName !== currentUser) return;
+        
+        toastr.warning(`Tài khoản của bạn đã bị hạn chế. Lý do: ${reason}`, 'Thông báo');
+        
+        // Chuyển hướng ngay lập tức
+        window.location.href = '/User/Index?message=account_restricted';
+    });
+
+    // Lắng nghe sự kiện tài khoản được bỏ hạn chế
+    accountConnection.on("UserUnrestricted", (userName, userId) => {
+        const currentUser = window.currentUserName || (typeof USER_NAME !== 'undefined' ? USER_NAME : null);
+        if (!currentUser || userName !== currentUser) return;
+        
+        toastr.success('Tài khoản của bạn đã được bỏ hạn chế', 'Thông báo');
+    });
+
+    // Start both connections
+    Promise.all([
+        accountConnection.start(),
+        alertConnection.start()
+    ]).then(() => {
+        console.log('SignalR connections established successfully');
+    }).catch(err => {
+        console.error('SignalR Connection Error:', err);
+        toastr.error('Không thể kết nối với server real-time', 'Lỗi kết nối');
+    });
+
+    return { accountConnection, alertConnection };
 };
 
 // Global AJAX error handler

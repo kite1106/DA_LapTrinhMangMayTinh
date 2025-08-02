@@ -22,15 +22,33 @@ public class LogsController : Controller
     }
 
     // Trang danh sách logs: Views/Logs/Index.cshtml
-    public async Task<IActionResult> Index(string? source)
+    public async Task<IActionResult> Index(string? source, string? level, DateTime? startDate, DateTime? endDate)
     {
-        IQueryable<Log> query = _context.Logs
+        IQueryable<LogEntry> query = _context.LogEntries
             .Include(l => l.LogSource)
+            .Include(l => l.LogLevelType)
             .OrderByDescending(l => l.Timestamp);
 
+        // Filter theo source
         if (!string.IsNullOrEmpty(source) && source != "all")
         {
             query = query.Where(l => l.LogSource.Name.ToLower() == source.ToLower());
+        }
+
+        // Filter theo level
+        if (!string.IsNullOrEmpty(level) && level != "all")
+        {
+            query = query.Where(l => l.LogLevelType.Name.ToLower() == level.ToLower());
+        }
+
+        // Filter theo date range
+        if (startDate.HasValue)
+        {
+            query = query.Where(l => l.Timestamp >= startDate.Value);
+        }
+        if (endDate.HasValue)
+        {
+            query = query.Where(l => l.Timestamp <= endDate.Value.AddDays(1));
         }
 
         var logs = await query
@@ -38,11 +56,22 @@ public class LogsController : Controller
                 l.Timestamp,
                 l.IpAddress,
                 l.LogSource.Name,
-                l.EventType ?? "Unknown",
-                l.ProcessedAt.HasValue,
-                l.Message
+                l.LogLevelType != null ? l.LogLevelType.Name : "Information",
+                l.WasSuccessful,
+                l.Message,
+                l.UserId ?? "System", // Hiển thị UserId hoặc System
+                l.Details
             ))
+            .Take(500) // Giới hạn 500 records để tránh quá tải
             .ToListAsync();
+
+        // Lấy danh sách sources và levels cho filter
+        ViewBag.Sources = await _context.LogSources.Select(s => s.Name).ToListAsync();
+        ViewBag.Levels = await _context.LogLevelTypes.Select(l => l.Name).ToListAsync();
+        ViewBag.SelectedSource = source;
+        ViewBag.SelectedLevel = level;
+        ViewBag.StartDate = startDate;
+        ViewBag.EndDate = endDate;
 
         return View(logs);
     }
@@ -50,8 +79,11 @@ public class LogsController : Controller
     // Chi tiết 1 log: Views/Logs/Details.cshtml
     public async Task<IActionResult> Details(long id)
     {
-        var log = await _context.Logs
+        var log = await _context.LogEntries
             .Include(l => l.LogSource)
+            .Include(l => l.LogLevelType)
+            .Include(l => l.LogAnalyses)
+            .Include(l => l.Alerts)
             .FirstOrDefaultAsync(l => l.Id == id);
             
         if (log == null) return NotFound();
@@ -63,7 +95,7 @@ public class LogsController : Controller
     [HttpPost]
     public async Task<IActionResult> Process(long id)
     {
-        var log = await _context.Logs.FindAsync(id);
+        var log = await _context.LogEntries.FindAsync(id);
         if (log == null) return NotFound();
 
         log.ProcessedAt = DateTime.UtcNow;
@@ -84,18 +116,46 @@ public class LogsController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
 
-    private static LogDto MapToDto(Log log)
+    // API để lấy logs theo real-time
+    [HttpGet]
+    public async Task<IActionResult> GetRecentLogs(int count = 50)
+    {
+        var logs = await _context.LogEntries
+            .Include(l => l.LogSource)
+            .Include(l => l.LogLevelType)
+            .OrderByDescending(l => l.Timestamp)
+            .Take(count)
+            .Select(l => new
+            {
+                id = l.Id,
+                timestamp = l.Timestamp,
+                message = l.Message,
+                level = l.LogLevelType != null ? l.LogLevelType.Name : "Information",
+                source = l.LogSource != null ? l.LogSource.Name : "Unknown",
+                ipAddress = l.IpAddress,
+                username = l.UserId ?? "System",
+                wasSuccessful = l.WasSuccessful,
+                isProcessed = l.ProcessedAt.HasValue
+            })
+            .ToListAsync();
+
+        return Json(new { success = true, logs = logs });
+    }
+
+    private static LogDto MapToDto(LogEntry log)
     {
         return new LogDto(
             Id: log.Id,
             Timestamp: log.Timestamp,
             IpAddress: log.IpAddress,
             Message: log.Message ?? string.Empty,
-            Level: log.EventType ?? "Information",
+            Level: log.LogLevelType?.Name ?? "Information",
             SourceName: log.LogSource?.Name ?? "Unknown",
-            Details: log.RawData,
+            Details: log.Details,
             IsProcessed: log.ProcessedAt.HasValue,
-            ProcessedAt: log.ProcessedAt
+            ProcessedAt: log.ProcessedAt,
+            Username: log.UserId ?? "System", // Hiển thị UserId
+            WasSuccessful: log.WasSuccessful
         );
     }
 }

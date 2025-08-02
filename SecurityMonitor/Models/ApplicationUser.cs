@@ -17,6 +17,8 @@ public class ApplicationUser : IdentityUser
     public string? LastLoginIP { get; set; }
     public bool RequirePasswordChange { get; set; } = false;
 
+    public bool IsRestricted { get; set; } = false;
+
     // Các quan hệ
     public virtual ICollection<Alert> AssignedAlerts { get; set; } = new List<Alert>();
     public virtual ICollection<Alert> ResolvedAlerts { get; set; } = new List<Alert>();

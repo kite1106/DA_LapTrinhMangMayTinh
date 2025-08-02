@@ -1,0 +1,138 @@
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        // Khởi tạo kết nối SignalR
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/alertHub")
+            .withAutomaticReconnect()
+            .build();
+
+        // Đăng ký lắng nghe sự kiện nhận cảnh báo
+        connection.on("ReceiveLoginAlert", function (alert) {
+            // Tạo và thêm cảnh báo mới vào danh sách
+            const alertHtml = createAlertHtml(alert);
+            prependAlert(alertHtml);
+            
+            // Hiển thị toast notification
+            showToast(alert);
+            
+            // Cập nhật số lượng cảnh báo trong badge (nếu có)
+            updateAlertCount();
+            
+            // Phát âm thanh thông báo
+            playAlertSound();
+        });
+
+        function createAlertHtml(alert) {
+            const severityClass = getSeverityClass(alert.severity);
+            return `
+                <div class="alert alert-${severityClass} alert-dismissible fade show" role="alert" data-alert-id="${alert.id}">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="alert-heading">${alert.title}</h5>
+                            <p class="mb-0">${alert.description}</p>
+                            <hr>
+                            <p class="mb-0 small">
+                                <strong>Email:</strong> ${alert.email}<br>
+                                <strong>IP:</strong> ${alert.ip}<br>
+                                <strong>Số lần thất bại:</strong> ${alert.failedAttempts}<br>
+                                <strong>Thời gian:</strong> ${new Date(alert.timestamp).toLocaleString()}<br>
+                                <strong>Mức độ:</strong> 
+                                <span class="badge bg-${severityClass}">${alert.severity}</span>
+                            </p>
+                        </div>
+                        <div class="ms-3">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function prependAlert(alertHtml) {
+            const container = document.getElementById('alertsContainer');
+            if (container) {
+                // Thêm cảnh báo mới vào đầu danh sách với animation
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = alertHtml;
+                const alertElement = tempDiv.firstElementChild;
+                container.insertBefore(alertElement, container.firstChild);
+                
+                // Trigger animation
+                setTimeout(() => alertElement.classList.add('show'), 50);
+            }
+        }
+
+        function showToast(alert) {
+            const severityClass = getSeverityClass(alert.severity);
+            const toastHtml = `
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header bg-${severityClass} text-white">
+                        <strong class="me-auto">Cảnh báo Bảo mật</strong>
+                        <small>${new Date(alert.timestamp).toLocaleTimeString()}</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${alert.description}
+                    </div>
+                </div>`;
+
+            const container = document.getElementById('toastContainer');
+            if (container) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = toastHtml;
+                const toastElement = tempDiv.firstChild;
+                container.appendChild(toastElement);
+                
+                const toast = new bootstrap.Toast(toastElement, {
+                    autohide: true,
+                    delay: 5000
+                });
+                toast.show();
+            }
+        }
+
+        function getSeverityClass(severity) {
+            switch (severity.toLowerCase()) {
+                case 'high':
+                    return 'danger';
+                case 'medium':
+                    return 'warning';
+                case 'low':
+                    return 'info';
+                default:
+                    return 'secondary';
+            }
+        }
+
+        function updateAlertCount() {
+            const badge = document.getElementById('alertCountBadge');
+            if (badge) {
+                const currentCount = parseInt(badge.textContent || '0');
+                badge.textContent = currentCount + 1;
+            }
+        }
+
+        function playAlertSound() {
+            const audio = document.getElementById('alertSound');
+            if (audio) {
+                audio.play().catch(function(error) {
+                    console.log("Không thể phát âm thanh:", error);
+                });
+            }
+        }
+
+        // Kết nối đến SignalR hub
+        connection.start()
+            .then(function() {
+                console.log("Đã kết nối đến AlertHub");
+            })
+            .catch(function(err) {
+                console.error("Lỗi kết nối đến AlertHub:", err.toString());
+            });
+    </script>
+
+    <!-- Audio cho thông báo -->
+    <audio id="alertSound" preload="auto">
+        <source src="~/sounds/alert.mp3" type="audio/mp3">
+    </audio>
+}

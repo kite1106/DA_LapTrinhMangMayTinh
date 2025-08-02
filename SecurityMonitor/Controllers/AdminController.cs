@@ -1,16 +1,20 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SecurityMonitor.Data;
 using SecurityMonitor.DTOs;
 using SecurityMonitor.DTOs.Dashboard;
 using SecurityMonitor.DTOs.Security;
+using SecurityMonitor.DTOs.Logs;
+using SecurityMonitor.Hubs;
 using SecurityMonitor.Models;
 using SecurityMetricsDto = SecurityMonitor.DTOs.Security.SecurityMetricsDto;
 using SystemStatsDto = SecurityMonitor.DTOs.Security.SystemStatsDto;
 using SecurityMonitor.Services;
 using SecurityMonitor.Services.Interfaces;
+using SecurityMonitor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,200 +28,88 @@ namespace SecurityMonitor.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IIPCheckerService _ipChecker;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAlertService _alertService;
+        private readonly ILogService _logService;
+        private readonly ILogger<AdminController> _logger;
 
         public AdminController(
             ApplicationDbContext context, 
             IIPCheckerService ipChecker,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IAlertService alertService,
+            ILogService logService,
+            ILogger<AdminController> logger)
         {
             _context = context;
             _ipChecker = ipChecker;
             _userManager = userManager;
+            _alertService = alertService;
+            _logService = logService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
-            var model = new DashboardDataDto
-            {
-                TotalUsersCount = await _userManager.Users.CountAsync(),
-                TotalAlertsCount = await _context.Alerts.CountAsync(),
-                BlockedIPsCount = await _context.BlockedIPs.CountAsync(),
-                TotalLogsCount = await _context.Logs.CountAsync(),
-                RecentActivities = await _context.AuditLogs
-                    .Where(x => x.Action != "Create" || (x.Details != null && !x.Details.StartsWith("Created log from source")))  // Lọc bỏ các log ảo
-                    .Where(x => !string.IsNullOrEmpty(x.IpAddress) 
-                           && x.IpAddress != "127.0.0.1" 
-                           && x.IpAddress != "::1"
-                           && x.IpAddress != "localhost")  // Lọc bỏ localhost
-                    .OrderByDescending(x => x.Timestamp)
-                    .Take(10)
-                    .Select(x => new RecentActivityDto
-                    {
-                        Timestamp = x.Timestamp,
-                        IpAddress = x.IpAddress,
-                        UserId = x.UserId,
-                        Action = x.Action,
-                        Details = x.Details ?? string.Empty
-                    })
-                    .ToListAsync()
-            };
+            var totalAlerts = await _alertService.GetAlertCountAsync();
+            var recentAlerts = await _alertService.GetRecentAlertsAsync(TimeSpan.FromHours(24));
+            
+            // Lấy trạng thái log generation từ service
+            var logControlService = HttpContext.RequestServices.GetRequiredService<ILogGenerationControlService>();
+            var isLogGenerationActive = await logControlService.GetLogGenerationStatusAsync();
+            
+            var dashboardDto = new AdminDashboardDto(
+                TotalAlerts: totalAlerts,
+                ActiveUsers: 15, // Placeholder
+                BlockedIPs: 8,   // Placeholder
+                RestrictedUsers: 3, // Placeholder
+                RecentAlerts: recentAlerts.Count(),
+                IsLogGenerationActive: isLogGenerationActive,
+                RecentAlertsList: new List<AlertDto>(),
+                RecentActivity: new List<ActivityDto>()
+            );
 
-            // Dữ liệu cho biểu đồ cảnh báo theo thời gian (7 ngày gần nhất)
-            var last7Days = Enumerable.Range(0, 7)
-                .Select(i => DateTime.Today.AddDays(-i))
-                .Reverse()
+            // Log access to admin dashboard
+            var currentUser = await _userManager.GetUserAsync(User);
+            var clientIp = Request.GetClientIpAddress();
+            var logEntry = new LogEntry
+            {
+                Message = $"Admin {currentUser?.UserName} accessed Admin Dashboard",
+                LogSourceId = 1, // Custom App
+                LogLevelTypeId = 1, // Information
+                IpAddress = clientIp,
+                UserId = currentUser?.Id,
+                WasSuccessful = true,
+                Details = $"Admin dashboard access from IP {clientIp}"
+            };
+            
+            await _logService.CreateLogAsync(logEntry);
+
+            return View(dashboardDto);
+        }
+
+        public async Task<IActionResult> Alerts()
+        {
+            var alerts = await _alertService.GetAllAlertsAsync();
+            return View(alerts);
+        }
+
+        public async Task<IActionResult> Logs(int page = 1, int pageSize = 20)
+        {
+            var allLogs = await _logService.GetAllLogsAsync();
+            var totalCount = allLogs.Count();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            
+            var logs = allLogs
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
-            var alertsByDay = await _context.Alerts
-                .Where(a => a.Timestamp >= DateTime.Today.AddDays(-7))
-                .GroupBy(a => a.Timestamp.Date)
-                .Select(g => new { Date = g.Key, Count = g.Count() })
-                .ToDictionaryAsync(x => x.Date, x => x.Count);
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalCount = totalCount;
 
-            model.AlertsChartData.Labels = last7Days.Select(d => d.ToString("dd/MM")).ToList();
-            model.AlertsChartData.Data = last7Days
-                .Select(d => alertsByDay.GetValueOrDefault(d.Date, 0))
-                .ToList();
-
-            // Dữ liệu cho biểu đồ phân bố loại cảnh báo
-            var alertTypes = await _context.Alerts
-                .GroupBy(a => a.AlertType.Name)
-                .Select(g => new { Type = g.Key, Count = g.Count() })
-                .ToListAsync();
-
-            model.AlertTypesChartData.Labels = alertTypes.Select(t => t.Type).ToList();
-            model.AlertTypesChartData.Data = alertTypes.Select(t => t.Count).ToList();
-
-            // Thêm dữ liệu cho Security Metrics
-            var now = DateTime.UtcNow;
-            var last24Hours = now.AddHours(-24);
-
-            // Endpoint nhạy cảm
-            var sensitiveEndpoints = await _context.AuditLogs
-                .Where(l => l.Timestamp >= last24Hours && 
-                           ((l.Path ?? "").StartsWith("/admin") || (l.Path ?? "").StartsWith("/config") || (l.Path ?? "").Contains("api")))
-                .ToListAsync();
-
-            model.SecurityMetrics.SensitiveEndpoints = new()
-            {
-                TotalAccessAttempts = sensitiveEndpoints.Count,
-                UnauthorizedAttempts = sensitiveEndpoints.Count(x => x.StatusCode == 401 || x.StatusCode == 403),
-                BlockedAttempts = sensitiveEndpoints.Count(x => x.StatusCode == 403),
-                RecentAccesses = sensitiveEndpoints
-                    .OrderByDescending(x => x.Timestamp)
-                    .Take(5)
-                    .Select(x => new EndpointAccess
-                    {
-                        Endpoint = x.Path ?? "unknown",
-                        IpAddress = x.IpAddress ?? "unknown",
-                        Timestamp = x.Timestamp,
-                        StatusCode = x.StatusCode
-                    })
-                    .ToList()
-            };
-
-            // Hành vi bất thường
-            var suspiciousIPs = await _context.AuditLogs
-                .Where(l => l.Timestamp >= last24Hours)
-                .GroupBy(l => l.IpAddress)
-                .Select(g => new
-                {
-                    IP = g.Key,
-                    RequestCount = g.Count(),
-                    ErrorCount = g.Count(x => x.StatusCode >= 400)
-                })
-                .ToListAsync();
-
-            model.SecurityMetrics.Anomalies = new()
-            {
-                HighRequestRateIPs = suspiciousIPs.Count(x => x.RequestCount > 100),
-                ScanningAttempts = suspiciousIPs.Count(x => x.ErrorCount > 20),
-                PotentialDDoSAlerts = suspiciousIPs.Count(x => x.RequestCount > 1000),
-                SuspiciousIPs = suspiciousIPs
-                    .Where(x => x.RequestCount > 100 || x.ErrorCount > 20)
-                    .Select(x => new IPActivity
-                    {
-                        IpAddress = x.IP ?? "unknown",
-                        RequestsPerMinute = x.RequestCount / 1440, // per minute in 24h
-                        ErrorCount = x.ErrorCount,
-                        ActivityType = x.RequestCount > 1000 ? "DDoS" : x.ErrorCount > 20 ? "Scanner" : "High Traffic"
-                    })
-                    .ToList()
-            };
-
-            // System Errors
-            var systemErrors = await _context.AuditLogs
-                .Where(l => l.Timestamp >= last24Hours && l.StatusCode >= 500)
-                .ToListAsync();
-
-            model.SecurityMetrics.SystemErrors = new()
-            {
-                TotalErrors = systemErrors.Count,
-                ConsecutiveErrors = GetMaxConsecutiveErrors(systemErrors),
-                UniqueErrorTypes = systemErrors.Select(x => x.Details).Distinct().Count(),
-                RecentErrors = systemErrors
-                    .GroupBy(x => x.Details)
-                    .Select(g => new ErrorEvent
-                    {
-                        ErrorType = g.Key ?? "Unknown",
-                        Timestamp = g.Max(x => x.Timestamp),
-                        Source = g.First().Path ?? "unknown",
-                        Count = g.Count()
-                    })
-                    .OrderByDescending(x => x.Count)
-                    .Take(5)
-                    .ToList()
-            };
-
-            // User Behavior
-            var userActivities = await _context.AuditLogs
-                .Where(l => l.Timestamp >= last24Hours && 
-                           (l.Action.Contains("Password") || l.Action.Contains("Email") || l.Action == "Login"))
-                .ToListAsync();
-
-            model.SecurityMetrics.Behaviors = new()
-            {
-                PasswordResetAttempts = userActivities.Count(x => x.Action.Contains("Password")),
-                EmailChangeAttempts = userActivities.Count(x => x.Action.Contains("Email")),
-                SuspiciousActivities = userActivities.Count(x => x.StatusCode >= 400),
-                RecentActivities = userActivities
-                    .OrderByDescending(x => x.Timestamp)
-                    .Take(5)
-                    .Select(x => new UserActivity
-                    {
-                        UserId = x.UserId ?? "anonymous",
-                        ActivityType = x.Action,
-                        Timestamp = x.Timestamp,
-                        Details = x.Details ?? "No details"
-                    })
-                    .ToList()
-            };
-
-            // Security Keywords
-            var keywords = new[] { "injection", "xss", "csrf", "script", "select", "union", "delete", "drop" };
-            var suspiciousRequests = await _context.AuditLogs
-                .Where(l => l.Timestamp >= last24Hours && 
-                           keywords.Any(k => (l.Path + " " + l.Details).ToLower().Contains(k)))
-                .ToListAsync();
-
-            model.SecurityMetrics.Keywords = new()
-            {
-                TotalDetections = suspiciousRequests.Count,
-                HighRiskDetections = suspiciousRequests.Count(x => x.StatusCode >= 400),
-                RecentDetections = suspiciousRequests
-                    .OrderByDescending(x => x.Timestamp)
-                    .Take(5)
-                    .Select(x => new KeywordDetection
-                    {
-                        Keyword = keywords.First(k => (x.Path + " " + x.Details).ToLower().Contains(k)),
-                        Context = x.Path ?? "unknown",
-                        Timestamp = x.Timestamp,
-                        Source = x.IpAddress ?? "unknown"
-                    })
-                    .ToList()
-            };
-
-            return View(model);
+            return View(logs);
         }
 
         // GET: Admin/BlockedIPs
@@ -306,23 +198,9 @@ namespace SecurityMonitor.Controllers
             return RedirectToAction(nameof(BlockedIPs));
         }
 
-        // GET: Admin/Users
-        public async Task<IActionResult> Users()
-        {
-            var users = await _userManager.Users
-                .Select(u => new UserDto
-                {
-                    Id = u.Id,
-                    Email = u.Email ?? "no-email",
-                    FullName = u.FullName ?? u.UserName, // Use FullName if available, otherwise UserName
-                    IsEmailConfirmed = u.EmailConfirmed,
-                    LastLoginTime = u.LastLoginTime,
-                    LoginCount = 0 // Since we don't track login count, defaulting to 0
-                })
-                .ToListAsync();
+        // Removed duplicate Users action - now handled by AccountManagementController
 
-            return View(users);
-        }
+        // Removed duplicate LockUser and UnlockUser methods - now handled by AccountManagementController
 
         private int GetMaxConsecutiveErrors(List<AuditLog> errors)
         {
@@ -491,6 +369,39 @@ namespace SecurityMonitor.Controllers
             metrics.SystemStats.MaxConsecutiveErrors = GetMaxConsecutiveErrors(recentErrors);
 
             return View(metrics);
+        }
+
+        public IActionResult SematextIntegration()
+        {
+            return View();
+        }
+
+        public IActionResult LogAnalysis()
+        {
+            return View();
+        }
+
+        // Multi-Source Logs
+        public async Task<IActionResult> MultiSourceLogs()
+        {
+            var logs = await _context.LogEntries
+                .Include(l => l.LogSource)
+                .Include(l => l.LogLevelType)
+                .OrderByDescending(l => l.Timestamp)
+                .Take(100)
+                .Select(l => new MyLogDto(
+                    l.Timestamp,
+                    l.IpAddress,
+                    l.LogSource.Name,
+                    l.LogLevelType != null ? l.LogLevelType.Name : "Information",
+                    l.WasSuccessful,
+                    l.Message,
+                    l.UserId ?? "System",
+                    l.Details
+                ))
+                .ToListAsync();
+
+            return View(logs);
         }
     }
 }

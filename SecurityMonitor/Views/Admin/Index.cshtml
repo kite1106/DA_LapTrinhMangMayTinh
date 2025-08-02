@@ -1,174 +1,251 @@
-@model SecurityMonitor.DTOs.Dashboard.DashboardDataDto
-
+@using SecurityMonitor.DTOs.Dashboard
+@model SecurityMonitor.DTOs.Dashboard.AdminDashboardDto
 @{
-    ViewData["Title"] = "Trang quản trị";
+    ViewData["Title"] = "Admin Dashboard";
     Layout = "_AdminLayout";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Thống kê tổng quan -->
-    <div class="row">
-        <!-- Card Tổng số người dùng -->
+<div class="container-fluid">
+    <!-- Header Stats -->
+    <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="@Url.Action("Index", "User")" class="text-decoration-none">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Tổng số người dùng</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalUsersCount</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-users fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Card Tổng số cảnh báo -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="@Url.Action("Index", "Alerts")" class="text-decoration-none">
-                <div class="card border-left-warning shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Cảnh báo</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalAlertsCount</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-bell fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Card IP bị chặn -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="@Url.Action("Index", "IPBlocking")" class="text-decoration-none">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    IP bị chặn</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BlockedIPsCount</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-ban fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Card Nhật ký hệ thống -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="@Url.Action("Index", "Logs")" class="text-decoration-none">
-                <div class="card border-left-info shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    Nhật ký hệ thống</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalLogsCount</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <!-- Nội dung chính -->
-    <div class="row">
-        <!-- Biểu đồ cảnh báo -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Thống kê cảnh báo theo thời gian</h6>
-                </div>
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="alertsChart"></canvas>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Tổng Cảnh Báo
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalAlerts">@Model.TotalAlerts</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Biểu đồ tròn phân bố cảnh báo -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Phân bố loại cảnh báo</h6>
-                </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="alertTypesChart"></canvas>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Người Dùng Hoạt Động
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="activeUsers">@Model.ActiveUsers</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                IP Bị Chặn
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="blockedIPs">@Model.BlockedIPs</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ban fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Người Dùng Bị Hạn Chế
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="restrictedUsers">@Model.RestrictedUsers</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-lock fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Security Metrics -->
+    <!-- Control Panel -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header py-3">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-shield-alt me-2"></i>
-                        Chỉ số an ninh chi tiết
+                        <i class="fas fa-cogs me-2"></i>
+                        Bảng Điều Khiển
                     </h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in">
+                            <a class="dropdown-item" href="#" onclick="refreshStats()">
+                                <i class="fas fa-sync fa-sm fa-fw me-2 text-gray-400"></i>
+                                Refresh
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    @await Html.PartialAsync("_SecurityMetricsPartial", Model.SecurityMetrics)
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="logGenerationToggle" 
+                                       @(Model.IsLogGenerationActive ? "checked" : "")>
+                                <label class="form-check-label" for="logGenerationToggle">
+                                    <strong>Auto Log Generation</strong>
+                                </label>
+                            </div>
+                            <small class="text-muted">Tự động sinh logs và cảnh báo</small>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <button class="btn btn-modern btn-success me-2" onclick="startLogGeneration()">
+                                <i class="fas fa-play me-2"></i>
+                                Start
+                            </button>
+                            <button class="btn btn-modern btn-danger" onclick="stopLogGeneration()">
+                                <i class="fas fa-stop me-2"></i>
+                                Stop
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Hoạt động gần đây -->
+    <!-- Charts Row -->
     <div class="row">
-        <div class="col-12">
+        <!-- Security Activity Chart -->
+        <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Hoạt động gần đây</h6>
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Hoạt Động Bảo Mật
+                    </h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in">
+                            <a class="dropdown-item" href="#" onclick="refreshSecurityChart()">
+                                <i class="fas fa-sync fa-sm fa-fw me-2 text-gray-400"></i>
+                                Refresh
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="recentActivitiesTable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Thời gian</th>
-                                    <th>IP</th>
-                                    <th>Người dùng</th>
-                                    <th>Hoạt động</th>
-                                    <th>Chi tiết</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var activity in Model.RecentActivities)
-                                {
-                                    <tr>
-                                        <td>@activity.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</td>
-                                        <td>@activity.IpAddress</td>
-                                        <td>@activity.UserId</td>
-                                        <td>@activity.Action</td>
-                                        <td>@activity.Details</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                    <div class="chart-area">
+                        <canvas id="securityActivityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-server me-2"></i>
+                        Trạng Thái Hệ Thống
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="systemStatusChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="me-2">
+                            <i class="fas fa-circle text-success"></i> Online
+                        </span>
+                        <span class="me-2">
+                            <i class="fas fa-circle text-warning"></i> Warning
+                        </span>
+                        <span class="me-2">
+                            <i class="fas fa-circle text-danger"></i> Error
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Thông Tin Hệ Thống
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>Server:</strong> SecurityMonitor v1.0
+                            </div>
+                            <div class="mb-3">
+                                <strong>Uptime:</strong> <span id="uptime">Loading...</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Last Backup:</strong> <span id="lastBackup">Loading...</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>CPU Usage:</strong> <span id="cpuUsage">Loading...</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Memory:</strong> <span id="memoryUsage">Loading...</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Disk Space:</strong> <span id="diskUsage">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-clock me-2"></i>
+                        Hoạt Động Gần Đây
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="timeline" id="recentActivity">
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Hệ thống khởi động</h6>
+                                <p class="timeline-text">SecurityMonitor đã sẵn sàng</p>
+                                <small class="text-muted">Just now</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -177,39 +254,54 @@
 </div>
 
 @section Scripts {
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Dữ liệu cho biểu đồ cảnh báo theo thời gian
-        const alertsData = {
-            labels: @Html.Raw(Json.Serialize(Model.AlertsChartData.Labels)),
-            datasets: [{
-                label: 'Số cảnh báo',
-                data: @Html.Raw(Json.Serialize(Model.AlertsChartData.Data)),
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        };
+        let dashboardHub = null;
+        let securityChart = null;
+        let systemChart = null;
 
-        // Dữ liệu cho biểu đồ phân bố loại cảnh báo
-        const alertTypesData = {
-            labels: @Html.Raw(Json.Serialize(Model.AlertTypesChartData.Labels)),
-            datasets: [{
-                data: @Html.Raw(Json.Serialize(Model.AlertTypesChartData.Data)),
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)'
-                ]
-            }]
-        };
+        $(document).ready(function() {
+            setupSignalR();
+            initializeCharts();
+            loadSystemInfo();
+            setupEventHandlers();
+            checkLogGenerationStatus(); // Kiểm tra trạng thái log generation
+        });
 
-        // Cấu hình và vẽ biểu đồ cảnh báo
-        const alertsChart = new Chart(
-            document.getElementById('alertsChart'),
-            {
+        function setupSignalR() {
+            dashboardHub = new signalR.HubConnectionBuilder()
+                .withUrl("/alertHub")
+                .withAutomaticReconnect()
+                .build();
+
+            dashboardHub.on("ReceiveDashboardStats", function(stats) {
+                updateDashboardStats(stats);
+            });
+
+            dashboardHub.start().then(function() {
+                console.log("SignalR Connected to Dashboard");
+                dashboardHub.invoke("JoinAlertGroup");
+            }).catch(function(err) {
+                console.error("SignalR Connection Error: ", err);
+            });
+        }
+
+        function initializeCharts() {
+            // Security Activity Chart
+            const securityCtx = document.getElementById('securityActivityChart').getContext('2d');
+            securityChart = new Chart(securityCtx, {
                 type: 'line',
-                data: alertsData,
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                    datasets: [{
+                        label: 'Security Events',
+                        data: [12, 19, 3, 5, 2, 3],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.1
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -219,68 +311,157 @@
                         }
                     }
                 }
-            }
-        );
+            });
 
-        // Cấu hình và vẽ biểu đồ phân bố
-        const alertTypesChart = new Chart(
-            document.getElementById('alertTypesChart'),
-            {
-                type: 'pie',
-                data: alertTypesData,
+            // System Status Chart
+            const systemCtx = document.getElementById('systemStatusChart').getContext('2d');
+            systemChart = new Chart(systemCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Online', 'Warning', 'Error'],
+                    datasets: [{
+                        data: [85, 10, 5],
+                        backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b']
+                    }]
+                },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
                 }
-            }
-        );
-
-        // Cấu hình DataTable cho bảng hoạt động
-        $(document).ready(function() {
-            $('#recentActivitiesTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/vi.json'
-                },
-                order: [[0, 'desc']]
             });
-        });
-    </script>
-}
+        }
 
-@section Styles {
-    <style>
-        .border-left-primary {
-            border-left: .25rem solid #4e73df!important;
+        function loadSystemInfo() {
+            // Simulate loading system information
+            setTimeout(() => {
+                $('#uptime').text('2 days, 14 hours');
+                $('#lastBackup').text('2024-01-15 03:00:00');
+                $('#cpuUsage').text('45%');
+                $('#memoryUsage').text('2.1 GB / 8 GB');
+                $('#diskUsage').text('120 GB / 500 GB');
+            }, 1000);
         }
-        .border-left-success {
-            border-left: .25rem solid #1cc88a!important;
+
+        function setupEventHandlers() {
+            $('#logGenerationToggle').change(function() {
+                toggleLogGeneration();
+            });
         }
-        .border-left-info {
-            border-left: .25rem solid #36b9cc!important;
+
+        function startLogGeneration() {
+            console.log("🟢 Starting log generation...");
+            $('#logGenerationToggle').prop('disabled', true);
+            
+            $.post("/api/loggeneration/enable", function(response) {
+                console.log("📡 Start response:", response);
+                if (response.success) {
+                    toastr.success("✅ Auto log generation started");
+                    $('#logGenerationToggle').prop('checked', true);
+                } else {
+                    toastr.error("❌ Failed to start log generation");
+                }
+            }).fail(function(xhr, status, error) {
+                console.error("❌ Start error:", error);
+                console.error("❌ Status:", status);
+                console.error("❌ Response:", xhr.responseText);
+                toastr.error("❌ Error starting log generation");
+            }).always(function() {
+                $('#logGenerationToggle').prop('disabled', false);
+            });
         }
-        .border-left-warning {
-            border-left: .25rem solid #f6c23e!important;
+
+        function stopLogGeneration() {
+            console.log("🔴 Stopping log generation...");
+            $('#logGenerationToggle').prop('disabled', true);
+            
+            $.post("/api/loggeneration/disable", function(response) {
+                console.log("📡 Stop response:", response);
+                if (response.success) {
+                    toastr.success("⏸️ Auto log generation stopped");
+                    $('#logGenerationToggle').prop('checked', false);
+                } else {
+                    toastr.error("❌ Failed to stop log generation");
+                }
+            }).fail(function(xhr, status, error) {
+                console.error("❌ Stop error:", error);
+                console.error("❌ Status:", status);
+                console.error("❌ Response:", xhr.responseText);
+                toastr.error("❌ Error stopping log generation");
+            }).always(function() {
+                $('#logGenerationToggle').prop('disabled', false);
+            });
         }
-        .border-left-danger {
-            border-left: .25rem solid #e74a3b!important;
+
+        function toggleLogGeneration() {
+            console.log("🔄 Toggling log generation...");
+            
+            // Disable toggle button temporarily
+            $('#logGenerationToggle').prop('disabled', true);
+            
+            $.post("/api/loggeneration/toggle", function(response) {
+                console.log("📡 Toggle response:", response);
+                if (response.success) {
+                    if (response.isEnabled) {
+                        toastr.success("✅ Auto log generation enabled");
+                        $('#logGenerationToggle').prop('checked', true);
+                    } else {
+                        toastr.info("⏸️ Auto log generation disabled");
+                        $('#logGenerationToggle').prop('checked', false);
+                    }
+                } else {
+                    toastr.error("❌ Failed to toggle log generation");
+                }
+            }).fail(function(xhr, status, error) {
+                console.error("❌ Toggle error:", error);
+                console.error("❌ Status:", status);
+                console.error("❌ Response:", xhr.responseText);
+                toastr.error("❌ Error toggling log generation");
+            }).always(function() {
+                // Re-enable toggle button
+                $('#logGenerationToggle').prop('disabled', false);
+            });
         }
-        .chart-area {
-            position: relative;
-            height: 300px;
-            width: 100%;
+
+        function checkLogGenerationStatus() {
+            console.log("🔍 Checking log generation status...");
+            $.get("/api/loggeneration/status", function(response) {
+                console.log("📡 Status response:", response);
+                $('#logGenerationToggle').prop('checked', response.isEnabled);
+            }).fail(function(xhr, status, error) {
+                console.error("❌ Status check error:", error);
+                console.error("❌ Status:", status);
+                console.error("❌ Response:", xhr.responseText);
+            });
         }
-        .chart-pie {
-            position: relative;
-            height: 300px;
-            width: 100%;
+
+        function refreshStats() {
+            location.reload();
         }
-        .card {
-            transition: transform 0.2s ease-in-out;
+
+        function refreshSecurityChart() {
+            // Simulate refreshing chart data
+            const newData = Array.from({length: 6}, () => Math.floor(Math.random() * 20));
+            securityChart.data.datasets[0].data = newData;
+            securityChart.update();
+            toastr.info("Security chart refreshed");
         }
-        .card:hover {
-            transform: translateY(-5px);
-            cursor: pointer;
-            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+
+        function updateDashboardStats(stats) {
+            $('#totalAlerts').text(stats.totalAlerts || 0);
+            $('#activeUsers').text(stats.activeUsers || 0);
+            $('#blockedIPs').text(stats.blockedIPs || 0);
+            $('#restrictedUsers').text(stats.restrictedUsers || 0);
         }
-    </style>
+
+        // Auto-refresh every 30 seconds
+        setInterval(function() {
+            // Update system info
+            $('#cpuUsage').text(Math.floor(Math.random() * 100) + '%');
+        }, 30000);
+    </script>
 }

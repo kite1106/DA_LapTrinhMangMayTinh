@@ -1,0 +1,344 @@
+@model List<SecurityMonitor.DTOs.UserManagementDto>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Quản lý người dùng
+                        </h4>
+                        <div>
+                            <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                                <i class="fas fa-plus me-2"></i>Thêm người dùng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-modern" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Tên đăng nhập</th>
+                                    <th>Vai trò</th>
+                                    <th>Trạng thái</th>
+                                    <th>Lần đăng nhập cuối</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr data-user-id="@user.Id" class="@(user.IsLocked ? "table-danger" : user.IsRestricted ? "table-warning" : "")">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                                <div>
+                                                    <strong>@user.Email</strong>
+                                                    @if (user.IsLocked)
+                                                    {
+                                                        <br><small class="text-danger">Đã khóa</small>
+                                                    }
+                                                    else if (user.IsRestricted)
+                                                    {
+                                                        <br><small class="text-warning">Bị hạn chế</small>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>@user.UserName</td>
+                                        <td>
+                                            @foreach (var role in user.Roles)
+                                            {
+                                                <span class="badge bg-info me-1">@role</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.IsLocked)
+                                            {
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-lock me-1"></i>Đã khóa
+                                                </span>
+                                            }
+                                            else if (user.IsRestricted)
+                                            {
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i>Bị hạn chế
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Hoạt động
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.LastLoginTime.HasValue)
+                                            {
+                                                <span class="text-muted">@user.LastLoginTime.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Chưa đăng nhập</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                @if (user.IsLocked)
+                                                {
+                                                    <button class="btn btn-sm btn-success" onclick="unlockUser('@user.Id')" title="Mở khóa">
+                                                        <i class="fas fa-unlock"></i>
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-sm btn-warning" onclick="lockUser('@user.Id')" title="Khóa tài khoản">
+                                                        <i class="fas fa-lock"></i>
+                                                    </button>
+                                                }
+                                                
+                                                @if (user.IsRestricted)
+                                                {
+                                                    <button class="btn btn-sm btn-info" onclick="removeRestriction('@user.Id')" title="Bỏ hạn chế">
+                                                        <i class="fas fa-user-check"></i>
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-sm btn-secondary" onclick="restrictUser('@user.Id')" title="Hạn chế tài khoản">
+                                                        <i class="fas fa-user-slash"></i>
+                                                    </button>
+                                                }
+                                                
+                                                <button class="btn btn-sm btn-primary" onclick="editUser('@user.Id')" title="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                
+                                                @if (!user.Roles.Contains("Admin"))
+                                                {
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteUser('@user.Id')" title="Xóa">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm người dùng -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-plus me-2"></i>Thêm người dùng mới
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Vai trò</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="addUser()">
+                    <i class="fas fa-save me-2"></i>Thêm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function lockUser(userId) {
+            if (confirm('Bạn có chắc muốn khóa tài khoản này?')) {
+                fetch(`/UserAdmin/Lock/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success('Đã khóa tài khoản thành công');
+                        location.reload();
+                    } else {
+                        toastr.error(data.message || 'Có lỗi xảy ra');
+                    }
+                })
+                .catch(error => {
+                    toastr.error('Có lỗi xảy ra');
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function unlockUser(userId) {
+            if (confirm('Bạn có chắc muốn mở khóa tài khoản này?')) {
+                fetch(`/UserAdmin/Unlock/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success('Đã mở khóa tài khoản thành công');
+                        location.reload();
+                    } else {
+                        toastr.error(data.message || 'Có lỗi xảy ra');
+                    }
+                })
+                .catch(error => {
+                    toastr.error('Có lỗi xảy ra');
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function restrictUser(userId) {
+            if (confirm('Bạn có chắc muốn hạn chế tài khoản này?')) {
+                fetch(`/UserAdmin/Restrict/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success('Đã hạn chế tài khoản thành công');
+                        location.reload();
+                    } else {
+                        toastr.error(data.message || 'Có lỗi xảy ra');
+                    }
+                })
+                .catch(error => {
+                    toastr.error('Có lỗi xảy ra');
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function removeRestriction(userId) {
+            if (confirm('Bạn có chắc muốn bỏ hạn chế tài khoản này?')) {
+                fetch(`/UserAdmin/RemoveRestriction/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success('Đã bỏ hạn chế tài khoản thành công');
+                        location.reload();
+                    } else {
+                        toastr.error(data.message || 'Có lỗi xảy ra');
+                    }
+                })
+                .catch(error => {
+                    toastr.error('Có lỗi xảy ra');
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Bạn có chắc muốn xóa tài khoản này? Hành động này không thể hoàn tác.')) {
+                fetch(`/UserAdmin/Delete/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success('Đã xóa tài khoản thành công');
+                        location.reload();
+                    } else {
+                        toastr.error(data.message || 'Có lỗi xảy ra');
+                    }
+                })
+                .catch(error => {
+                    toastr.error('Có lỗi xảy ra');
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function addUser() {
+            const formData = new FormData(document.getElementById('addUserForm'));
+            const data = Object.fromEntries(formData.entries());
+            
+            fetch('/UserAdmin/Create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success('Đã thêm người dùng thành công');
+                    $('#addUserModal').modal('hide');
+                    location.reload();
+                } else {
+                    toastr.error(data.message || 'Có lỗi xảy ra');
+                }
+            })
+            .catch(error => {
+                toastr.error('Có lỗi xảy ra');
+                console.error('Error:', error);
+            });
+        }
+
+        function editUser(userId) {
+            // TODO: Implement edit user functionality
+            toastr.info('Tính năng chỉnh sửa sẽ được cập nhật sau');
+        }
+    </script>
+}

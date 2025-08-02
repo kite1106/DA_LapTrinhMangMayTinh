@@ -1,1248 +1,1276 @@
 {
   "Files": [
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\site.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alert-notifications.css",
+      "PackagePath": "staticwebassets\\css\\alert-notifications.css"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\alerts.css",
+      "PackagePath": "staticwebassets\\css\\alerts.css"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\favicon.ico",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\images\\alert-icon.png",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\images\\alert-icon.png",
       "PackagePath": "staticwebassets\\images\\alert-icon.png"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\images\\logohutech.png",
+      "PackagePath": "staticwebassets\\images\\logohutech.png"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert-notifications.js",
+      "PackagePath": "staticwebassets\\js\\alert-notifications.js"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\alert.js",
       "PackagePath": "staticwebassets\\js\\alert.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\dashboard.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\dashboard.js",
       "PackagePath": "staticwebassets\\js\\dashboard.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\init.js",
+      "PackagePath": "staticwebassets\\js\\init.js"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\realtime-monitor.js",
+      "PackagePath": "staticwebassets\\js\\realtime-monitor.js"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\LICENSE",
       "PackagePath": "staticwebassets\\lib\\bootstrap"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.cjs",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.cjs",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chart.cjs"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.cjs.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.cjs.map",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chart.cjs.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.js",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chart.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.js.map",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chart.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.umd.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.umd.js",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chart.umd.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.umd.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.umd.js.map",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chart.umd.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.umd.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.umd.min.js",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chart.umd.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.umd.min.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chart.umd.min.js.map",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chart.umd.min.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chunks\\helpers.dataset.cjs",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chunks\\helpers.dataset.cjs",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chunks\\helpers.dataset.cjs"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chunks\\helpers.dataset.cjs.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chunks\\helpers.dataset.cjs.map",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chunks\\helpers.dataset.cjs.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chunks\\helpers.dataset.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chunks\\helpers.dataset.js",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chunks\\helpers.dataset.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chunks\\helpers.dataset.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\chunks\\helpers.dataset.js.map",
       "PackagePath": "staticwebassets\\lib\\chartjs\\chunks\\helpers.dataset.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.bar.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.bar.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\controller.bar.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.bubble.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.bubble.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\controller.bubble.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.doughnut.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.doughnut.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\controller.doughnut.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.line.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.line.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\controller.line.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.pie.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.pie.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\controller.pie.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.polarArea.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.polarArea.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\controller.polarArea.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.radar.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.radar.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\controller.radar.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.scatter.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\controller.scatter.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\controller.scatter.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\controllers\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\controllers\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.adapters.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.adapters.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.adapters.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.animation.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.animation.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.animation.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.animations.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.animations.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.animations.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.animations.defaults.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.animations.defaults.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.animations.defaults.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.animator.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.animator.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.animator.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.config.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.config.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.config.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.controller.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.controller.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.controller.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.datasetController.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.datasetController.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.datasetController.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.defaults.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.defaults.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.defaults.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.element.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.element.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.element.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.interaction.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.interaction.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.interaction.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.layouts.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.layouts.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.layouts.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.layouts.defaults.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.layouts.defaults.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.layouts.defaults.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.plugins.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.plugins.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.plugins.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.registry.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.registry.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.registry.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.scale.autoskip.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.scale.autoskip.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.scale.autoskip.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.scale.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.scale.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.scale.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.scale.defaults.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.scale.defaults.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.scale.defaults.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.ticks.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.ticks.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.ticks.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.typedRegistry.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\core.typedRegistry.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\core.typedRegistry.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\core\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\core\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\element.arc.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\element.arc.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\elements\\element.arc.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\element.bar.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\element.bar.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\elements\\element.bar.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\element.line.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\element.line.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\elements\\element.line.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\element.point.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\element.point.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\elements\\element.point.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\elements\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\elements\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers.cjs",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers.cjs",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers.cjs"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers.cjs.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers.cjs.map",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers.cjs.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers.js",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers.js.map",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.canvas.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.canvas.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.canvas.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.collection.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.collection.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.collection.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.color.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.color.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.color.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.config.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.config.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.config.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.config.types.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.config.types.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.config.types.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.core.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.core.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.core.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.curve.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.curve.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.curve.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.dataset.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.dataset.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.dataset.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.dom.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.dom.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.dom.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.easing.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.easing.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.easing.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.extras.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.extras.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.extras.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.interpolation.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.interpolation.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.interpolation.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.intl.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.intl.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.intl.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.math.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.math.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.math.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.options.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.options.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.options.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.rtl.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.rtl.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.rtl.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.segment.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\helpers.segment.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\helpers.segment.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\helpers\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\helpers\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\index.umd.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\index.umd.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\index.umd.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\platform\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\platform\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\platform\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\platform\\platform.base.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\platform\\platform.base.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\platform\\platform.base.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\platform\\platform.basic.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\platform\\platform.basic.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\platform\\platform.basic.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\platform\\platform.dom.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\platform\\platform.dom.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\platform\\platform.dom.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.colors.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.colors.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.colors.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.decimation.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.decimation.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.decimation.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.drawing.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.drawing.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.filler\\filler.drawing.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.helper.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.helper.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.filler\\filler.helper.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.options.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.options.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.filler\\filler.options.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.segment.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.segment.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.filler\\filler.segment.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.target.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.target.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.filler\\filler.target.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.target.stack.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\filler.target.stack.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.filler\\filler.target.stack.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.filler\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\simpleArc.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.filler\\simpleArc.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.filler\\simpleArc.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.legend.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.legend.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.legend.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.subtitle.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.subtitle.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.subtitle.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.title.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.title.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.title.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.tooltip.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\plugins\\plugin.tooltip.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\plugins\\plugin.tooltip.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\scales\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.category.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.category.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\scales\\scale.category.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.linear.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.linear.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\scales\\scale.linear.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.linearbase.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.linearbase.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\scales\\scale.linearbase.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.logarithmic.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.logarithmic.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\scales\\scale.logarithmic.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.radialLinear.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.radialLinear.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\scales\\scale.radialLinear.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.time.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.time.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\scales\\scale.time.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.timeseries.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\scales\\scale.timeseries.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\scales\\scale.timeseries.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\types.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\animation.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\animation.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\types\\animation.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\basic.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\basic.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\types\\basic.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\color.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\color.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\types\\color.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\geometric.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\geometric.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\types\\geometric.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\index.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\index.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\types\\index.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\layout.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\layout.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\types\\layout.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\utils.d.ts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\chartjs\\types\\utils.d.ts",
       "PackagePath": "staticwebassets\\lib\\chartjs\\types\\utils.d.ts"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\datatables\\css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\datatables\\css",
       "PackagePath": "staticwebassets\\lib\\datatables"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\datatables\\js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\datatables\\js",
       "PackagePath": "staticwebassets\\lib\\datatables"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\fontawesome\\css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\fontawesome\\css",
       "PackagePath": "staticwebassets\\lib\\fontawesome"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\fontawesome\\webfonts",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\fontawesome\\webfonts",
       "PackagePath": "staticwebassets\\lib\\fontawesome"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ar.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ar.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ar.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ar.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ar.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ar.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_az.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_az.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_az.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_az.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_az.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_az.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_bg.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_bg.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_bg.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_bg.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_bg.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_bg.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_bn_BD.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_bn_BD.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_bn_BD.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_bn_BD.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_bn_BD.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_bn_BD.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ca.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ca.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ca.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ca.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ca.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ca.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_cs.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_cs.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_cs.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_cs.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_cs.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_cs.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_da.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_da.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_da.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_da.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_da.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_da.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_de.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_de.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_de.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_de.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_de.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_de.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_el.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_el.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_el.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_el.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_el.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_el.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_es.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_es.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es_AR.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es_AR.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_es_AR.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es_AR.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es_AR.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_es_AR.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es_PE.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es_PE.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_es_PE.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es_PE.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_es_PE.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_es_PE.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_et.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_et.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_et.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_et.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_et.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_et.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_eu.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_eu.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_eu.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_eu.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_eu.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_eu.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fa.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fa.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_fa.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fa.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fa.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_fa.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fi.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fi.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_fi.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fi.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fi.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_fi.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fr.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fr.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_fr.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fr.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_fr.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_fr.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ge.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ge.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ge.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ge.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ge.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ge.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_gl.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_gl.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_gl.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_gl.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_gl.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_gl.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_he.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_he.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_he.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_he.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_he.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_he.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hi.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hi.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_hi.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hi.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hi.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_hi.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hr.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hr.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_hr.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hr.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hr.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_hr.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hu.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hu.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_hu.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hu.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hu.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_hu.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hy_AM.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hy_AM.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_hy_AM.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hy_AM.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_hy_AM.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_hy_AM.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_id.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_id.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_id.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_id.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_id.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_id.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_is.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_is.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_is.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_is.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_is.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_is.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_it.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_it.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_it.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_it.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_it.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_it.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ja.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ja.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ja.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ja.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ja.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ja.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ka.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ka.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ka.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ka.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ka.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ka.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_kk.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_kk.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_kk.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_kk.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_kk.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_kk.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ko.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ko.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ko.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ko.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ko.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ko.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_lt.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_lt.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_lt.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_lt.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_lt.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_lt.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_lv.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_lv.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_lv.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_lv.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_lv.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_lv.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_mk.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_mk.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_mk.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_mk.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_mk.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_mk.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_my.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_my.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_my.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_my.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_my.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_my.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_nl.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_nl.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_nl.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_nl.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_nl.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_nl.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_no.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_no.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_no.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_no.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_no.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_no.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pl.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pl.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_pl.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pl.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pl.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_pl.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pt_BR.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pt_BR.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_pt_BR.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pt_BR.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pt_BR.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_pt_BR.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pt_PT.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pt_PT.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_pt_PT.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pt_PT.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_pt_PT.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_pt_PT.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ro.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ro.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ro.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ro.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ro.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ro.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ru.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ru.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ru.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ru.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ru.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ru.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sd.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sd.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sd.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sd.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sd.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sd.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_si.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_si.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_si.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_si.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_si.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_si.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sk.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sk.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sk.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sk.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sk.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sk.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sl.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sl.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sl.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sl.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sl.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sl.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sr.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sr.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sr.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sr.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sr.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sr.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sr_lat.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sr_lat.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sr_lat.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sr_lat.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sr_lat.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sr_lat.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sv.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sv.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sv.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sv.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_sv.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_sv.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_th.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_th.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_th.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_th.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_th.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_th.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_tj.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_tj.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_tj.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_tj.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_tj.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_tj.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_tr.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_tr.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_tr.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_tr.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_tr.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_tr.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_uk.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_uk.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_uk.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_uk.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_uk.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_uk.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ur.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ur.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ur.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ur.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_ur.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_ur.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_vi.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_vi.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_vi.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_vi.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_vi.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_vi.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_zh.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_zh.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_zh.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_zh.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_zh.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_zh.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_zh_TW.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_zh_TW.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_zh_TW.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_zh_TW.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\messages_zh_TW.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\messages_zh_TW.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_de.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_de.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_de.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_de.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_de.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_de.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_es_CL.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_es_CL.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_es_CL.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_es_CL.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_es_CL.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_es_CL.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_fi.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_fi.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_fi.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_fi.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_fi.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_fi.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_it.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_it.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_it.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_it.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_it.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_it.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_nl.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_nl.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_nl.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_nl.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_nl.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_nl.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_pt.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_pt.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_pt.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_pt.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery-validation\\dist\\localization\\methods_pt.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\localization\\methods_pt.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.slim.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.slim.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.min.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\microsoft\\signalr\\dist\\browser\\signalr.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\microsoft\\signalr\\dist\\browser\\signalr.js",
       "PackagePath": "staticwebassets\\lib\\microsoft\\signalr\\dist\\browser\\signalr.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\microsoft\\signalr\\dist\\browser\\signalr.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\microsoft\\signalr\\dist\\browser\\signalr.js.map",
       "PackagePath": "staticwebassets\\lib\\microsoft\\signalr\\dist\\browser\\signalr.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\microsoft\\signalr\\dist\\browser\\signalr.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\microsoft\\signalr\\dist\\browser\\signalr.min.js",
       "PackagePath": "staticwebassets\\lib\\microsoft\\signalr\\dist\\browser\\signalr.min.js"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\microsoft\\signalr\\dist\\browser\\signalr.min.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\microsoft\\signalr\\dist\\browser\\signalr.min.js.map",
       "PackagePath": "staticwebassets\\lib\\microsoft\\signalr\\dist\\browser\\signalr.min.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\toastr\\toastr.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\toastr\\toastr.css",
       "PackagePath": "staticwebassets\\lib\\toastr\\toastr.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\toastr\\toastr.js.map",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\toastr\\toastr.js.map",
       "PackagePath": "staticwebassets\\lib\\toastr\\toastr.js.map"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\toastr\\toastr.min.css",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\toastr\\toastr.min.css",
       "PackagePath": "staticwebassets\\lib\\toastr\\toastr.min.css"
     },
     {
-      "Id": "C:\\Da_LapTrinhMMT\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\toastr\\toastr.min.js",
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\lib\\toastr\\toastr.min.js",
       "PackagePath": "staticwebassets\\lib\\toastr\\toastr.min.js"
+    },
+    {
+      "Id": "C:\\DA_LapTrinhMangMayTinh\\SecurityMonitor\\wwwroot\\sounds\\alert.mp3",
+      "PackagePath": "staticwebassets\\sounds\\alert.mp3"
     },
     {
       "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.SecurityMonitor.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

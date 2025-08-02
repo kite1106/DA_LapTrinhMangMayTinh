@@ -12,7 +12,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using SecurityMonitor.Models;
+using SecurityMonitor.Services.Interfaces;
+using SecurityMonitor.Extensions;
 
 namespace SecurityMonitor.Areas.Identity.Pages.Account.Manage
 {
@@ -21,15 +24,24 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly ILogger<EmailModel> _logger;
+        private readonly ILogService _logService;
+        private readonly IAlertService _alertService;
 
         public EmailModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ILogger<EmailModel> logger,
+            ILogService logService,
+            IAlertService alertService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _logger = logger;
+            _logService = logService;
+            _alertService = alertService;
         }
 
         /// <summary>
@@ -128,6 +140,43 @@ namespace SecurityMonitor.Areas.Identity.Pages.Account.Manage
                     Input.NewEmail,
                     "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                // Tạo log entry cho hành động đổi email
+                var clientIp = Request.GetClientIpAddress();
+                var logEntry = new LogEntry
+                {
+                    Message = $"User {user.UserName} requested email change from {email} to {Input.NewEmail}",
+                    LogSourceId = 1, // Custom App
+                    LogLevelTypeId = 1, // Information
+                    IpAddress = clientIp,
+                    UserId = user.Id,
+                    WasSuccessful = true,
+                    Details = $"Email change requested for user {user.UserName} from IP {clientIp}"
+                };
+                
+                await _logService.CreateLogAsync(logEntry);
+                
+                // Kiểm tra xem có đổi email quá nhiều lần không
+                var recentEmailChanges = await _logService.GetRecentLogsAsync(TimeSpan.FromHours(1));
+                var userEmailChanges = recentEmailChanges
+                    .Where(l => l.UserId == user.Id && l.Message.Contains("requested email change"))
+                    .Count();
+                
+                if (userEmailChanges > 2) // Nếu đổi email hơn 2 lần trong 1 giờ
+                {
+                    var alert = new Alert
+                    {
+                        Title = "Suspicious Email Change Activity",
+                        Description = $"User {user.UserName} has requested email change {userEmailChanges} times in the last hour",
+                        AlertTypeId = (int)AlertTypeId.SuspiciousIP,
+                        SeverityLevelId = (int)SeverityLevelId.High,
+                        StatusId = (int)AlertStatusId.New,
+                        SourceIp = clientIp,
+                        LogId = logEntry.Id
+                    };
+                    
+                    await _alertService.CreateAlertAsync(alert);
+                }
 
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
                 return RedirectToPage();

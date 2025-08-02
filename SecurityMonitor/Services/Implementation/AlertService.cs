@@ -40,10 +40,7 @@ namespace SecurityMonitor.Services.Implementation
 
         public async Task<Alert?> GetAlertByIdAsync(int id)
         {
-            return await _context.Alerts
-                .Include(a => a.SeverityLevel)
-                .Include(a => a.AlertType)
-                .FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Alerts.FindAsync(id);
         }
 
         public async Task<Alert> CreateAlertAsync(Alert alert)
@@ -52,44 +49,51 @@ namespace SecurityMonitor.Services.Implementation
             _context.Alerts.Add(alert);
             await _context.SaveChangesAsync();
 
-            await _hubContext.Clients.All.SendAsync("ReceiveAlert", new
+            // Load navigation properties for SignalR notification
+            await _context.Entry(alert)
+                .Reference(a => a.AlertType)
+                .LoadAsync();
+            await _context.Entry(alert)
+                .Reference(a => a.SeverityLevel)
+                .LoadAsync();
+            await _context.Entry(alert)
+                .Reference(a => a.Status)
+                .LoadAsync();
+
+            _logger.LogInformation("Created alert: {Id} - {Title}", alert.Id, alert.Title);
+
+            // Notify via SignalR
+            await _hubContext.Clients.Group("Alerts").SendAsync("ReceiveNewAlert", new
             {
-                alert.Id,
-                alert.Title,
-                alert.Description,
-                alert.SourceIp,
-                alert.Timestamp,
-                SeverityLevel = alert.SeverityLevelId.ToString(),
-                Type = alert.AlertTypeId.ToString()
+                id = alert.Id,
+                title = alert.Title,
+                description = alert.Description,
+                alertType = alert.AlertType?.Name,
+                severityLevel = alert.SeverityLevel?.Name,
+                status = alert.Status?.Name,
+                sourceIp = alert.SourceIp,
+                timestamp = alert.Timestamp
             });
 
-            _logger.LogInformation("Created new alert: {Title}", alert.Title);
             return alert;
         }
 
-        public async Task<Alert?> UpdateAlertAsync(int id, Alert alert)
+        public async Task UpdateAlertAsync(Alert alert)
         {
-            var existingAlert = await _context.Alerts.FindAsync(id);
-            if (existingAlert == null) return null;
-
-            existingAlert.Title = alert.Title;
-            existingAlert.Description = alert.Description;
-            existingAlert.SeverityLevelId = alert.SeverityLevelId;
-            existingAlert.AlertTypeId = alert.AlertTypeId;
-            existingAlert.StatusId = alert.StatusId;
-
+            _context.Alerts.Update(alert);
             await _context.SaveChangesAsync();
-            return existingAlert;
+            _logger.LogInformation("Updated alert: {Id}", alert.Id);
         }
 
-        public async Task<bool> DeleteAlertAsync(int id)
+        public async Task DeleteAlertAsync(int id)
         {
             var alert = await _context.Alerts.FindAsync(id);
-            if (alert == null) return false;
-
-            _context.Alerts.Remove(alert);
-            await _context.SaveChangesAsync();
-            return true;
+            if (alert != null)
+            {
+                _context.Alerts.Remove(alert);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Deleted alert: {Id}", id);
+            }
         }
 
         public async Task<bool> GetRecentAlertByIpAsync(string ip, TimeSpan timeWindow)
@@ -271,5 +275,21 @@ namespace SecurityMonitor.Services.Implementation
         {
             return await _context.SeverityLevels.ToListAsync();
         }
+
+        public async Task<int> GetAlertCountAsync()
+        {
+            return await _context.Alerts.CountAsync();
+        }
+
+        public async Task<IEnumerable<Alert>> GetRecentAlertsAsync(TimeSpan duration)
+        {
+            var cutoffDate = DateTime.UtcNow.Subtract(duration);
+            return await _context.Alerts
+                .Where(a => a.Timestamp >= cutoffDate)
+                .OrderByDescending(a => a.Timestamp)
+                .ToListAsync();
+        }
+
+
     }
 }
